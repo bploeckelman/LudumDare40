@@ -74,7 +74,7 @@ public class TutorialManager {
 
     public void render(SpriteBatch batch) {
         if (screens.size <= 0) return;
-        Assets.eightBitFont.getData().setScale(.7f);
+        Assets.font.getData().setScale(.7f);
         TutorialInfo info = screens.get(0);
         drawHighlight(batch, info);
 
@@ -86,7 +86,7 @@ public class TutorialManager {
         if (sb.length() < 2) sb.insert(0, '0'); // pad with leading zero if needed
         String hex = sb.toString();
 
-        Assets.layout.setText(Assets.eightBitFont, coloredReplace.replace("xALPHAx", hex), color, info.wrapWidth, Align.center, true);
+        Assets.layout.setText(Assets.font, coloredReplace.replace("xALPHAx", hex), color, info.wrapWidth, Align.center, true);
         float txtH = Assets.layout.height;
         float boxWidth = (info.wrapWidth + 20);
         Rectangle bounds = new Rectangle(info.pos.x - boxWidth / 2 - 10, info.pos.y - txtH / 2 - 10, boxWidth, txtH + 20);
@@ -97,7 +97,7 @@ public class TutorialManager {
         batch.setColor(new Color(1, 1, 1, sceneAlpha.floatValue()));
         Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
 
-        Assets.eightBitFont.draw(batch, Assets.layout, bounds.x + 10, bounds.y + bounds.height - 10);
+        Assets.font.draw(batch, Assets.layout, bounds.x + 10, bounds.y + bounds.height - 10);
     }
 
     private void drawHighlight(SpriteBatch batch, TutorialInfo info) {

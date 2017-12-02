@@ -41,8 +41,6 @@ public class Assets {
     public static TextureRegion testTexture;
     public static TextureRegion whitePixel;
 
-    public static NinePatch defaultNinePatch;
-
     public static boolean initialized;
 
     public static void load() {
