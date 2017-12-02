@@ -6,6 +6,12 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 project.ext.mainClassName = "lando.systems.ld40.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets");
 
+task sprites(dependsOn: classes, type: JavaExec) {
+    main = 'com.badlogic.gdx.tools.texturepacker.TexturePacker'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['../sprites', '../core/assets', 'sprites']
+}
+
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
@@ -34,7 +40,7 @@ task dist(type: Jar) {
     }
 }
 
-dist.dependsOn classes
+dist.dependsOn classes, sprites
 
 eclipse {
     project {

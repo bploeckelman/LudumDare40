@@ -1,6 +1,5 @@
 package lando.systems.ld40.gameobjects;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -18,15 +17,15 @@ public class GameObject {
     protected float bounds_offset_x;
     protected float bounds_offset_y;
 
-    public Texture texture;
+    public TextureRegion texture;
 
     public GameObject() {
         setTexture(Assets.testTexture);
     }
 
-    protected void setTexture(Texture texture) {
+    protected void setTexture(TextureRegion texture) {
         this.texture = texture;
-        setSize(texture.getWidth(), texture.getHeight());
+        setSize(texture.getRegionWidth(), texture.getRegionHeight());
     }
 
     public void setX(float x) {
