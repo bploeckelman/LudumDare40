@@ -35,6 +35,9 @@ public class Assets {
 
     public static TextureAtlas atlas;
 
+    public static NinePatch defaultNinePatch;
+    public static NinePatch speechNinePatch;
+
     public static TextureRegion testTexture;
     public static TextureRegion whitePixel;
 
@@ -85,6 +88,9 @@ public class Assets {
         distText.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Linear);
         font = new BitmapFont(Gdx.files.internal("fonts/ubuntu.fnt"), new TextureRegion(distText), false);
         font.getData().setScale(.3f);
+        
+        defaultNinePatch = new NinePatch(atlas.findRegion("ninepatch"), 6,6,6,6);
+        speechNinePatch = new NinePatch(atlas.findRegion("speech"), 12, 12, 12, 12);
 
         fontShader = loadShader("shaders/dist.vert", "shaders/dist.frag");
 
