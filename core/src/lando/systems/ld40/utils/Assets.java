@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import lando.systems.ld40.utils.accessors.*;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 /**
  * Created by Brian on 11/28/2017
@@ -29,6 +30,7 @@ public class Assets {
     public static ShapeRenderer shapes;
     public static GlyphLayout layout;
     public static BitmapFont font;
+    public static BitmapFont eightBitFont;
     public static ShaderProgram fontShader;
 
     public static TextureAtlas atlas;
