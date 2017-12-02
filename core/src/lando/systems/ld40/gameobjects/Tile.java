@@ -9,11 +9,12 @@ public class Tile extends GameObject {
 
     public Tile(String textureName) {
         setTexture(Assets.atlas.findRegion(textureName));
-        setSize(World.tile_pixels_wide, World.tile_pixels_high);       
+        setSize(World.tile_pixels_wide, World.tile_pixels_high);
     }
 
     @Override
     public void render(SpriteBatch batch) {
+
         super.render(batch);
     }
 }

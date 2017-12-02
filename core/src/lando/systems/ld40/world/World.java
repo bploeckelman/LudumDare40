@@ -1,6 +1,7 @@
 package lando.systems.ld40.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.GameObject;
@@ -12,8 +13,8 @@ public class World {
 
     public static final int tiles_wide = 10;
     public static final int tiles_high = 10;
-    public static final float tile_pixels_wide = 256;
-    public static final float tile_pixels_high = 256;
+    public static final float tile_pixels_wide = 128;
+    public static final float tile_pixels_high = 128;
     public static final float pixels_wide = tiles_wide * tile_pixels_wide;
     public static final float pixels_high = tiles_high * tile_pixels_high;
 
@@ -26,6 +27,7 @@ public class World {
     }
 
     Array<GameObject> tiles;
+    public Rectangle bounds;
 
 
     public World(){
@@ -42,6 +44,8 @@ public class World {
                 }                
             }
         }
+        bounds = new Rectangle(-2*tile_pixels_wide, -2*tile_pixels_high,
+                pixels_wide + 4*tile_pixels_wide, pixels_high + 4*tile_pixels_high);
     }
 
 
