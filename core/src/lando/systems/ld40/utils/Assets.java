@@ -8,10 +8,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -34,8 +31,10 @@ public class Assets {
     public static BitmapFont font;
     public static ShaderProgram fontShader;
 
-    public static Texture testTexture;
-    public static Texture whitePixel;
+    public static TextureAtlas atlas;
+
+    public static TextureRegion testTexture;
+    public static TextureRegion whitePixel;
 
     public static boolean initialized;
 
@@ -51,8 +50,8 @@ public class Assets {
         nearestParams.magFilter = Texture.TextureFilter.Nearest;
 
         mgr = new AssetManager();
-        mgr.load("images/badlogic.jpg", Texture.class, nearestParams);
-        mgr.load("images/white-pixel.png", Texture.class, nearestParams);
+
+        mgr.load("sprites.atlas", TextureAtlas.class);
 
         if (tween == null) {
             tween = new TweenManager();
@@ -74,8 +73,9 @@ public class Assets {
         if (initialized) return 1f;
         initialized = true;
 
-        testTexture = mgr.get("images/badlogic.jpg", Texture.class);
-        whitePixel = mgr.get("images/white-pixel.png", Texture.class);
+        atlas = mgr.get("sprites.atlas", TextureAtlas.class);
+        testTexture = atlas.findRegion("badlogic");
+        whitePixel = atlas.findRegion("white-pixel");
 
         final Texture distText = new Texture(Gdx.files.internal("fonts/ubuntu.png"), true);
         distText.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Linear);
