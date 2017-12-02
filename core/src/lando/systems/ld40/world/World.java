@@ -2,6 +2,7 @@ package lando.systems.ld40.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.gameobjects.Tile;
 
@@ -28,12 +29,17 @@ public class World {
 
 
     public World(){
+        int type = 0;
         tiles = new Array<GameObject>();
         for (int y = 0; y < tiles_high; ++y) {
             for (int x = 0; x < tiles_wide; ++x) {
-                Tile newTile = new Tile();
+                Tile newTile = Building.getBuilding(Building.Type.values()[type]);
                 newTile.setLocation(x * tile_pixels_wide, y * tile_pixels_high);
                 tiles.add(newTile);
+
+                if (++type > 9) {
+                    type = 0;
+                }                
             }
         }
     }
