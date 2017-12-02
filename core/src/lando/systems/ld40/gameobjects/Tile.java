@@ -10,7 +10,7 @@ public class Tile extends GameObject {
     private Color tempColor = new Color(50 / 255f, 115 / 255f, 69 / 255f, 1f);
 
     public Tile() {
-        texture = Assets.whitePixel;
+        texture = Assets.atlas.findRegion("tile-128");
         setSize(World.tile_pixels_wide, World.tile_pixels_high);
     }
 
