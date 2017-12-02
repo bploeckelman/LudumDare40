@@ -26,11 +26,12 @@ public class PlanPhaseScreen extends BaseScreen {
 
     public Vector3 cameraTouchStart;
     public Vector3 touchStart;
-    public static float zoomScale = 0.15f;
-    public static float maxZoom = 2f;
-    public static float minZoom = 0.2f;
+    public static float zoomScale = 0.1f;
+    public static float maxZoom = 4f;
+    public static float minZoom = 0.5f;
     public static float DRAG_DELTA = 10f;
     public boolean cancelTouchUp = false;
+    public float targetZoom = 1;
 
 
     public PlanPhaseScreen() {
@@ -49,7 +50,7 @@ public class PlanPhaseScreen extends BaseScreen {
 
         updateWorld(dt);
         updateObjects(dt);
-        updateCamera(dt);
+        updateCamera();
     }
 
     private void updateWorld(float dt) {
@@ -60,27 +61,12 @@ public class PlanPhaseScreen extends BaseScreen {
         // todo
     }
 
-    private void updateCamera(float dt) {
+    private void updateCamera() {
+        camera.zoom = MathUtils.lerp(camera.zoom, targetZoom, .1f);
         camera.zoom = MathUtils.clamp(camera.zoom, minZoom, maxZoom);
-        float minY = world.bounds.y + camera.viewportHeight/2 * camera.zoom;
-        float maxY = world.bounds.height - camera.viewportHeight/2 * camera.zoom;
 
-        float minX = world.bounds.x + camera.viewportWidth/2 * camera.zoom;
-        float maxX = world.bounds.x + world.bounds.width - camera.viewportWidth/2 * camera.zoom;
-
-        if (camera.viewportHeight * camera.zoom > world.bounds.height){
-            camera.position.y = world.bounds.height/2;
-        } else {
-            camera.position.y = MathUtils.clamp(camera.position.y, minY, maxY);
-        }
-
-
-        if (camera.viewportWidth * camera.zoom > world.bounds.width){
-            camera.position.x = world.bounds.x + world.bounds.width/2;
-        } else {
-            camera.position.x = MathUtils.clamp(camera.position.x, minX, maxX);
-        }
-
+        camera.position.y = MathUtils.clamp(camera.position.y, world.bounds.y, world.bounds.y + world.bounds.height);
+        camera.position.x = MathUtils.clamp(camera.position.x, world.bounds.x, world.bounds.x + world.bounds.width);
         camera.update();
     }
 
@@ -154,12 +140,21 @@ public class PlanPhaseScreen extends BaseScreen {
         return true;
     }
 
+    Vector3 tp = new Vector3();
     @Override
-    public boolean scrolled (int amount) {
-        float fAmount = (amount + 1) * .6f;
-        camera.zoom = MathUtils.clamp(camera.zoom * fAmount, .5f, 4f);
+    public boolean scrolled (int change) {
 
-        camera.update();
+//        camera.unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+//        float px = tp.x;
+//        float py = tp.y;
+//        camera.zoom += change * camera.zoom * zoomScale;
+//        updateCamera();
+//
+//        camera.unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+//        camera.position.add(px - tp.x, py- tp.y, 0);
+//        camera.update();
+        targetZoom += change * targetZoom * zoomScale;
+        targetZoom = MathUtils.clamp(targetZoom, minZoom, maxZoom);
         return true;
     }
 
