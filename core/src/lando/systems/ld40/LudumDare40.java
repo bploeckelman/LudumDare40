@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import lando.systems.ld40.screens.BaseScreen;
 import lando.systems.ld40.screens.TitleScreen;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.SoundManager;
 
 /**
  * Created by Brian 11/28/2017
