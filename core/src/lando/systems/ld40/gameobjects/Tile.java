@@ -18,8 +18,6 @@ public class Tile extends GameObject {
     public void render(SpriteBatch batch) {
         batch.setColor(tempColor);
         super.render(batch);
-        batch.setColor(Color.BLACK);
-        Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
         batch.setColor(Color.WHITE);
     }
 
