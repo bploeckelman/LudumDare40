@@ -8,18 +8,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
+import lando.systems.ld40.world.World;
 
 /**
  * Created by Brian on 7/25/2017
  */
-public class GameScreen extends BaseScreen {
+public class PlanPhaseScreen extends BaseScreen {
 
     private static final boolean DEBUG = false;
 
     private final LudumDare40 game;
+    private World world;
 
-    public GameScreen() {
+    public PlanPhaseScreen() {
         this.game = LudumDare40.game;
+        world = World.GetWorld();
     }
 
     @Override
@@ -34,7 +37,7 @@ public class GameScreen extends BaseScreen {
     }
 
     private void updateWorld(float dt) {
-        // todo
+        world.update(dt);
     }
 
     private void updateObjects(float dt) {
@@ -73,10 +76,8 @@ public class GameScreen extends BaseScreen {
     }
 
     private void renderWorld(SpriteBatch batch) {
-        // todo
-        batch.setColor(Color.MAGENTA);
-        batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, camera.viewportHeight - 20);
         batch.setColor(Color.WHITE);
+        world.render(batch);
     }
 
     private void renderObjects(SpriteBatch batch) {
@@ -87,7 +88,7 @@ public class GameScreen extends BaseScreen {
         batch.setColor(Color.LIGHT_GRAY);
         batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
         batch.setColor(Color.WHITE);
-        Assets.drawString(batch, "Game", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+        Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
     }
 
 }

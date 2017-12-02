@@ -1,30 +1,32 @@
 package lando.systems.ld40.gameobjects;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import lando.systems.ld40.utils.Assets;
 
 
 public class GameObject {
 
-    public Rectangle bounds;
-    public Vector2 position;
+    public Rectangle bounds = new Rectangle();
+    public Vector2 position = new Vector2();
         
 	public float animStateTime = 0;
     
     protected float bounds_offset_x;
     protected float bounds_offset_y;
 
-    public TextureRegion keyframe;
+    public Texture texture;
 
     public GameObject() {
-        bounds = new Rectangle(0,0,64, 64);
+        setTexture(Assets.testTexture);
     }
-    
-    protected void setKeyFrame(TextureRegion textureRegion) {
-        keyframe = textureRegion;
-        setSize(keyframe.getRegionWidth(), keyframe.getRegionHeight());
+
+    protected void setTexture(Texture texture) {
+        this.texture = texture;
+        setSize(texture.getWidth(), texture.getHeight());
     }
 
     public void setX(float x) {
@@ -62,8 +64,8 @@ public class GameObject {
         bounds.x = position.x - bounds_offset_x;
         bounds.y = position.y - bounds_offset_y;
 
-        if (keyframe != null) {
-            batch.draw(keyframe, bounds.x, bounds.y, bounds.width, bounds.height);
+        if (texture != null) {
+            batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
         }
     }
 }
