@@ -1,6 +1,7 @@
 package lando.systems.ld40.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.buildings.Building;
@@ -11,7 +12,7 @@ public class World {
 
     private static World world;
 
-    public static final int tiles_wide = 10;
+    public static final int tiles_wide = 12;
     public static final int tiles_high = 10;
     public static final float tile_pixels_wide = 128;
     public static final float tile_pixels_high = 128;
@@ -35,6 +36,7 @@ public class World {
         tiles = new Array<GameObject>();
         for (int y = 0; y < tiles_high; ++y) {
             for (int x = 0; x < tiles_wide; ++x) {
+                type = MathUtils.random(9);
                 Tile newTile = Building.getBuilding(Building.Type.values()[type]);
                 newTile.setLocation(x * tile_pixels_wide, y * tile_pixels_high);
                 tiles.add(newTile);
