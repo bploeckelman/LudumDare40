@@ -42,6 +42,10 @@ public class World {
                     type = Building.Type.GARBAGE_HQ;
                 }
 
+                if (x == 0 && y == 0) {
+                    type = Building.Type.COMMERCIAL_HIGH;
+                }
+
                 Building newBuilding = Building.getBuilding(type);
                 newBuilding.setLocation(x * tile_pixels_wide, y * tile_pixels_high);
                 tiles.add(newBuilding);
@@ -82,13 +86,18 @@ public class World {
     }
 
     public GameObject getSelectedObject(float x, float y) {
-        // TODO: this should be optimized
-        for (GameObject tile : tiles) {
-            if (tile.bounds.contains(x, y)) {
-                return tile;
-            }
-        }
-        return null;
+        int index = getSelectedObjectIndex(x, y);
+        System.out.println("tile: " + index);
+        return (index == -1) ? null : tiles.get(index);
     }
 
+    public int getSelectedObjectIndex(float x, float y) {
+        System.out.println("x: " + x + " y: " + y);
+        if (x < 0 || y < 0 || x >= pixels_wide || y >= pixels_high) return -1;
+
+        int xOffset = (int)(tiles_wide * x / pixels_wide);
+        int yOffset = (int)(tiles_high * y / pixels_high);
+
+        return yOffset * tiles_wide + xOffset;
+    }
 }
