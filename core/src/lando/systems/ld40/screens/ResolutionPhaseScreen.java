@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
@@ -13,11 +12,10 @@ import lando.systems.ld40.world.World;
 /**
  * Created by Brian on 12/2/2017.
  */
-public class ActionPhaseScreen extends BaseScreen {
-
+public class ResolutionPhaseScreen extends BaseScreen {
     private World world;
 
-    public ActionPhaseScreen() {
+    public ResolutionPhaseScreen() {
         world = World.GetWorld();
         Gdx.input.setInputProcessor(this);
         camera.zoom = 2.5f;
@@ -80,12 +78,13 @@ public class ActionPhaseScreen extends BaseScreen {
         batch.setColor(Color.LIGHT_GRAY);
         batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
         batch.setColor(Color.WHITE);
-        Assets.drawString(batch, "Action Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+        Assets.drawString(batch, "Resolution Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
     }
 
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-        LudumDare40.game.setScreen(new ResolutionPhaseScreen());
+        LudumDare40.game.setScreen(new PlanPhaseScreen());
         return true;
     }
 }
+
