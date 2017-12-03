@@ -9,14 +9,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.world.World;
-import lando.systems.ld40.ui.Button;
-import com.badlogic.gdx.math.Rectangle;
 
 
 /**
@@ -25,9 +24,11 @@ import com.badlogic.gdx.math.Rectangle;
 public class ResolutionPhaseScreen extends BaseScreen {
     private World world;
 
-    //Button bBuildings;
-    //Button bAddons;
-    //Button bResearch;
+    Button bBuildings;
+    Button bAddons;
+    Button bResearch;
+    Button bContinue;
+    Button purchaseUpgradeButton;
 
     Rectangle rectHeadBut1;
     Rectangle rectHeadBut2;
@@ -38,10 +39,26 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
     Rectangle rectButContinueBox;
 
-    Button purchaseUpgradeButton;
+    Vector3 touchPos;
 
-    //Button continueButton;
-    //Button purchaseButton;
+    public class UpgradeItem {
+        public int type;
+        public String description;
+        public TextureRegion buttonTexture;
+        public TextureRegion upgradeTexture;
+        public Button button;
+        public int currentLevel;
+        public int maxLevel;
+    }
+
+    public enum ItemGroups {
+        None,
+        Building,
+        Addon,
+        Research
+    }
+
+    public ItemGroups selectedGroup;
 
     Array<UpgradeButton> buildingsButtons;
 
@@ -55,15 +72,23 @@ public class ResolutionPhaseScreen extends BaseScreen {
         camera.position.x = 500;
         camera.position.y = 500;
 
+        touchPos = new Vector3();
+
         float fScreenWidth = hudCamera.viewportWidth;
         float fScreenHeight = hudCamera.viewportHeight;
 
-        rectHeadBut1 = new Rectangle(20, 450, 240, fScreenHeight / 12);
-        rectHeadBut2 = new Rectangle(280, 450, 240, fScreenHeight / 12);
-        rectHeadBut3 = new Rectangle(540, 450, 240, fScreenHeight / 12);
+        rectHeadBut1 = new Rectangle(fScreenWidth / 40, fScreenHeight * 0.75f, fScreenWidth * 0.3f, fScreenHeight / 12);
+        bBuildings = new Button(Assets.defaultNinePatch, rectHeadBut1, hudCamera, "Buildings", null);
+        bBuildings.textColor = Color.BLACK;
+        rectHeadBut2 = new Rectangle((fScreenWidth * 2 / 40) + rectHeadBut1.width, fScreenHeight * 0.75f, fScreenWidth * 0.3f, fScreenHeight / 12);
+        bAddons = new Button(Assets.defaultNinePatch, rectHeadBut2, hudCamera, "Add-Ons", null);
+        bAddons.textColor = Color.BLACK;
+        rectHeadBut3 = new Rectangle((fScreenWidth * 3 / 40) + rectHeadBut1.width * 2, fScreenHeight * 0.75f, fScreenWidth * 0.3f, fScreenHeight / 12);
+        bResearch = new Button(Assets.defaultNinePatch, rectHeadBut3, hudCamera, "Research", null);
+        bResearch.textColor = Color.BLACK;
 
-        rectButBox = new Rectangle(20, 90, fScreenWidth * 0.55f, 330);
-        rectInfoBox = new Rectangle(rectButBox.x + rectButBox.width + fScreenWidth * 0.05f, 90, fScreenWidth * 0.35f, 330);
+        rectButBox = new Rectangle(20, fScreenHeight * 0.15f, fScreenWidth * 0.55f, fScreenHeight * 0.55f);
+        rectInfoBox = new Rectangle(rectButBox.x + rectButBox.width + fScreenWidth * 0.05f, fScreenHeight * 0.15f, fScreenWidth * 0.35f, 330);
 
         purchaseUpgradeButton = new Button(Assets.defaultNinePatch, new Rectangle(rectInfoBox.x + 10, rectInfoBox.y + 10, rectInfoBox.width - 20, 50),
                 hudCamera, "Upgrade", null);
@@ -71,6 +96,10 @@ public class ResolutionPhaseScreen extends BaseScreen {
         initBuildingsUpgrades();
 
         rectButContinueBox = new Rectangle(fScreenWidth * 0.75f, fScreenHeight / 30, fScreenWidth * 0.225f, fScreenHeight / 12);
+        bContinue = new Button(Assets.defaultNinePatch, rectButContinueBox, hudCamera, "Next Day", null);
+        bContinue.textColor = Color.BLACK;
+
+        selectedGroup = ItemGroups.None;
     }
 
     void initBuildingsUpgrades()
@@ -96,7 +125,29 @@ public class ResolutionPhaseScreen extends BaseScreen {
         updateWorld(dt);
         updateObjects(dt);
         updateCamera(dt);
+    }
 
+    private void updateWorld(float dt) {
+        world.update(dt);
+    }
+
+    private void updateObjects(float dt) {
+        if (Gdx.input.justTouched()) {
+            hudCamera.unproject(touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0f));
+
+            int touchX = (int) touchPos.x;
+            int touchY = (int) hudCamera.viewportHeight - (int) touchPos.y;
+
+            if (bBuildings.checkForTouch(touchX, touchY)) {
+                selectedGroup = ItemGroups.Building;
+            }
+            else if (bAddons.checkForTouch(touchX, touchY)) {
+                selectedGroup = ItemGroups.Addon;
+            }
+            else if (bResearch.checkForTouch(touchX, touchY)) {
+                selectedGroup = ItemGroups.Research;
+            }
+        }
         if(Gdx.input.isKeyJustPressed(Input.Keys.A))
         {
             currentUpgrade = buildingsButtons.get(0);
@@ -105,14 +156,6 @@ public class ResolutionPhaseScreen extends BaseScreen {
         {
             currentUpgrade = buildingsButtons.get(1);
         }
-    }
-
-    private void updateWorld(float dt) {
-        world.update(dt);
-    }
-
-    private void updateObjects(float dt) {
-        // todo
     }
 
     private void updateCamera(float dt) {
@@ -127,6 +170,8 @@ public class ResolutionPhaseScreen extends BaseScreen {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
         {
+            renderHud(batch);
+
             // Draw screen background
             //batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
 
@@ -134,13 +179,28 @@ public class ResolutionPhaseScreen extends BaseScreen {
             //batch.setColor(64f / 255f, 64f / 255f, 64f / 255f, 0.9f);
 
             // Draw header buttons
+            batch.setColor(selectedGroup == ItemGroups.Building ? Color.WHITE : Color.LIGHT_GRAY);
             batch.draw(Assets.whitePixel, rectHeadBut1.x, rectHeadBut1.y, rectHeadBut1.width, rectHeadBut1.height);
+            bBuildings.render(batch);
+            batch.setColor(selectedGroup == ItemGroups.Addon ? Color.WHITE : Color.LIGHT_GRAY);
             batch.draw(Assets.whitePixel, rectHeadBut2.x, rectHeadBut2.y, rectHeadBut2.width, rectHeadBut2.height);
+            bAddons.render(batch);
+            batch.setColor(selectedGroup == ItemGroups.Research ? Color.WHITE : Color.LIGHT_GRAY);
             batch.draw(Assets.whitePixel, rectHeadBut3.x, rectHeadBut3.y, rectHeadBut3.width, rectHeadBut3.height);
+            bResearch.render(batch);
+            batch.setColor(Color.WHITE);
 
+            // Draw header text
+
+
+            // Draw upgrade item buttons
             batch.draw(Assets.whitePixel, rectButBox.x, rectButBox.y, rectButBox.width, rectButBox.height);
             batch.draw(Assets.whitePixel, rectInfoBox.x, rectInfoBox.y, rectInfoBox.width, rectInfoBox.height);
 
+            // Draw info section details
+
+
+            // Draw continue button
             batch.draw(Assets.whitePixel, rectButContinueBox.x, rectButContinueBox.y, rectButContinueBox.width, rectButContinueBox.height);
 
             //Render upgrade information
@@ -155,6 +215,11 @@ public class ResolutionPhaseScreen extends BaseScreen {
                         Color.BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
                 purchaseUpgradeButton.render(batch);
             }
+            bContinue.render(batch);
+
+
+            // Screen transition overlay
+
         }
         batch.end();
     }
