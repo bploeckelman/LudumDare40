@@ -12,7 +12,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ObjectMap;
 import lando.systems.ld40.LudumDare40;
+import lando.systems.ld40.gameobjects.ResearchType;
+import lando.systems.ld40.gameobjects.StoreManager;
+import lando.systems.ld40.gameobjects.TileType;
+import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
@@ -24,6 +29,8 @@ import lando.systems.ld40.world.World;
  * Created by Brian on 12/2/2017.
  */
 public class ResolutionPhaseScreen extends BaseScreen {
+    private static StoreManager storeManager = new StoreManager();
+
     private World world;
 
     Button bBuildings;
@@ -43,15 +50,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
     Vector3 touchPos;
 
-    public class UpgradeItem {
-        public int type;
-        public String description;
-        public TextureRegion buttonTexture;
-        public TextureRegion upgradeTexture;
-        public Button button;
-        public int currentLevel;
-        public int maxLevel;
-    }
+    public static int money = 5000;
 
     public enum ItemGroups {
         Building,
@@ -64,6 +63,10 @@ public class ResolutionPhaseScreen extends BaseScreen {
     Array<UpgradeButton> buildingsButtons;
     Array<UpgradeButton> addOnButtons;
     Array<UpgradeButton> researchButtons;
+
+    ObjectMap<String, ResearchType>  researchMap;
+    ObjectMap<String, TileType> tileMap;
+    ObjectMap<String, UpgradeType> upgradeMap;
 
     UpgradeButton currentUpgrade;
 
@@ -106,6 +109,10 @@ public class ResolutionPhaseScreen extends BaseScreen {
         researchButtons = new Array<UpgradeButton>();
         addOnButtons = new Array<UpgradeButton>();
         buildingsButtons = new Array<UpgradeButton>();
+
+        upgradeMap = new ObjectMap<String, UpgradeType>();
+        researchMap = new ObjectMap<String, ResearchType>();
+        tileMap = new ObjectMap<String, TileType>();
 
         initBuildingsUpgrades();
         initAddOnButtons();
@@ -163,6 +170,13 @@ public class ResolutionPhaseScreen extends BaseScreen {
         addOnButtons.add(aUpgrade5);
         addOnButtons.add(aUpgrade6);
 
+        upgradeMap.put(aUpgrade1.name, UpgradeType.TIER_UPGRADE);
+        upgradeMap.put(aUpgrade2.name, UpgradeType.DUMPSTER);
+        upgradeMap.put(aUpgrade3.name, UpgradeType.INCINERATOR);
+        upgradeMap.put(aUpgrade4.name, UpgradeType.GREEN_TOKEN);
+        upgradeMap.put(aUpgrade5.name, UpgradeType.RECLAMATION);
+        upgradeMap.put(aUpgrade6.name, UpgradeType.COMPACTOR);
+
         createButtons(ItemGroups.Addon);
     }
 
@@ -208,6 +222,12 @@ public class ResolutionPhaseScreen extends BaseScreen {
         researchButtons.add(rUpgrade3);
         researchButtons.add(rUpgrade4);
         researchButtons.add(rUpgrade5);
+
+        researchMap.put(rUpgrade1.name, ResearchType.INCINERATION);
+        researchMap.put(rUpgrade2.name, ResearchType.COMPACTION);
+        researchMap.put(rUpgrade3.name, ResearchType.RECYCLING);
+        researchMap.put(rUpgrade4.name, ResearchType.TRUCK_STOPS_1);
+        researchMap.put(rUpgrade5.name, ResearchType.TRUCK_CAPACITY_1);
 
         createButtons(ItemGroups.Research);
     }
@@ -287,6 +307,16 @@ public class ResolutionPhaseScreen extends BaseScreen {
         buildingsButtons.add(bUpgrade8);
         buildingsButtons.add(bUpgrade9);
 
+        tileMap.put(bUpgrade1.name, TileType.RESIDENTIAL_LOW_DENSITY);
+        tileMap.put(bUpgrade2.name, TileType.COMMERCIAL_LOW_DENSITY);
+        tileMap.put(bUpgrade3.name, TileType.INDUSTRIAL_LOW_DENSITY);
+        tileMap.put(bUpgrade4.name, TileType.RESIDENTIAL_MEDIUM_DENSITY);
+        tileMap.put(bUpgrade5.name, TileType.COMMERCIAL_MEDIUM_DENSITY);
+        tileMap.put(bUpgrade6.name, TileType.INDUSTRIAL_MEDIUM_DENSITY);
+        tileMap.put(bUpgrade7.name, TileType.RESIDENTIAL_HIGH_DENSITY);
+        tileMap.put(bUpgrade8.name, TileType.COMMERCIAL_HIGH_DENSITY);
+        tileMap.put(bUpgrade9.name, TileType.INDUSTRIAL_HIGH_DENSITY);
+
         //create buttons
         createButtons(ItemGroups.Building);
     }
@@ -338,6 +368,28 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void updateObjects(float dt) {
+        if(selectedGroup == ItemGroups.Building)
+        {
+            for(UpgradeButton button : buildingsButtons)
+            {
+                button.button.update(dt);
+            }
+        }
+        else if(selectedGroup == ItemGroups.Addon)
+        {
+            for(UpgradeButton button : addOnButtons)
+            {
+                button.button.update(dt);
+            }
+        }
+        else if(selectedGroup == ItemGroups.Research)
+        {
+            for(UpgradeButton button : researchButtons)
+            {
+                button.button.update(dt);
+            }
+        }
+
         if (Gdx.input.justTouched() && allowInput) {
             hudCamera.unproject(touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0f));
 
@@ -356,6 +408,14 @@ public class ResolutionPhaseScreen extends BaseScreen {
             else if (bContinue.checkForTouch(touchX, touchY)){
                 world.nextTurn();
                 LudumDare40.game.setScreen(new PlanPhaseScreen());
+            }
+            else if(purchaseUpgradeButton.checkForTouch(touchX, touchY))
+            {
+                if(money >= currentUpgrade.cost)
+                {
+                    money -= currentUpgrade.cost;
+                    currentUpgrade.quantity++;
+                }
             }
 
             //Loop through the array pertaining to the selected item group
@@ -406,12 +466,6 @@ public class ResolutionPhaseScreen extends BaseScreen {
         {
             renderHud(batch);
 
-            // Draw screen background
-            //batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
-
-            // Draw section backgrounds
-            //batch.setColor(64f / 255f, 64f / 255f, 64f / 255f, 0.9f);
-
             // Draw header buttons
             batch.setColor(selectedGroup == ItemGroups.Building ? Color.WHITE : Color.LIGHT_GRAY);
             batch.draw(Assets.whitePixel, rectHeadBut1.x, rectHeadBut1.y, rectHeadBut1.width, rectHeadBut1.height);
@@ -450,49 +504,79 @@ public class ResolutionPhaseScreen extends BaseScreen {
             //Render upgrade information
             if(currentUpgrade != null)
             {
-                Assets.drawString(batch, currentUpgrade.name, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 20,
-                        Color.BLACK, 0.5f, Assets.font, rectInfoBox.width, Align.center);
-                batch.draw(currentUpgrade.picture, rectInfoBox.x + 80, rectInfoBox.y + rectInfoBox.height - 180, 128, 128);
-                Assets.drawString(batch, currentUpgrade.description, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 200,
-                        Color.BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
-                Assets.drawString(batch, "Cost: " + currentUpgrade.cost, rectInfoBox.x, rectInfoBox.y + 80,
-                        Color.BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
-
-                if(currentUpgrade.group == ItemGroups.Research)
-                {
-                    purchaseUpgradeButton.text = "Research";
-                }
-                else
-                {
-                    purchaseUpgradeButton.text = "Purchase";
-                }
-                batch.setColor(Color.LIGHT_GRAY);
-                batch.draw(Assets.whitePixel, purchaseUpgradeButton.bounds.x, purchaseUpgradeButton.bounds.y,
-                        purchaseUpgradeButton.bounds.width, purchaseUpgradeButton.bounds.height);
-                purchaseUpgradeButton.render(batch);
+                renderSelectedInfo(batch);
             }
             bContinue.render(batch);
         }
         batch.end();
     }
 
+    private void renderSelectedInfo(SpriteBatch batch)
+    {
+        Assets.drawString(batch, currentUpgrade.name, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 20,
+                Color.BLACK, 0.5f, Assets.font, rectInfoBox.width, Align.center);
+        batch.draw(currentUpgrade.picture, rectInfoBox.x + 80, rectInfoBox.y + rectInfoBox.height - 180, 128, 128);
+        if(currentUpgrade.group != ItemGroups.Research)
+        {
+            Assets.drawString(batch, "x" + currentUpgrade.quantity, rectInfoBox.x + 200, rectInfoBox.y + rectInfoBox.height - 105,
+                    Color.BLACK, 0.4f, Assets.font, 80, Align.center);
+        }
+        Assets.drawString(batch, currentUpgrade.description, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 200,
+                Color.BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
+        Assets.drawString(batch, "Cost: " + currentUpgrade.cost, rectInfoBox.x, rectInfoBox.y + 80,
+                Color.BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
+
+        if(currentUpgrade.group == ItemGroups.Research)
+        {
+            purchaseUpgradeButton.text = "Research";
+        }
+        else
+        {
+            purchaseUpgradeButton.text = "Purchase";
+        }
+        batch.setColor(Color.LIGHT_GRAY);
+        batch.draw(Assets.whitePixel, purchaseUpgradeButton.bounds.x, purchaseUpgradeButton.bounds.y,
+                purchaseUpgradeButton.bounds.width, purchaseUpgradeButton.bounds.height);
+        purchaseUpgradeButton.render(batch);
+    }
+
     private void renderBuildingButtons(SpriteBatch batch)
     {
         for(UpgradeButton button : buildingsButtons)
         {
-            button.button.render(batch);
+            if(storeManager.getTileStatus(tileMap.get(button.name)) == StoreManager.Status.UNLOCKED)
+            {
+                button.button.enable(true);
+            }
+            else if(storeManager.getTileStatus(tileMap.get(button.name)) == StoreManager.Status.LOCKED)
+            {
+                button.button.enable(false);
+                button.button.setTooltip("Hello, friend!");
+            }
+
+            if(!button.button.enabled)
+            {
+                batch.setColor(1f, 1f, 1f, 0.5f);
+            }
+            else
+            {
+                batch.setColor(Color.WHITE);
+            }
             batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
                     button.button.bounds.width - 6, button.button.bounds.height - 6);
+            button.button.render(batch);
+            //batch.setColor(1f, 1f, 1f, 0.5f);
         }
+        batch.setColor(Color.WHITE);
     }
 
     private void renderAddOnButtons(SpriteBatch batch)
     {
         for(UpgradeButton button : addOnButtons)
         {
-            button.button.render(batch);
             batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
                     button.button.bounds.width - 6, button.button.bounds.height - 6);
+            button.button.render(batch);
         }
     }
 
@@ -500,9 +584,9 @@ public class ResolutionPhaseScreen extends BaseScreen {
     {
         for(UpgradeButton button : researchButtons)
         {
-            button.button.render(batch);
             batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
                     button.button.bounds.width - 6, button.button.bounds.height - 6);
+            button.button.render(batch);
         }
     }
 
@@ -516,6 +600,8 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
+        Assets.drawString(batch, "Money: " + money, Config.gameWidth / 2 - 10, Config.gameHeight - 20, Color.GOLD, 0.5f, Assets.font);
+
         batch.setColor(Color.LIGHT_GRAY);
         batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
         batch.setColor(Color.WHITE);
@@ -535,8 +621,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         public TextureRegion picture;
         public Button button;
         public int cost;
-        public int quantity;
+        public int quantity = 0;
         public ItemGroups group;
     }
 }
-

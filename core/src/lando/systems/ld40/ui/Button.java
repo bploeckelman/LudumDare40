@@ -43,7 +43,7 @@ public class Button {
     private float textY;
     private float timeHovered = 0;
     private boolean showTooltip = false;
-    private boolean enabled = true;
+    public boolean enabled = true;
     Vector3 tempVec3 = new Vector3();
 
 
