@@ -30,8 +30,11 @@ public class PlanPhaseScreen extends BaseScreen {
     public static float maxZoom = 4f;
     public static float minZoom = 0.5f;
     public static float DRAG_DELTA = 10f;
+    public static float ZOOM_LERP = .1f;
+    public static float PAN_LERP = .2f;
     public boolean cancelTouchUp = false;
     public float targetZoom = 1;
+    public Vector3 cameraTargetPos;
 
     private Rectangle nextButtonBounds;
     private Vector3 projectionVector = new Vector3();
@@ -41,6 +44,7 @@ public class PlanPhaseScreen extends BaseScreen {
         this.game = LudumDare40.game;
         cameraTouchStart = new Vector3();
         touchStart = new Vector3();
+        cameraTargetPos = new Vector3(camera.position);
         world = World.GetWorld();
         Gdx.input.setInputProcessor(this);
 
@@ -67,9 +71,11 @@ public class PlanPhaseScreen extends BaseScreen {
     }
 
     private void updateCamera() {
-        camera.zoom = MathUtils.lerp(camera.zoom, targetZoom, .1f);
+        camera.zoom = MathUtils.lerp(camera.zoom, targetZoom, ZOOM_LERP);
         camera.zoom = MathUtils.clamp(camera.zoom, minZoom, maxZoom);
 
+        camera.position.x = MathUtils.lerp(camera.position.x, cameraTargetPos.x, PAN_LERP);
+        camera.position.y = MathUtils.lerp(camera.position.y, cameraTargetPos.y, PAN_LERP);
         camera.position.y = MathUtils.clamp(camera.position.y, world.bounds.y, world.bounds.y + world.bounds.height);
         camera.position.x = MathUtils.clamp(camera.position.x, world.bounds.x, world.bounds.x + world.bounds.width);
         camera.update();
@@ -148,9 +154,9 @@ public class PlanPhaseScreen extends BaseScreen {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-        camera.position.x = cameraTouchStart.x + (touchStart.x - screenX) * camera.zoom;
-        camera.position.y = cameraTouchStart.y + (screenY - touchStart.y) * camera.zoom;
-        if (cameraTouchStart.dst(camera.position) > DRAG_DELTA) {
+        cameraTargetPos.x = cameraTouchStart.x + (touchStart.x - screenX) * camera.zoom;
+        cameraTargetPos.y = cameraTouchStart.y + (screenY - touchStart.y) * camera.zoom;
+        if (cameraTouchStart.dst(cameraTargetPos) > DRAG_DELTA) {
             cancelTouchUp = true;
         }
         return true;
