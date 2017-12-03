@@ -61,4 +61,15 @@ public class World {
             tile.render(batch);
         }
     }
+
+    public GameObject getSelectedObject(float x, float y) {
+        // TODO: this should be optimized
+        for (GameObject tile : tiles) {
+            if (tile.bounds.contains(x, y)) {
+                return tile;
+            }
+        }
+        return null;
+    }
+
 }

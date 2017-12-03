@@ -67,4 +67,9 @@ public class GameObject {
             batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
         }
     }
+
+    public void render(SpriteBatch batch, float x, float y, float w, float h) {
+        TextureRegion drawTexture = (texture == null) ? Assets.whitePixel : texture;
+        batch.draw(drawTexture, x, y, w, h);
+    }
 }

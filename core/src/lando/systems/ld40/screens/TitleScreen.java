@@ -44,7 +44,8 @@ public class TitleScreen extends BaseScreen {
             batch.setColor(Color.DARK_GRAY);
             batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
             batch.setColor(Color.WHITE);
-            Assets.drawString(batch, "Title", 10f, hudCamera.viewportHeight - 20f, Color.GOLD, 0.5f, Assets.font);
+            Assets.drawString(batch, "Garbage Town", 10f, hudCamera.viewportHeight - 20f, Color.GOLD, 1.5f, Assets.font);
+            Assets.drawString(batch, "Population: You", 10f, hudCamera.viewportHeight - 20f - 100f, Color.WHITE, 0.5f, Assets.font);
         }
         batch.end();
     }

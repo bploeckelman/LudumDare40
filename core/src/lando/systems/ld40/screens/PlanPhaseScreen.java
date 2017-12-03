@@ -1,5 +1,11 @@
 package lando.systems.ld40.screens;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Timeline;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.equations.Quad;
+import aurelienribon.tweenengine.primitives.MutableFloat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -8,9 +14,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
+import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
+import lando.systems.ld40.utils.accessors.Vector3Accessor;
 import lando.systems.ld40.world.World;
 
 /**
@@ -33,11 +42,39 @@ public class PlanPhaseScreen extends BaseScreen {
     public static float ZOOM_LERP = .1f;
     public static float PAN_LERP = .2f;
     public boolean cancelTouchUp = false;
-    public float targetZoom = 1;
+    public MutableFloat targetZoom = new MutableFloat(1f);
     public Vector3 cameraTargetPos;
 
     private Rectangle nextButtonBounds;
+    private Rectangle buildButtonBounds;
+    private Rectangle routesButtonBounds;
+    private Rectangle buildTileHudBounds;
+    private Rectangle buildInventoryHudBounds;
     private Vector3 projectionVector = new Vector3();
+
+    private enum BuildState { START, PICK_TILE, PICK_ITEM, DONE }
+    private class BuildAction {
+        BuildState state;
+        GameObject selectedObject;
+        // TODO: access inventory how?
+        public BuildAction() {
+            state = BuildState.START;
+            selectedObject = null;
+        }
+    }
+    private BuildAction buildAction;
+
+    private enum RouteState { START, PICK_SOURCES, PICK_DEST, DONE }
+    private class RouteAction {
+        RouteState state;
+        GameObject selectedTruck;
+        // TODO: store route, in truck?
+        public RouteAction() {
+            state = RouteState.START;
+            selectedTruck = null;
+        }
+    }
+    private RouteAction routeAction;
 
 
     public PlanPhaseScreen() {
@@ -48,7 +85,15 @@ public class PlanPhaseScreen extends BaseScreen {
         world = World.GetWorld();
         Gdx.input.setInputProcessor(this);
 
-        nextButtonBounds = new Rectangle(camera.viewportWidth - 100, camera.viewportHeight - 40, 80, 20);
+        float margin = 10f;
+        float size = 80f;
+        nextButtonBounds = new Rectangle(hudCamera.viewportWidth - margin - size, hudCamera.viewportHeight - margin - size, size, size);
+        buildButtonBounds = new Rectangle(margin, hudCamera.viewportHeight - margin - size, size, size);
+        routesButtonBounds = new Rectangle(margin, hudCamera.viewportHeight - 2f * margin - 2f * size, size, size);
+//        buildTileHudBounds = new Rectangle()
+
+        buildAction = null;
+        routeAction = null;
     }
 
     @Override
@@ -65,6 +110,7 @@ public class PlanPhaseScreen extends BaseScreen {
 
         updateWorld(dt);
         updateObjects(dt);
+        updateAction(dt);
         updateCamera();
     }
 
@@ -76,8 +122,59 @@ public class PlanPhaseScreen extends BaseScreen {
         // todo
     }
 
+    private void updateAction(float dt) {
+        if (buildAction != null) {
+            switch (buildAction.state) {
+                case START: {
+                    // Zoom out
+                    float camTargetX = World.pixels_wide / 2f;
+                    float camTargetY = World.pixels_high / 2f;
+                    float camTargetZoom = Math.max(
+                            World.pixels_wide * 1.2f / hudCamera.viewportWidth,
+                            World.pixels_high * 1.2f / hudCamera.viewportHeight
+                    );
+                    Timeline.createSequence()
+                            .push(Timeline.createParallel()
+                                          .push(Tween.to(cameraTargetPos, Vector3Accessor.XY, 0.5f).target(camTargetX, camTargetY).ease(Quad.INOUT))
+                                          .push(Tween.to(targetZoom, -1, 0.5f).target(camTargetZoom).ease(Quad.INOUT)))
+                            .push(Tween.call(new TweenCallback() {
+                                @Override
+                                public void onEvent(int type, BaseTween<?> source) {
+                                    buildAction.state = BuildState.PICK_TILE;
+                                }
+                            }))
+                            .start(Assets.tween);
+                }
+                break;
+                case PICK_TILE: {
+                    if (buildAction.selectedObject != null) {
+                        // TODO: tween the selected tile out to hud size from it's place in the world map
+                        Tween.call(new TweenCallback() {
+                            @Override
+                            public void onEvent(int i, BaseTween<?> baseTween) {
+                                buildAction.state = BuildState.PICK_ITEM;
+                            }
+                        }).delay(1f).start(Assets.tween);
+                    }
+                }
+                break;
+                case PICK_ITEM: {
+                    // TODO: ...
+                    buildAction.state = BuildState.DONE;
+                }
+                break;
+                case DONE: {
+                    buildAction = null;
+                }
+                break;
+            }
+        } else if (routeAction != null) {
+            // ...
+        }
+    }
+
     private void updateCamera() {
-        camera.zoom = MathUtils.lerp(camera.zoom, targetZoom, ZOOM_LERP);
+        camera.zoom = MathUtils.lerp(camera.zoom, targetZoom.floatValue(), ZOOM_LERP);
         camera.zoom = MathUtils.clamp(camera.zoom, minZoom, maxZoom);
 
         camera.position.x = MathUtils.lerp(camera.position.x, cameraTargetPos.x, PAN_LERP);
@@ -125,22 +222,80 @@ public class PlanPhaseScreen extends BaseScreen {
     private void renderHud(SpriteBatch batch) {
 //        batch.setColor(Color.LIGHT_GRAY);
 //        batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
-//        batch.setColor(Color.WHITE);
-//        Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+
+        batch.setColor(Color.WHITE);
+        Assets.layout.setText(Assets.font, "Plan Phase", Color.GOLD, hudCamera.viewportWidth, Align.center, true);
+        Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+
+        renderBuildActionHud(batch);
+        renderRouteActionHud(batch);
+        renderNextActionHud(batch);
     }
 
+    private void renderBuildActionHud(SpriteBatch batch) {
+        // Build button
+        batch.setColor(Color.SKY);
+        batch.draw(Assets.whitePixel, buildButtonBounds.x, buildButtonBounds.y, buildButtonBounds.width, buildButtonBounds.height);
+        batch.setColor(Color.WHITE);
+        if (buildAction == null) return;
+
+        switch (buildAction.state) {
+            case START: {
+                batch.setShader(Assets.fontShader);
+                String text = "Building...";
+                Assets.layout.setText(Assets.font, text);
+                Assets.font.draw(batch, text,
+                        0, hudCamera.viewportHeight - Assets.layout.height,
+                        hudCamera.viewportWidth,
+                        Align.center, true);
+                batch.setShader(null);
+            } break;
+            case PICK_TILE: {
+                batch.setShader(Assets.fontShader);
+                String text = "Click a tile to build on...";
+                Assets.layout.setText(Assets.font, text);
+                Assets.font.draw(batch, text,
+                        0, hudCamera.viewportHeight - Assets.layout.height,
+                        hudCamera.viewportWidth,
+                        Align.center, true);
+                batch.setShader(null);
+            } break;
+            case PICK_ITEM: {
+                batch.setShader(Assets.fontShader);
+                String text = "Click an item to build...";
+                Assets.layout.setText(Assets.font, text);
+                Assets.font.draw(batch, text,
+                        0, hudCamera.viewportHeight - Assets.layout.height,
+                        hudCamera.viewportWidth,
+                        Align.center, true);
+                batch.setShader(null);
+                buildAction.selectedObject.render(batch, 100f, 100f, hudCamera.viewportWidth - 200f, hudCamera.viewportHeight - 200f);
+            } break;
+            case DONE: {
+                // nothing to see here
+            } break;
+        }
+    }
+
+    private void renderRouteActionHud(SpriteBatch batch) {
+        // Routes button
+        batch.setColor(Color.ORANGE);
+        batch.draw(Assets.whitePixel, routesButtonBounds.x, routesButtonBounds.y, routesButtonBounds.width, routesButtonBounds.height);
+        batch.setColor(Color.WHITE);
+        if (routeAction == null) return;
+    }
+
+    private void renderNextActionHud(SpriteBatch batch) {
+        // Next button
+        batch.setColor(Color.FOREST);
+        batch.draw(Assets.whitePixel, nextButtonBounds.x, nextButtonBounds.y, nextButtonBounds.width, nextButtonBounds.height);
+        batch.setColor(Color.WHITE);
+
+        // ...
+    }
 
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-        projectionVector.x = screenX;
-        projectionVector.y = screenY;
-        Vector3 hudClick = hudCamera.unproject(projectionVector);
-        if (nextButtonBounds.contains(hudClick.x, hudClick.y)) {
-            game.setScreen(new ActionPhaseScreen());
-            return true;
-        }
-
-
         cameraTouchStart.set(camera.position);
         touchStart.set(screenX, screenY, 0);
         return true;
@@ -152,6 +307,37 @@ public class PlanPhaseScreen extends BaseScreen {
             cancelTouchUp = false;
             return false;
         }
+
+        projectionVector.set(screenX, screenY, 0);
+        hudCamera.unproject(projectionVector);
+        if (nextButtonBounds.contains(projectionVector.x, projectionVector.y)) {
+            game.setScreen(new ActionPhaseScreen());
+            return true;
+        } else if (buildButtonBounds.contains(projectionVector.x, projectionVector.y)) {
+            buildAction = new BuildAction();
+            routeAction = null;
+            return true;
+        } else if (routesButtonBounds.contains(projectionVector.x, projectionVector.y)) {
+            routeAction = new RouteAction();
+            buildAction = null;
+            return true;
+        }
+
+        if (buildAction != null) {
+            projectionVector.set(screenX, screenY, 0);
+            camera.unproject(projectionVector);
+
+            if (buildAction.state == BuildState.PICK_TILE) {
+                GameObject selectedObject = world.getSelectedObject(projectionVector.x, projectionVector.y);
+                if (selectedObject != null) {
+                    buildAction.selectedObject = selectedObject;
+                    buildAction.state = BuildState.PICK_ITEM;
+                }
+            } else if (buildAction.state == BuildState.PICK_ITEM) {
+                // check for item pick in inventory view
+            }
+        }
+
         return true;
     }
 
@@ -179,8 +365,8 @@ public class PlanPhaseScreen extends BaseScreen {
 //        camera.unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 //        camera.position.add(px - tp.x, py- tp.y, 0);
 //        camera.update();
-        targetZoom += change * targetZoom * zoomScale;
-        targetZoom = MathUtils.clamp(targetZoom, minZoom, maxZoom);
+        targetZoom.setValue(targetZoom.floatValue() + change * targetZoom.floatValue() * zoomScale);
+        targetZoom.setValue(MathUtils.clamp(targetZoom.floatValue(), minZoom, maxZoom));
         return true;
     }
 
