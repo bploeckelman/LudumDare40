@@ -69,8 +69,7 @@ public class Building extends Tile {
         buildingTypeTextureLookup.put(Type.COMMERCIAL_HIGH, "com-high");
         buildingTypeTextureLookup.put(Type.COMMERCIAL_LOW, "com-low");
         buildingTypeTextureLookup.put(Type.COMMERCIAL_MEDIUM, "com-med");
-        // TODO: TEXTURE
-        buildingTypeTextureLookup.put(Type.DUMP, "white-pixel");
+        buildingTypeTextureLookup.put(Type.DUMP, "dump");
         buildingTypeTextureLookup.put(Type.INDUSTRIAL_HIGH, "ind-high");
         buildingTypeTextureLookup.put(Type.INDUSTRIAL_LOW, "ind-low");
         buildingTypeTextureLookup.put(Type.INDUSTRIAL_MEDIUM, "ind-med");
@@ -189,6 +188,7 @@ public class Building extends Tile {
             case DUMP:
                 supportsCompactor = true;
                 supportsIncinerator = true;
+                canRaze = false;
                 trashCapacity = 100;
                 break;
 

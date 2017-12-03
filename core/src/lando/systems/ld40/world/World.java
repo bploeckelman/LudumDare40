@@ -28,13 +28,13 @@ public class World {
         return world;
     }
 
-    Array<GameObject> tiles;
+    Array<Building> tiles;
     public Rectangle bounds;
 
 
     public World(){
 
-        tiles = new Array<GameObject>();
+        tiles = new Array<Building>();
         for (int y = 0; y < tiles_high; ++y) {
             for (int x = 0; x < tiles_wide; ++x) {
                 Building.Type type = Building.Type.EMPTY;
@@ -48,9 +48,26 @@ public class World {
             }
         }
 
+        placeDump();
+
         bounds = new Rectangle(0, 0, pixels_wide, pixels_high);
     }
 
+    private void placeDump() {
+        int dumpIndex = 0;
+        do {
+            dumpIndex = MathUtils.random.nextInt(tiles.size - 1);
+        } while(!tiles.get(dumpIndex).canBuild);
+
+        setTile(dumpIndex, Building.Type.DUMP);
+    }
+
+    public void setTile(int index, Building.Type buildingType) {
+        Building building = tiles.get(index);
+        Building newBuilding = Building.getBuilding(buildingType);
+        newBuilding.setLocation(building.position.x, building.position.y);
+        tiles.set(index, newBuilding);
+    }
 
     public void update(float dt){
         for (GameObject tile : tiles){
