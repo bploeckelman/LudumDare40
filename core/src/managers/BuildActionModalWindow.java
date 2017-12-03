@@ -36,7 +36,7 @@ public class BuildActionModalWindow extends ModalWindow {
         this.inventoryButtons = new Array<Button>(UpgradeType.values().length);
         for (UpgradeType upgradeType : UpgradeType.values()) {
             inventoryButtons.add(new Button(upgradeType.texture, new Rectangle(),
-                            camera, upgradeType.name(), upgradeType.description));
+                            camera, upgradeType.shortName, upgradeType.description));
         }
     }
 
@@ -95,50 +95,45 @@ public class BuildActionModalWindow extends ModalWindow {
 //            }
 //        });
 
-        // Draw inventory item buttons
+        // Layout and Draw inventory item buttons
         int num_upgrades = UpgradeType.values().length;
         int num_rows = num_upgrades / 2;
-        float line_height = (inventoryRect.height - 2f * margin_top) / num_rows;
 
         float button_margin_left = 10f;
         float button_margin_top = 10f;
-        float button_spacing_x = 20f;
-        float button_size = line_height - (2f * button_margin_left - button_spacing_x) / 2f;
-        float button_spacing_y = (line_height - 2f * button_margin_top - 3f * button_size) / 2f;
+        float button_spacing_x = (inventoryRect.width - 2f * button_margin_left) / 4f;
+        float button_spacing_y = 20f;
+
+        float button_width  = (inventoryRect.width  - 2f * button_margin_left - button_spacing_x) / 2f;
+        float button_height = (inventoryRect.height - 2f * button_margin_top - (num_rows - 1) * button_spacing_y) / num_rows;
+        float button_size = Math.min(button_width, button_height);
 
         for (int i = 0; i < inventoryButtons.size; i += 2) {
             Button inventoryButton1 = inventoryButtons.get(i);
             inventoryButton1.bounds.set(
                     inventoryRect.x + button_margin_left,
-                    inventoryRect.y + button_margin_top + ((i / 2) * button_size) + ((i / 2) * button_spacing_y),
+                    inventoryRect.y + inventoryRect.height - margin_top - (((i / 2) + 1) * button_size) - ((i / 2) * button_spacing_y),
                     button_size, button_size);
             inventoryButton1.textColor = Color.WHITE;
+            inventoryButton1.textScale = 0.38f;
+            inventoryButton1.setText(inventoryButton1.text, button_size + 2f * margin_left); // re-layout text
             inventoryButton1.render(batch);
 
             Button inventoryButton2 = inventoryButtons.get(i+1);
             inventoryButton2.bounds.set(
-                    inventoryRect.x + button_margin_left + button_size + button_spacing_x,
-                    inventoryRect.y + button_margin_top + ((i / 2) * button_size) + ((i / 2) * button_spacing_y),
+                    inventoryRect.x + inventoryRect.width / 2f + button_margin_left,
+                    inventoryRect.y + inventoryRect.height - margin_top - (((i / 2) + 1) * button_size) - ((i / 2) * button_spacing_y),
                     button_size, button_size);
+            inventoryButton2.textScale = 0.38f;
+            inventoryButton2.setText(inventoryButton2.text, button_size + 2f * margin_left); // re-layout text
             inventoryButton2.textColor = Color.WHITE;
             inventoryButton2.render(batch);
         }
 
-//        for (ObjectIntMap.Entry<UpgradeType> upgradeTypeCountEntry : inventory.getUpgradeTypeCount()) {
-//            Assets.defaultNinePatch.draw(batch,
-//                    inventoryRect.x + margin_left, y,
-//                    inventoryRect.width - 2f * margin_left, line_height);
-//            batch.draw(upgradeTypeCountEntry.key.texture,
-//                    inventoryRect.x + 2f * margin_left, y,
-//                    line_height, line_height);
-//
-//            y -= line_height;
-//        }
-
         // NOTE: 0,0 is top left instead of bottom for text
         batch.setShader(Assets.fontShader);
         {
-            final float title_text_scale = 0.4f;
+            final float title_text_scale = 0.5f;
             final float target_width = modalRect.width;
             Assets.font.getData().setScale(title_text_scale);
             Assets.fontShader.setUniformf("u_scale", title_text_scale);
@@ -146,7 +141,7 @@ public class BuildActionModalWindow extends ModalWindow {
                     Color.GOLD, target_width, Align.center, true);
             Assets.font.draw(batch, Assets.layout,
                     modalRect.x + margin_left,
-                    modalRect.y + modalRect.height - Assets.layout.height - margin_top);
+                    modalRect.y + modalRect.height - margin_top);
         }
         batch.setShader(null);
     }

@@ -18,7 +18,7 @@ public class Button {
     private static final float TOOLTIP_TEXT_OFFSET_Y = 3f; // Catches characters with ligatures below the baseline
     private static final float TOOLTIP_TEXT_PADDING_X = 8f;
     private static final float TOOLTIP_TEXT_PADDING_Y = 8f;
-    private static final float TOOLTIP_TEXT_SCALE = 0.3f;
+    private static final float TOOLTIP_TEXT_SCALE = 0.4f;
     private static final float TOOLTIP_SHOW_DELAY = 0.3f;
     private static final float TOOLTIP_CURSOR_OFFSET_X = 8f;
 //    private static final float TOOLTIP_CURSOR_OFFSET_Y = 10f;
@@ -159,6 +159,9 @@ public class Button {
         stringTY = backgroundY + tooltipTextOffsetY;
 
         // DRAW
+        batch.setColor(Color.DARK_GRAY);
+        batch.draw(Assets.whitePixel, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
+        batch.setColor(Color.WHITE);
         Assets.defaultNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         Assets.drawString(batch,
                 tooltip,
@@ -200,6 +203,11 @@ public class Button {
             textX = bounds.x + (bounds.width / 2) - (textWidth / 2);
             textY = bounds.y + (bounds.height / 2) + (textHeight / 2) + textOffsetY;
         }
+    }
+
+    public void setText(String text, float xOffset) {
+        this.setText(text);
+        textX += xOffset;
     }
 
     public void setTooltip(String tooltip) {
