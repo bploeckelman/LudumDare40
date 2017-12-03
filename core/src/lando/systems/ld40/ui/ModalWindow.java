@@ -113,7 +113,7 @@ public abstract class ModalWindow {
 
     public void render(SpriteBatch batch) {
         // Draw background
-        batch.setColor(0f, 0f, 0f, 0.8f);
+        batch.setColor(0f, 0f, 0f, 0.95f);
         batch.draw(Assets.whitePixel, modalRect.x, modalRect.y, modalRect.width, modalRect.height);
 
         // Draw outline

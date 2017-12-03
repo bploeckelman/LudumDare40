@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import lando.systems.ld40.gameobjects.GameObject;
-import lando.systems.ld40.gameobjects.Inventory;
 import lando.systems.ld40.world.World;
 
 /**
@@ -30,16 +29,10 @@ public class BuildManager extends ActionManager {
     @Override
     public void updateManager(float dt) {
         switch(state) {
-            case PICK_TILE:
-                // ...
-                break;
             case PICK_ITEM:
                 if (Gdx.input.justTouched()) {
                     hide();
                 }
-                break;
-            case DONE:
-                // ...
                 break;
         }
 
@@ -56,18 +49,13 @@ public class BuildManager extends ActionManager {
                 break;
             case PICK_ITEM:
                 break;
-            case DONE:
-                // nothing to see here
-                break;
         }
 
     }
 
     @Override
     public boolean handleTouch(float screenX, float screenY) {
-
         boolean handled = false;
-
         Vector3 touchPosition = unprojectWorld(screenX, screenY);
 
         switch (state) {

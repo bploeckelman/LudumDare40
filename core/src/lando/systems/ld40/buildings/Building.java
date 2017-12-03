@@ -3,6 +3,7 @@ package lando.systems.ld40.buildings;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lando.systems.ld40.gameobjects.Tile;
+import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.utils.Assets;
 
 import java.util.HashMap;
@@ -533,6 +534,20 @@ public class Building extends Tile {
                     wScale  * addonTexture.getRegionWidth(),
                     hScale * addonTexture.getRegionHeight());
 
+        }
+    }
+
+    public boolean allowsUpgrade(UpgradeType upgradeType) {
+        switch (upgradeType) {
+            case DEMOLITION:   return canRaze;
+            case COMPACTOR:    return supportsCompactor   && !hasCompactor;
+            case DUMPSTER:     return supportsDumpster    && !hasDumpster;
+            case GREEN_TOKEN:  return supportsGreenCert   && !hasGreenCert;
+            case INCINERATOR:  return supportsIncinerator && !hasIncinerator;
+            case RECLAMATION:  return supportsRecycle     && !hasRecycle;
+            case TIER_UPGRADE: return supportsTiers       && currentTier != Tier.THREE;
+            case TRUCK:        return false;
+            default:           return false;
         }
     }
 

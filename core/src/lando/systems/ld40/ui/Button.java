@@ -32,6 +32,7 @@ public class Button {
     public final Rectangle bounds;
     public String text = null;
     public String tooltip = null;
+    public Object meta = null;
 
     private OrthographicCamera camera;
     private Vector2 touchPosScreen = new Vector2();
@@ -110,12 +111,12 @@ public class Button {
 
         // Button text
         if (text != null && !text.equals("")) {
-            Assets.drawString(batch, text, textX, textY, textColor, textScale, Assets.font);
+            Assets.drawString(batch, text, textX, textY, enabled ? textColor : Color.DARK_GRAY, textScale, Assets.font);
         }
 
         if (!enabled) {
             Color batchColor = batch.getColor();
-            batch.setColor(0.5f, 0.5f, 0.5f, 0.5f);
+            batch.setColor(0.25f, 0.25f, 0.25f, 0.5f);
             batch.draw(Assets.whitePixel, bounds.x, bounds.y, bounds.width, bounds.height);
             batch.setColor(batchColor);
         } else {
