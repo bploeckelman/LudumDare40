@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class StoreManager {
     
-    enum Tile {
+    public enum Tile {
         COMMERCIAL_LOW_DENSITY,
         COMMERCIAL_MEDIUM_DENSITY,
         COMMERCIAL_HIGH_DENSITY,
@@ -17,7 +17,7 @@ public class StoreManager {
         RESIDENTIAL_HIGH_DENSITY,
     }
 
-    enum Upgrade {
+    public enum Upgrade {
         COMPACTOR,
         DEMOLITION,
         DUMPSTER,
@@ -28,7 +28,7 @@ public class StoreManager {
         TRUCK,
     }
     
-    enum Research {
+    public enum Research {
         COMPACTION,
         INCINERATION,
         RECYCLING,
@@ -40,13 +40,13 @@ public class StoreManager {
         TRUCK_STOPS_3,
     }
 
-    enum ResearchStatus {
+    public enum ResearchStatus {
         RESEARCHED,
         RESEARCHABLE,
         LOCKED,
     }
     
-    enum Status {
+    public enum Status {
         UNLOCKED,
         LOCKED
     }
@@ -89,13 +89,13 @@ public class StoreManager {
             updateLocks();
         }
     }
-    private void unlockTile(Tile tile) {
+    public void unlockTile(Tile tile) {
         if (!unlockedTiles.contains(tile)) {
             unlockedTiles.add(tile);
             updateLocks();
         }
     }
-    private void unlockUpgrade(Upgrade upgrade) {
+    public void unlockUpgrade(Upgrade upgrade) {
         if (!unlockedUpgrades.contains(upgrade)) {
             unlockedUpgrades.add(upgrade);
             updateLocks();
