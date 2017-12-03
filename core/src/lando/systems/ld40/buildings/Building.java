@@ -1,5 +1,6 @@
 package lando.systems.ld40.buildings;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lando.systems.ld40.gameobjects.Tile;
@@ -63,7 +64,9 @@ public class Building extends Tile {
 
     public Resource resource;
 
-    public boolean thisTurnActionsAreProcessed;
+    private boolean thisTurnTrashHasBeenGenerated;
+    private boolean thisTurnUpkeepHasBeenRun;
+    private boolean thisTurnValueHasBeenGenerated;
     public float thisTurnAdditionalTrashGeneratedByTier;
     public float thisTurnAdditionalValueGeneratedByTier;
     public float thisTurnGarbageCompacted;
@@ -357,7 +360,9 @@ public class Building extends Tile {
         thisTurnGreenCertTrashReduction = 0;
         thisTurnValueGenerated = 0;
         thisTurnValueGeneratedByRecycling = 0;
-        thisTurnActionsAreProcessed = false;
+        thisTurnTrashHasBeenGenerated = false;
+        thisTurnValueHasBeenGenerated = false;
+        thisTurnUpkeepHasBeenRun = false;
     }
 
     /**
@@ -365,8 +370,8 @@ public class Building extends Tile {
      * @param trashAmount How much trash you're depositing.
      */
     public void depositTrash(float trashAmount) {
-        if (thisTurnActionsAreProcessed) {
-            throw new RuntimeException("Cannot add trash to a building that's already been processed this turn.  Did you forget to reset it?");
+        if (thisTurnUpkeepHasBeenRun) {
+            throw new RuntimeException("Cannot deposit trash af");  // TODO.
         }
         if (hasRecycle) {
             float recycledAmount = trashAmount * RECYCLE_PERCENT;
@@ -399,36 +404,12 @@ public class Building extends Tile {
     }
 
     /**
-     * This is where the building will go to work, generating trash, perhaps getting rid of it, etc.
-     */
-    public void processActions() {
-        if (thisTurnActionsAreProcessed) {
-            throw new RuntimeException("Building already processed this turn!");
-        }
-        generateTrash();
-        generateValue();
-        // Incinerate!
-        if (hasIncinerator) {
-            float garbageIncinerated = Math.min(currentTrashLevel, INCINERATION_VALUE);
-            thisTurnGarbageIncinerated += garbageIncinerated;
-            currentTrashLevel -= garbageIncinerated;
-        }
-        // Capacity check!
-        if (currentTrashLevel > getCurrentTrashCapacity()) {
-            turnsOverCapacity += 1;
-        } else {
-            turnsOverCapacity = 0;
-        }
-        // At this point the building is done for the turn.
-        thisTurnActionsAreProcessed = true;
-    }
-
-    /**
      * Generate the trash for the building.
      * Track it in the thisTurn variables
      * Add the trash to the building.
      */
     private void generateTrash() {
+        if (thisTurnTrashHasBeenGenerated) { throw new RuntimeException("You've already generated trash this turn"); }
         float newTrash = trashGeneratedPerRound;
         float additonalTrashFromTiers = getAdditionalValueByTiers(newTrash);
         if (additonalTrashFromTiers > 0) {
@@ -444,9 +425,30 @@ public class Building extends Tile {
         thisTurnGarbageGenerated += newTrash;
         // Add the trash to the building.
         currentTrashLevel += newTrash;
+        thisTurnTrashHasBeenGenerated = true;
+    }
+
+    private void runUpkeep() {
+        if (thisTurnUpkeepHasBeenRun) { throw new RuntimeException("You've already run upkeep this turn"); }
+        if (!thisTurnTrashHasBeenGenerated) { throw new RuntimeException("Must generate your trash before running upkeep!"); }
+        // Incinerate!
+        if (hasIncinerator) {
+            float garbageIncinerated = Math.min(currentTrashLevel, INCINERATION_VALUE);
+            thisTurnGarbageIncinerated += garbageIncinerated;
+            currentTrashLevel -= garbageIncinerated;
+        }
+        // Capacity check!
+        if (currentTrashLevel > getCurrentTrashCapacity()) {
+            turnsOverCapacity += 1;
+        } else {
+            turnsOverCapacity = 0;
+        }
+        thisTurnUpkeepHasBeenRun = true;
     }
 
     private void generateValue() {
+        if (thisTurnValueHasBeenGenerated) { throw new RuntimeException("You've already run value generation this turn"); }
+        if (!thisTurnUpkeepHasBeenRun) { throw new RuntimeException("Must run upkeep before generating value!"); }
         float newValue = valueGeneratedPerRound;
         float additonalValueFromTiers = getAdditionalValueByTiers(newValue);
         if (additonalValueFromTiers > 0) {
@@ -454,6 +456,7 @@ public class Building extends Tile {
             newValue += additonalValueFromTiers;
         }
         thisTurnValueGenerated += newValue;
+        thisTurnValueHasBeenGenerated = true;
     }
 
     /**
@@ -530,6 +533,11 @@ public class Building extends Tile {
             TextureRegion greenCert = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
             batch.draw(greenCert, bounds.x + bounds.width - (greenCert.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y +  bounds.height - (greenCert.getRegionHeight() + CUTOUT_Y_OFFSET));
         }
+
+        Color c = batch.getColor();
+        batch.setColor(Color.RED);
+        Assets.drawString(batch, "BUILDING", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+        batch.setColor(c);
     }
 
     @Override
@@ -581,5 +589,9 @@ public class Building extends Tile {
         }
     }
 
+    @Override
+    public void update(float dt) {
+        super.update(dt);
+    }
 
 }

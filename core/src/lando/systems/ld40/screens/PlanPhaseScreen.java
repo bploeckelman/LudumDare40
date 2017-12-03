@@ -265,7 +265,7 @@ public class PlanPhaseScreen extends BaseScreen {
         Vector3 touchPosUnproject = camera.unproject(tempVec3.set(screenX, screenY, 0));
         touchPosScreen.set(touchPosUnproject.x, touchPosUnproject.y);
 
-        for (Building tile : World.tiles) {
+        for (Building tile : World.buildings) {
             if (tile.bounds.contains(touchPosScreen.x, touchPosScreen.y) && !nextButton.checkForTouch(screenX, screenY) && !buildButton.checkForTouch(screenX, screenY) && !routeButton.checkForTouch(screenX, screenY)) {
                 tooltip = "Type: " + tile.type;
                 if (tile.currentTier != null) {

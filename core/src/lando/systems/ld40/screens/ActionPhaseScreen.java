@@ -55,21 +55,22 @@ class ActionPhaseScreen extends BaseScreen {
     }
 
     private void setPhase(Phase phase) {
-          switch (currentPhase) {
-              case READY:
-                  break;
-              case ANIMATING_ACTIONS:
-                  // Order of actions:
-                  // Generate all trash
-                  // Run the tracks, moving trash around
-                  // Building upkeep (e.g. incineration)
-                  // Generate value
-                  break;
-              case ANIMATING_REWARDS:
-                  break;
-              case REWARDS_FINAL:
-                  break;
-          }
+        currentPhase = phase;
+        switch (phase) {
+            case READY:
+                break;
+            case ANIMATING_ACTIONS:
+                // Order of actions:
+                // Generate all trash
+                // Run the tracks, moving trash around
+                // Building upkeep (e.g. incineration)
+                // Generate value
+                break;
+            case ANIMATING_REWARDS:
+                break;
+            case REWARDS_FINAL:
+                break;
+        }
     }
 
     private void processAllBuidlings() {
