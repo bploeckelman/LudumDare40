@@ -46,6 +46,10 @@ public class Button {
     private boolean enabled = true;
     Vector3 tempVec3 = new Vector3();
 
+    public boolean selected;
+    public boolean isHover;
+    public ButtonGroup buttonGroup;
+
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -114,14 +118,26 @@ public class Button {
             Assets.drawString(batch, text, textX, textY, enabled ? textColor : Color.DARK_GRAY, textScale, Assets.font);
         }
 
+        if (selected) {
+            Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
+        }
+
         if (!enabled) {
-            Color batchColor = batch.getColor();
-            batch.setColor(0.25f, 0.25f, 0.25f, 0.5f);
-            batch.draw(Assets.whitePixel, bounds.x, bounds.y, bounds.width, bounds.height);
-            batch.setColor(batchColor);
+            highlight(batch, Color.LIGHT_GRAY, 0.5f);
         } else {
+            if (isHover) {
+                Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
+            }
+
             renderTooltip(batch, camera);
         }
+    }
+
+    private void highlight(SpriteBatch batch, Color color, float alpha) {
+        Color batchColor = batch.getColor();
+        batch.setColor(color.r, color.g, color.b, alpha);
+        batch.draw(Assets.whitePixel, bounds.x, bounds.y, bounds.width, bounds.height);
+        batch.setColor(batchColor);
     }
 
     public void renderTooltip(SpriteBatch batch, OrthographicCamera hudCamera){
@@ -174,8 +190,8 @@ public class Button {
     }
 
     public void update(float dt) {
-        boolean isTouching = enabled && checkForTouch(input.getX(), input.getY());
-        if (isTouching) {
+        isHover = enabled && checkForTouch(input.getX(), input.getY());
+        if (isHover) {
             timeHovered += dt;
         } else {
             timeHovered = 0;
@@ -190,7 +206,7 @@ public class Button {
     public boolean checkForTouch(int screenX, int screenY) {
         Vector3 touchPosUnproject = camera.unproject(tempVec3.set(screenX, screenY, 0));
         touchPosScreen.set(touchPosUnproject.x, touchPosUnproject.y);
-        return bounds.contains(touchPosScreen.x, touchPosScreen.y);
+        return  bounds.contains(touchPosScreen.x, touchPosScreen.y);
     }
 
     public void setText(String text) {
@@ -229,4 +245,9 @@ public class Button {
         this.textOffsetY = textOffsetY;
     }
 
+    public void select() {
+        if (buttonGroup != null) {
+            buttonGroup.select(this);
+        }
+    }
 }

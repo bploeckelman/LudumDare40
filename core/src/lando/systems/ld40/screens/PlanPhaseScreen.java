@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.ui.Button;
+import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
@@ -62,11 +63,16 @@ public class PlanPhaseScreen extends BaseScreen {
         float margin = 10f;
         float size = 80f;
 
+
         nextButton = new Button("nextButton", hudCamera, hudCamera.viewportWidth - margin - size,
                 hudCamera.viewportHeight - margin - size, "this goes next, duh");
 
         buildButton = new Button("buildButton", hudCamera, margin, hudCamera.viewportHeight - margin - size, "Build somethin'");
         routeButton = new Button("routeButton", hudCamera, margin, hudCamera.viewportHeight - 2f * margin - 2f * size, "Route something'");
+
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(buildButton);
+        bg.add(routeButton);
     }
 
     @Override
@@ -225,9 +231,11 @@ public class PlanPhaseScreen extends BaseScreen {
             game.setScreen(new ActionPhaseScreen());
             return true;
         } else if (buildButton.checkForTouch(screenX, screenY)) {
+            buildButton.select();
             setManager(new BuildManager(hudCamera, camera));
             return true;
         } else if (routeButton.checkForTouch(screenX, screenY)) {
+            routeButton.select();
             setManager(new RouteManager(hudCamera, camera));
             return true;
         }
