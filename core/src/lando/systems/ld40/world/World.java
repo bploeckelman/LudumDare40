@@ -29,7 +29,7 @@ public class World {
         return world;
     }
 
-    Array<Building> tiles;
+    public static Array<Building> tiles;
     public Rectangle bounds;
     public int turnNumber;
     public Inventory inventory;
