@@ -42,6 +42,7 @@ public class Button {
     private float textY;
     private float timeHovered = 0;
     private boolean showTooltip = false;
+    private boolean enabled = true;
     Vector3 tempVec3 = new Vector3();
 
 
@@ -92,10 +93,14 @@ public class Button {
         this.ninePatch = ninePatch;
     }
 
+    public void enable(boolean enable) {
+        this.enabled = enable;
+    }
 
     // Update & Render -------------------------------------------------------------------------------------------------
 
     public void render(SpriteBatch batch) {
+
         // Button texture
         if (region != null) {
             batch.draw(region, bounds.x, bounds.y, bounds.width, bounds.height);
@@ -108,7 +113,14 @@ public class Button {
             Assets.drawString(batch, text, textX, textY, textColor, textScale, Assets.font);
         }
 
-        renderTooltip(batch, camera);
+        if (!enabled) {
+            Color batchColor = batch.getColor();
+            batch.setColor(0.5f, 0.5f, 0.5f, 0.5f);
+            batch.draw(Assets.whitePixel, bounds.x, bounds.y, bounds.width, bounds.height);
+            batch.setColor(batchColor);
+        } else {
+            renderTooltip(batch, camera);
+        }
     }
 
     public void renderTooltip(SpriteBatch batch, OrthographicCamera hudCamera){
@@ -158,7 +170,7 @@ public class Button {
     }
 
     public void update(float dt) {
-        boolean isTouching = checkForTouch(input.getX(), input.getY());
+        boolean isTouching = enabled && checkForTouch(input.getX(), input.getY());
         if (isTouching) {
             timeHovered += dt;
         } else {

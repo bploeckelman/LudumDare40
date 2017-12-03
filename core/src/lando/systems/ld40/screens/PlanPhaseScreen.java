@@ -168,6 +168,7 @@ public class PlanPhaseScreen extends BaseScreen {
     }
 
     private void zoomOut(final IManager manager) {
+        enableHud(false);
         // Zoom out
         float camTargetX = World.pixels_wide / 2f;
         float camTargetY = World.pixels_high / 2f;
@@ -183,10 +184,21 @@ public class PlanPhaseScreen extends BaseScreen {
                 .push(Tween.call(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
-                        manager.activate();
+                        activateActions(manager);
                     }
                 }))
                 .start(Assets.tween);
+    }
+
+    private void activateActions(IManager manager) {
+        manager.activate();
+        enableHud(true);
+    }
+
+    private void enableHud(boolean enabled) {
+        buildButton.enable(enabled);
+        routeButton.enable(enabled);
+        nextButton.enable(enabled);
     }
 
     @Override
