@@ -12,11 +12,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
-import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
@@ -101,7 +99,7 @@ public class PlanPhaseScreen extends BaseScreen {
 
     private void updateAction(float dt) {
         if (actionManager != null) {
-            actionManager.update();
+            actionManager.update(dt);
         }
     }
 

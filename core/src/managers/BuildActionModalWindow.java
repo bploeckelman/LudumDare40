@@ -6,19 +6,46 @@ import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
-import lando.systems.ld40.screens.PlanPhaseScreen;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectIntMap;
+import com.badlogic.gdx.utils.Sort;
+import lando.systems.ld40.gameobjects.Inventory;
+import lando.systems.ld40.gameobjects.UpgradeType;
+import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.accessors.RectangleAccessor;
+import lando.systems.ld40.world.World;
+
+import java.util.Comparator;
 
 public class BuildActionModalWindow extends ModalWindow {
 
     private BuildManager buildAction;
+    private Inventory inventory;
+    private Rectangle inventoryRect;
+    private Array<Button> inventoryButtons;
 
     public BuildActionModalWindow(OrthographicCamera camera, BuildManager buildAction) {
         super(camera);
         this.buildAction = buildAction;
+        this.inventoryRect = new Rectangle();
+        this.inventory = World.GetWorld().inventory;
+        this.inventoryButtons = new Array<Button>(UpgradeType.values().length);
+        for (UpgradeType upgradeType : UpgradeType.values()) {
+            inventoryButtons.add(new Button(upgradeType.texture, new Rectangle(),
+                            camera, upgradeType.name(), upgradeType.description));
+        }
+    }
+
+    @Override
+    public void update(float dt) {
+        super.update(dt);
+        for (Button button : inventoryButtons) {
+            button.update(dt);
+        }
     }
 
     @Override
@@ -44,11 +71,69 @@ public class BuildActionModalWindow extends ModalWindow {
     protected void renderWindowContents(SpriteBatch batch) {
         if (buildAction == null || !showText) return;
 
+        // Draw 'selected' building / tile
         float tile_size = modalRect.width / 2f - 2f * margin_left;
         buildAction.selectedObject.render(batch,
                 modalRect.x + margin_left,
                 modalRect.y + modalRect.height / 2f - tile_size / 2f,
                 tile_size, tile_size);
+
+        // Draw inventory border
+        inventoryRect.set(
+                modalRect.x + modalRect.width - margin_left - tile_size,
+                modalRect.y + modalRect.height / 2f - tile_size / 2f,
+                tile_size, tile_size);
+        Assets.defaultNinePatch.draw(batch, inventoryRect.x, inventoryRect.y, inventoryRect.width, inventoryRect.height);
+
+        // TODO: sort inventory items
+//        Sort.instance().sort(new Comparator<Button>() {
+//            @Override
+//            public int compare(Button button1, Button button2) {
+//                // TODO: need to decide how best to compare buttons based on selected object
+//                buildAction.selectedObject
+//                return 0;
+//            }
+//        });
+
+        // Draw inventory item buttons
+        int num_upgrades = UpgradeType.values().length;
+        int num_rows = num_upgrades / 2;
+        float line_height = (inventoryRect.height - 2f * margin_top) / num_rows;
+
+        float button_margin_left = 10f;
+        float button_margin_top = 10f;
+        float button_spacing_x = 20f;
+        float button_size = line_height - (2f * button_margin_left - button_spacing_x) / 2f;
+        float button_spacing_y = (line_height - 2f * button_margin_top - 3f * button_size) / 2f;
+
+        for (int i = 0; i < inventoryButtons.size; i += 2) {
+            Button inventoryButton1 = inventoryButtons.get(i);
+            inventoryButton1.bounds.set(
+                    inventoryRect.x + button_margin_left,
+                    inventoryRect.y + button_margin_top + ((i / 2) * button_size) + ((i / 2) * button_spacing_y),
+                    button_size, button_size);
+            inventoryButton1.textColor = Color.WHITE;
+            inventoryButton1.render(batch);
+
+            Button inventoryButton2 = inventoryButtons.get(i+1);
+            inventoryButton2.bounds.set(
+                    inventoryRect.x + button_margin_left + button_size + button_spacing_x,
+                    inventoryRect.y + button_margin_top + ((i / 2) * button_size) + ((i / 2) * button_spacing_y),
+                    button_size, button_size);
+            inventoryButton2.textColor = Color.WHITE;
+            inventoryButton2.render(batch);
+        }
+
+//        for (ObjectIntMap.Entry<UpgradeType> upgradeTypeCountEntry : inventory.getUpgradeTypeCount()) {
+//            Assets.defaultNinePatch.draw(batch,
+//                    inventoryRect.x + margin_left, y,
+//                    inventoryRect.width - 2f * margin_left, line_height);
+//            batch.draw(upgradeTypeCountEntry.key.texture,
+//                    inventoryRect.x + 2f * margin_left, y,
+//                    line_height, line_height);
+//
+//            y -= line_height;
+//        }
 
         // NOTE: 0,0 is top left instead of bottom for text
         batch.setShader(Assets.fontShader);

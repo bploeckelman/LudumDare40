@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.GameObject;
+import lando.systems.ld40.gameobjects.Inventory;
 
 public class World {
 
@@ -20,7 +21,6 @@ public class World {
     public static final float pixels_wide = tiles_wide * tile_pixels_wide;
     public static final float pixels_high = tiles_high * tile_pixels_high;
 
-
     public static World GetWorld(){
         if (world == null){
             world = new World();
@@ -31,11 +31,12 @@ public class World {
     Array<Building> tiles;
     public Rectangle bounds;
     public int turnNumber;
-
+    public Inventory inventory;
 
     public World() {
         turnNumber = 0;
         bounds = new Rectangle(0, 0, pixels_wide, pixels_high);
+        inventory = new Inventory();
 
         tiles = new Array<Building>();
         for (int y = 0; y < tiles_high; ++y) {

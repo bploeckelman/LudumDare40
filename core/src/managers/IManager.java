@@ -12,7 +12,7 @@ public interface IManager {
     void deactivate();
 
     void render(SpriteBatch batch);
-    void update();
+    void update(float dt);
 
     void touchUp(float screenX, float screenY);
 }

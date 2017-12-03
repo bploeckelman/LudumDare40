@@ -47,7 +47,7 @@ public class RouteManager extends ActionManager {
     }
 
     @Override
-    public void update() {
+    public void update(float dt) {
 
     }
 

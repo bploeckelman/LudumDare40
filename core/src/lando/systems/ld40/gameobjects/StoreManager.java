@@ -4,42 +4,6 @@ import java.util.ArrayList;
 
 public class StoreManager {
     
-    public enum Tile {
-        COMMERCIAL_LOW_DENSITY,
-        COMMERCIAL_MEDIUM_DENSITY,
-        COMMERCIAL_HIGH_DENSITY,
-        INDUSTRIAL_LOW_DENSITY,
-        INDUSTRIAL_MEDIUM_DENSITY,
-        INDUSTRIAL_HIGH_DENSITY,
-        RECYCLING_CENTER,
-        RESIDENTIAL_LOW_DENSITY,
-        RESIDENTIAL_MEDIUM_DENSITY,
-        RESIDENTIAL_HIGH_DENSITY,
-    }
-
-    public enum Upgrade {
-        COMPACTOR,
-        DEMOLITION,
-        DUMPSTER,
-        GREEN_TOKEN,
-        INCINERATOR,
-        RECLAMATION,
-        TIER_UPGRADE,
-        TRUCK,
-    }
-    
-    public enum Research {
-        COMPACTION,
-        INCINERATION,
-        RECYCLING,
-        TRUCK_CAPACITY_1,
-        TRUCK_CAPACITY_2,
-        TRUCK_CAPACITY_3,
-        TRUCK_STOPS_1,
-        TRUCK_STOPS_2,
-        TRUCK_STOPS_3,
-    }
-
     public enum ResearchStatus {
         RESEARCHED,
         RESEARCHABLE,
@@ -51,71 +15,71 @@ public class StoreManager {
         LOCKED
     }
     
-    private ArrayList<Research> completedResearch = new ArrayList<Research>();
-    private ArrayList<Research> unlockedResearch = new ArrayList<Research>();
-    private ArrayList<Tile> unlockedTiles = new ArrayList<Tile>();
-    private ArrayList<Upgrade> unlockedUpgrades = new ArrayList<Upgrade>();
+    private ArrayList<ResearchType> completedResearchTypes = new ArrayList<ResearchType>();
+    private ArrayList<ResearchType> unlockedResearchTypes = new ArrayList<ResearchType>();
+    private ArrayList<TileType> unlockedTileTypes = new ArrayList<TileType>();
+    private ArrayList<UpgradeType> unlockedUpgradeTypes = new ArrayList<UpgradeType>();
 
     
     public StoreManager() {
 
         // "Free" unlocks.  See {self::updateLocks}
-        unlockResearch(Research.COMPACTION);
-        unlockResearch(Research.INCINERATION);
-        unlockResearch(Research.RECYCLING);
-        unlockResearch(Research.TRUCK_CAPACITY_1);
-        unlockResearch(Research.TRUCK_STOPS_1);
-        unlockTile(Tile.COMMERCIAL_LOW_DENSITY);
-        unlockTile(Tile.INDUSTRIAL_LOW_DENSITY);
-        unlockTile(Tile.RESIDENTIAL_LOW_DENSITY);
-        unlockUpgrade(Upgrade.DEMOLITION);
-        unlockUpgrade(Upgrade.DUMPSTER);
-        unlockUpgrade(Upgrade.GREEN_TOKEN);
-        unlockUpgrade(Upgrade.RECLAMATION);
-        unlockUpgrade(Upgrade.TIER_UPGRADE);
-        unlockUpgrade(Upgrade.TRUCK);
+        unlockResearch(ResearchType.COMPACTION);
+        unlockResearch(ResearchType.INCINERATION);
+        unlockResearch(ResearchType.RECYCLING);
+        unlockResearch(ResearchType.TRUCK_CAPACITY_1);
+        unlockResearch(ResearchType.TRUCK_STOPS_1);
+        unlockTile(TileType.COMMERCIAL_LOW_DENSITY);
+        unlockTile(TileType.INDUSTRIAL_LOW_DENSITY);
+        unlockTile(TileType.RESIDENTIAL_LOW_DENSITY);
+        unlockUpgrade(UpgradeType.DEMOLITION);
+        unlockUpgrade(UpgradeType.DUMPSTER);
+        unlockUpgrade(UpgradeType.GREEN_TOKEN);
+        unlockUpgrade(UpgradeType.RECLAMATION);
+        unlockUpgrade(UpgradeType.TIER_UPGRADE);
+        unlockUpgrade(UpgradeType.TRUCK);
 
     }
     
-    public void completeResearch(Research research) {
-        if (!completedResearch.contains(research)) {
-            completedResearch.add(research);
+    public void completeResearch(ResearchType researchType) {
+        if (!completedResearchTypes.contains(researchType)) {
+            completedResearchTypes.add(researchType);
             updateLocks();
         }
     }
-    private void unlockResearch(Research research) {
-        if (!unlockedResearch.contains(research)) {
-            unlockedResearch.add(research);
+    private void unlockResearch(ResearchType researchType) {
+        if (!unlockedResearchTypes.contains(researchType)) {
+            unlockedResearchTypes.add(researchType);
             updateLocks();
         }
     }
-    public void unlockTile(Tile tile) {
-        if (!unlockedTiles.contains(tile)) {
-            unlockedTiles.add(tile);
+    public void unlockTile(TileType tileType) {
+        if (!unlockedTileTypes.contains(tileType)) {
+            unlockedTileTypes.add(tileType);
             updateLocks();
         }
     }
-    public void unlockUpgrade(Upgrade upgrade) {
-        if (!unlockedUpgrades.contains(upgrade)) {
-            unlockedUpgrades.add(upgrade);
+    public void unlockUpgrade(UpgradeType upgradeType) {
+        if (!unlockedUpgradeTypes.contains(upgradeType)) {
+            unlockedUpgradeTypes.add(upgradeType);
             updateLocks();
         }
     }
     
-    public Status getTileStatus(Tile tile) {
-        return unlockedTiles.contains(tile) ? Status.UNLOCKED : Status.LOCKED;
+    public Status getTileStatus(TileType tileType) {
+        return unlockedTileTypes.contains(tileType) ? Status.UNLOCKED : Status.LOCKED;
     }
 
-    public ResearchStatus getResearchStatus(Research research) {
-        if (completedResearch.contains(research)) {
+    public ResearchStatus getResearchStatus(ResearchType researchType) {
+        if (completedResearchTypes.contains(researchType)) {
             return ResearchStatus.RESEARCHED;
         } else {
-            return unlockedResearch.contains(research) ? ResearchStatus.RESEARCHABLE : ResearchStatus.LOCKED;
+            return unlockedResearchTypes.contains(researchType) ? ResearchStatus.RESEARCHABLE : ResearchStatus.LOCKED;
         }
     }
 
-    public Status getUpgradeStatus(Upgrade upgrade) {
-        return unlockedUpgrades.contains(upgrade) ? Status.UNLOCKED : Status.LOCKED;
+    public Status getUpgradeStatus(UpgradeType upgradeType) {
+        return unlockedUpgradeTypes.contains(upgradeType) ? Status.UNLOCKED : Status.LOCKED;
     }
 
     /**
@@ -128,62 +92,62 @@ public class StoreManager {
         // TILES -------------------------------------------------------------------------------------------------------
 
         // Residential
-        if (getTileStatus(Tile.RESIDENTIAL_LOW_DENSITY) == Status.UNLOCKED &&
-                getResearchStatus(Research.COMPACTION) == ResearchStatus.RESEARCHED) {
-            unlockTile(Tile.RESIDENTIAL_MEDIUM_DENSITY);
+        if (getTileStatus(TileType.RESIDENTIAL_LOW_DENSITY) == Status.UNLOCKED &&
+                getResearchStatus(ResearchType.COMPACTION) == ResearchStatus.RESEARCHED) {
+            unlockTile(TileType.RESIDENTIAL_MEDIUM_DENSITY);
         }
-        if (getTileStatus(Tile.RESIDENTIAL_MEDIUM_DENSITY) == Status.UNLOCKED &&
-                getResearchStatus(Research.RECYCLING) == ResearchStatus.RESEARCHED) {
-            unlockTile(Tile.RESIDENTIAL_HIGH_DENSITY);
+        if (getTileStatus(TileType.RESIDENTIAL_MEDIUM_DENSITY) == Status.UNLOCKED &&
+                getResearchStatus(ResearchType.RECYCLING) == ResearchStatus.RESEARCHED) {
+            unlockTile(TileType.RESIDENTIAL_HIGH_DENSITY);
         }
 
         // Commercial
-        if (getTileStatus(Tile.COMMERCIAL_LOW_DENSITY) == Status.UNLOCKED &&
-                getResearchStatus(Research.RECYCLING) == ResearchStatus.RESEARCHED) {
-            unlockTile(Tile.COMMERCIAL_MEDIUM_DENSITY);
+        if (getTileStatus(TileType.COMMERCIAL_LOW_DENSITY) == Status.UNLOCKED &&
+                getResearchStatus(ResearchType.RECYCLING) == ResearchStatus.RESEARCHED) {
+            unlockTile(TileType.COMMERCIAL_MEDIUM_DENSITY);
         }
-        if (getTileStatus(Tile.COMMERCIAL_MEDIUM_DENSITY) == Status.UNLOCKED &&
-                getResearchStatus(Research.INCINERATION) == ResearchStatus.RESEARCHED) {
-            unlockTile(Tile.COMMERCIAL_HIGH_DENSITY);
+        if (getTileStatus(TileType.COMMERCIAL_MEDIUM_DENSITY) == Status.UNLOCKED &&
+                getResearchStatus(ResearchType.INCINERATION) == ResearchStatus.RESEARCHED) {
+            unlockTile(TileType.COMMERCIAL_HIGH_DENSITY);
         }
 
         // Industrial
-        if (getTileStatus(Tile.INDUSTRIAL_LOW_DENSITY) == Status.UNLOCKED &&
-                getResearchStatus(Research.INCINERATION) == ResearchStatus.RESEARCHED) {
-            unlockTile(Tile.INDUSTRIAL_MEDIUM_DENSITY);
+        if (getTileStatus(TileType.INDUSTRIAL_LOW_DENSITY) == Status.UNLOCKED &&
+                getResearchStatus(ResearchType.INCINERATION) == ResearchStatus.RESEARCHED) {
+            unlockTile(TileType.INDUSTRIAL_MEDIUM_DENSITY);
         }
-        if (getTileStatus(Tile.INDUSTRIAL_MEDIUM_DENSITY) == Status.UNLOCKED &&
-                getResearchStatus(Research.COMPACTION) == ResearchStatus.RESEARCHED) {
-            unlockTile(Tile.INDUSTRIAL_HIGH_DENSITY);
+        if (getTileStatus(TileType.INDUSTRIAL_MEDIUM_DENSITY) == Status.UNLOCKED &&
+                getResearchStatus(ResearchType.COMPACTION) == ResearchStatus.RESEARCHED) {
+            unlockTile(TileType.INDUSTRIAL_HIGH_DENSITY);
         }
 
         // Recycling Center
-        if (getResearchStatus(Research.RECYCLING) == ResearchStatus.RESEARCHED) {
-            unlockTile(Tile.RECYCLING_CENTER);
+        if (getResearchStatus(ResearchType.RECYCLING) == ResearchStatus.RESEARCHED) {
+            unlockTile(TileType.RECYCLING_CENTER);
         }
 
         // UPGRADES ----------------------------------------------------------------------------------------------------
 
-        if (getResearchStatus(Research.COMPACTION) == ResearchStatus.RESEARCHED) {
-            unlockUpgrade(Upgrade.COMPACTOR);
+        if (getResearchStatus(ResearchType.COMPACTION) == ResearchStatus.RESEARCHED) {
+            unlockUpgrade(UpgradeType.COMPACTOR);
         }
-        if (getResearchStatus(Research.INCINERATION) == ResearchStatus.RESEARCHED) {
-            unlockUpgrade(Upgrade.INCINERATOR);
+        if (getResearchStatus(ResearchType.INCINERATION) == ResearchStatus.RESEARCHED) {
+            unlockUpgrade(UpgradeType.INCINERATOR);
         }
 
         // Research ----------------------------------------------------------------------------------------------------
 
-        if (getResearchStatus(Research.TRUCK_CAPACITY_1) == ResearchStatus.RESEARCHED) {
-            unlockResearch(Research.TRUCK_CAPACITY_2);
+        if (getResearchStatus(ResearchType.TRUCK_CAPACITY_1) == ResearchStatus.RESEARCHED) {
+            unlockResearch(ResearchType.TRUCK_CAPACITY_2);
         }
-        if (getResearchStatus(Research.TRUCK_CAPACITY_2) == ResearchStatus.RESEARCHED) {
-            unlockResearch(Research.TRUCK_CAPACITY_3);
+        if (getResearchStatus(ResearchType.TRUCK_CAPACITY_2) == ResearchStatus.RESEARCHED) {
+            unlockResearch(ResearchType.TRUCK_CAPACITY_3);
         }
-        if (getResearchStatus(Research.TRUCK_STOPS_1) == ResearchStatus.RESEARCHED) {
-            unlockResearch(Research.TRUCK_STOPS_2);
+        if (getResearchStatus(ResearchType.TRUCK_STOPS_1) == ResearchStatus.RESEARCHED) {
+            unlockResearch(ResearchType.TRUCK_STOPS_2);
         }
-        if (getResearchStatus(Research.TRUCK_STOPS_2) == ResearchStatus.RESEARCHED) {
-            unlockResearch(Research.TRUCK_STOPS_3);
+        if (getResearchStatus(ResearchType.TRUCK_STOPS_2) == ResearchStatus.RESEARCHED) {
+            unlockResearch(ResearchType.TRUCK_STOPS_3);
         }
 
     }

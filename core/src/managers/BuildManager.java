@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import lando.systems.ld40.gameobjects.GameObject;
+import lando.systems.ld40.gameobjects.Inventory;
 import lando.systems.ld40.world.World;
 
 /**
@@ -37,24 +38,21 @@ public class BuildManager extends ActionManager {
     }
 
     @Override
-    public void update() {
+    public void update(float dt) {
         if (isCompleted) return;
 
         switch(state) {
             case PICK_TILE:
-//                    if (buildAction.selectedObject != null) {
-//                        buildAction.modalWindow.show();
-//                        buildAction.state = BuildState.PICK_ITEM;
-//                    }
+                // ...
                 break;
             case PICK_ITEM:
-                // TODO: ...
+                modalWindow.update(dt);
                 if (Gdx.input.justTouched()) {
                     modalWindow.hide();
                 }
                 break;
             case DONE:
-
+                // ...
                 break;
         }
 
