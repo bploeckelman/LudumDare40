@@ -81,10 +81,12 @@ public class PlanPhaseScreen extends BaseScreen {
             game.setScreen(new ResolutionPhaseScreen());
         }
 
-        updateWorld(dt);
-        updateHud(dt);
         updateAction(dt);
-        updateCamera();
+        if (actionManager == null || !actionManager.isModal()) {
+            updateWorld(dt);
+            updateHud(dt);
+            updateCamera();
+        }
     }
 
     private void updateWorld(float dt) {
@@ -213,6 +215,10 @@ public class PlanPhaseScreen extends BaseScreen {
             return false;
         }
 
+        if (actionManager != null && actionManager.touchUp(screenX, screenY)) {
+            return false;
+        }
+
         // if one of the buttons, disable button presses, zoom out and create correct action maanger
 
         if (nextButton.checkForTouch(screenX, screenY)) {
@@ -226,9 +232,7 @@ public class PlanPhaseScreen extends BaseScreen {
             return true;
         }
 
-        if (actionManager != null) {
-            actionManager.touchUp(screenX, screenY);
-        }
+
 
         return true;
     }

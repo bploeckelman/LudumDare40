@@ -17,38 +17,25 @@ public class BuildManager extends ActionManager {
 
     private BuildState state =  BuildState.START;
     public GameObject selectedObject;
-    private BuildActionModalWindow modalWindow;
-    private boolean isCompleted;
 
     public BuildManager(OrthographicCamera actionCamera, OrthographicCamera worldCamera) {
         super(actionCamera, worldCamera);
-
     }
 
     public void activate() {
         state = BuildState.PICK_TILE;
     }
 
-    public void deactivate() {
-        state = BuildState.NONE;
-    }
-
-    public void complete() {
-        isCompleted = true;
-    }
 
     @Override
-    public void update(float dt) {
-        if (isCompleted) return;
-
+    public void updateManager(float dt) {
         switch(state) {
             case PICK_TILE:
                 // ...
                 break;
             case PICK_ITEM:
-                modalWindow.update(dt);
                 if (Gdx.input.justTouched()) {
-                    modalWindow.hide();
+                    hide();
                 }
                 break;
             case DONE:
@@ -59,9 +46,7 @@ public class BuildManager extends ActionManager {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
-        if (isCompleted) return;
-
+    public void renderManager(SpriteBatch batch) {
         switch (state) {
             case START:
                 drawText(batch, "Building...");
@@ -70,7 +55,6 @@ public class BuildManager extends ActionManager {
                 drawText(batch, "Click a tile to build on...");
                 break;
             case PICK_ITEM:
-                modalWindow.render(batch);
                 break;
             case DONE:
                 // nothing to see here
@@ -80,20 +64,27 @@ public class BuildManager extends ActionManager {
     }
 
     @Override
-    public void touchUp(float screenX, float screenY) {
+    public boolean handleTouch(float screenX, float screenY) {
 
-        Vector3 touchPoisition = unprojectWorld(screenX, screenY);
+        boolean handled = false;
+
+        Vector3 touchPosition = unprojectWorld(screenX, screenY);
 
         switch (state) {
             case PICK_TILE:
-                selectedObject = World.GetWorld().getSelectedObject(touchPoisition.x, touchPoisition.y);
-                modalWindow = new BuildActionModalWindow(hudCamera, this);
-                modalWindow.show();
-                state = BuildState.PICK_ITEM;
+                selectedObject = World.GetWorld().getSelectedObject(touchPosition.x, touchPosition.y);
+                if (selectedObject != null) {
+                    window = new BuildActionModalWindow(hudCamera, this);
+                    window.show();
+                    state = BuildState.PICK_ITEM;
+                    handled = true;
+                }
                 break;
             case PICK_ITEM:
                 // check inventory
                 break;
         }
+
+        return handled;
     }
 }

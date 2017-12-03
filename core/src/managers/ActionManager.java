@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
+import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
 
 /**
@@ -16,6 +17,9 @@ public abstract class ActionManager implements IManager {
     protected Vector3 worldVector = new Vector3();
     protected OrthographicCamera hudCamera;
     protected OrthographicCamera worldCamera;
+
+    protected ModalWindow window;
+    protected boolean isCompleted;
 
     protected ActionManager(OrthographicCamera hudCamera, OrthographicCamera worldCamera) {
         this.hudCamera = hudCamera;
@@ -42,5 +46,68 @@ public abstract class ActionManager implements IManager {
         worldVector.set(screenX, screenY, 0);
         worldCamera.unproject(worldVector);
         return worldVector;
+    }
+
+    public void deactivate() {
+        complete();
+    }
+
+    public void complete() {
+        isCompleted = true;
+    }
+
+    @Override
+    public void render(SpriteBatch batch) {
+        if (isCompleted) return;
+
+        if (window != null) {
+            window.render(batch);
+        }
+
+        renderManager(batch);
+    }
+
+    public abstract void renderManager(SpriteBatch batch);
+
+    @Override
+    public void update(float dt) {
+        if (isCompleted) return;
+
+        if (window != null) {
+            window.update(dt);
+        }
+
+        updateManager(dt);
+    }
+
+    protected abstract void updateManager(float dt);
+
+
+    public boolean touchUp(float screenX, float screenY) {
+        Vector3 position = unprojectHud(screenX, screenY);
+        if (isModal()) {
+            if (window.contains(position)) {
+                window.touchUp(position.x, position.y);
+            }
+            return true;
+        }
+
+        return handleTouch(screenX, screenY);
+    }
+
+    public boolean handleTouch(float screenX, float screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean isModal() {
+        return (window != null);
+    }
+
+    public void hide() {
+        if (window != null) {
+            window.hide();
+            window = null;
+        }
     }
 }

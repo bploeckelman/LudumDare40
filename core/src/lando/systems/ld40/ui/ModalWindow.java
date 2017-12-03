@@ -39,8 +39,8 @@ public abstract class ModalWindow {
         this.showText = false;
         this.camera = camera;
 
-        float modal_width  = (3f / 4f) * camera.viewportWidth;
-        float modal_height = (3f / 4f) * camera.viewportHeight;
+        float modal_width  = camera.viewportWidth - 2f * margin_left;
+        float modal_height = (4f / 5f) * camera.viewportHeight;
         this.modalTarget = new Rectangle(
                 camera.viewportWidth  / 2f - modal_width  / 2f,
                 camera.viewportHeight / 2f - modal_height / 2f,
@@ -48,6 +48,10 @@ public abstract class ModalWindow {
         );
         this.modalRect = new Rectangle(modalTarget);
         this.touchDelay = 0f;
+    }
+
+    public boolean contains(Vector3 position) {
+        return modalRect.contains(position.x, position.y);
     }
 
     public void show() {
@@ -120,5 +124,9 @@ public abstract class ModalWindow {
     }
 
     protected abstract void renderWindowContents(SpriteBatch batch);
+
+    public void touchUp(float windowX, float windowY) {
+
+    }
 
 }
