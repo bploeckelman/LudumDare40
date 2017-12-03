@@ -2,6 +2,7 @@ package lando.systems.ld40.utils;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.primitives.MutableFloat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -32,6 +33,7 @@ public class Assets {
     public static BitmapFont font;
     public static BitmapFont eightBitFont;
     public static ShaderProgram fontShader;
+    public static ShaderProgram blindsShader;
 
     public static TextureAtlas atlas;
 
@@ -92,6 +94,7 @@ public class Assets {
 
         fontShader = loadShader("shaders/dist.vert", "shaders/dist.frag");
 
+        blindsShader = loadShader("shaders/default.vert", "shaders/blinds.frag");
         return 1f;
     }
 

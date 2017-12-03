@@ -83,7 +83,7 @@ public class PlanPhaseScreen extends BaseScreen {
         touchStart = new Vector3();
         cameraTargetPos = new Vector3(camera.position);
         world = World.GetWorld();
-        Gdx.input.setInputProcessor(this);
+//        Gdx.input.setInputProcessor(this);
 
         float margin = 10f;
         float size = 80f;

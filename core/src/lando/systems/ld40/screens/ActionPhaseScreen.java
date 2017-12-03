@@ -19,7 +19,7 @@ public class ActionPhaseScreen extends BaseScreen {
 
     public ActionPhaseScreen() {
         world = World.GetWorld();
-        Gdx.input.setInputProcessor(this);
+//        Gdx.input.setInputProcessor(this);
         camera.zoom = 2.5f;
         camera.position.x = 500;
         camera.position.y = 500;

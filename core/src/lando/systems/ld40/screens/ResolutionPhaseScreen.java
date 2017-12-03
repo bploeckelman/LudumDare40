@@ -67,7 +67,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     public ResolutionPhaseScreen() {
         buildingsButtons = new Array<UpgradeButton>();
         world = World.GetWorld();
-        Gdx.input.setInputProcessor(this);
+//        Gdx.input.setInputProcessor(this);
         camera.zoom = 2.5f;
         camera.position.x = 500;
         camera.position.y = 500;
@@ -132,7 +132,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void updateObjects(float dt) {
-        if (Gdx.input.justTouched()) {
+        if (Gdx.input.justTouched() && allowInput) {
             hudCamera.unproject(touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0f));
 
             int touchX = (int) touchPos.x;
