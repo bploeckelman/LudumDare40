@@ -2,7 +2,6 @@ package lando.systems.ld40.utils;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-import aurelienribon.tweenengine.primitives.MutableFloat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -42,6 +41,17 @@ public class Assets {
 
     public static TextureRegion testTexture;
     public static TextureRegion whitePixel;
+
+    public static TextureRegion compactorTexture;
+    public static TextureRegion compactorCutoutTexture;
+    public static TextureRegion incineratorTexture;
+    public static TextureRegion incineratorCutoutTexture;
+    public static TextureRegion leafTexture;
+    public static TextureRegion leafCutoutTexture;
+    public static TextureRegion dumpsterTexture;
+    public static TextureRegion dumpsterCutoutTexture;
+    public static TextureRegion recycleTexture;
+    public static TextureRegion recycleCutoutTexture;
 
     public static boolean initialized;
 
@@ -83,6 +93,17 @@ public class Assets {
         atlas = mgr.get("sprites.atlas", TextureAtlas.class);
         testTexture = atlas.findRegion("badlogic");
         whitePixel = atlas.findRegion("white-pixel");
+
+        compactorTexture = atlas.findRegion("compactor");
+        compactorCutoutTexture = atlas.findRegion("compactor-cutout");
+        incineratorTexture = atlas.findRegion("incinerator");
+        incineratorCutoutTexture = atlas.findRegion("incinerator-cutout");
+        leafTexture = atlas.findRegion("leaf-green");
+        leafCutoutTexture = atlas.findRegion("leaf-green-cutout");
+        dumpsterTexture = atlas.findRegion("newdumpster");
+        dumpsterCutoutTexture = atlas.findRegion("newdumpster-cutout");
+        recycleTexture = atlas.findRegion("recycle");
+        recycleCutoutTexture = atlas.findRegion("recycle-cutout");
 
         final Texture distText = new Texture(Gdx.files.internal("fonts/ubuntu.png"), true);
         distText.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Linear);

@@ -1,5 +1,7 @@
 package lando.systems.ld40.buildings;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lando.systems.ld40.gameobjects.Tile;
 import lando.systems.ld40.utils.Assets;
 
@@ -7,12 +9,17 @@ import java.util.HashMap;
 
 public class Building extends Tile {
 
+    public static float CUTOUT_Y_OFFSET = 8;
+    public static float CUTOUT_X_OFFSET = 8;
+
     private Type type;
 
     public boolean supportsCompactor;
     public boolean hasCompactor;
     public boolean supportsDumpster;
     public boolean hasDumpster;
+    public boolean supportsRecycle;
+    public boolean hasRecycle;
     public boolean supportsGreenCert;
     public boolean hasGreenCert;
     public boolean supportsIncinerator;
@@ -21,6 +28,7 @@ public class Building extends Tile {
     public boolean canBuild;
     public boolean canRaze;
     public Tier currentTier;
+
 
     public float trashGeneratedPerRound;
     public float valueGeneratedPerRound;
@@ -88,6 +96,7 @@ public class Building extends Tile {
     private Building(Type type,
                     boolean supportsCompactor, boolean hasCompactor,
                     boolean supportsDumpster, boolean hasDumpster,
+                    boolean supportsRecycle, boolean hasRecycle,
                     boolean supportsGreenCert, boolean hasGreenCert,
                     boolean supportsIncinerator, boolean hasIncinerator,
                     boolean supportsTiers, boolean canBuild,
@@ -112,12 +121,14 @@ public class Building extends Tile {
         this.currentTrashLevel = currentTrashLevel;
         this.hasCompactor = hasCompactor;
         this.hasDumpster = hasDumpster;
+        this.hasRecycle = hasRecycle;
         this.hasGreenCert = hasGreenCert;
         this.hasIncinerator = hasIncinerator;
         this.canBuild = canBuild;
         this.canRaze = canRaze;
         this.supportsCompactor = supportsCompactor;
         this.supportsDumpster = supportsDumpster;
+        this.supportsRecycle = supportsRecycle;
         this.supportsGreenCert = supportsGreenCert;
         this.supportsIncinerator = supportsIncinerator;
         this.supportsTiers = supportsTiers;
@@ -132,10 +143,12 @@ public class Building extends Tile {
         // Defaults
         boolean hasCompactor = false;
         boolean hasDumpster = false;
+        boolean hasRecycle = false;
         boolean hasGreenCert = false;
         boolean hasIncinerator = false;
         boolean supportsCompactor = false;
         boolean supportsDumpster = false;
+        boolean supportsRecycle = false;
         boolean supportsGreenCert = false;
         boolean supportsIncinerator = false;
         boolean supportsTiers = false;
@@ -188,6 +201,7 @@ public class Building extends Tile {
             case DUMP:
                 supportsCompactor = true;
                 supportsIncinerator = true;
+                supportsRecycle = true;
                 canRaze = false;
                 trashCapacity = 100;
                 break;
@@ -276,6 +290,7 @@ public class Building extends Tile {
         return new Building(buildingType,
                 supportsCompactor, hasCompactor,
                 supportsDumpster, hasDumpster,
+                supportsRecycle, hasRecycle,
                 supportsGreenCert, hasGreenCert,
                 supportsIncinerator, hasIncinerator,
                 canBuild, canRaze,
@@ -285,6 +300,56 @@ public class Building extends Tile {
                 trashCapacity,
                 currentTrashLevel,
                 resource);
+    }
+
+    @Override
+    public void render(SpriteBatch batch){
+        super.render(batch);
+        if (supportsCompactor){
+            TextureRegion compactor;
+            if (hasCompactor){
+                compactor = Assets.compactorTexture;
+            } else {
+                compactor = Assets.compactorCutoutTexture;
+            }
+            batch.draw(compactor, bounds.x + CUTOUT_X_OFFSET, bounds.y + CUTOUT_Y_OFFSET);
+        }
+        if (supportsIncinerator){
+            TextureRegion incinerator;
+            if (hasIncinerator){
+                incinerator = Assets.incineratorTexture;
+            } else {
+                incinerator = Assets.incineratorCutoutTexture;
+            }
+            batch.draw(incinerator, bounds.x + (bounds.width - incinerator.getRegionWidth())/2, bounds.y + CUTOUT_Y_OFFSET);
+        }
+        if (supportsRecycle){
+            TextureRegion recycle;
+            if (hasRecycle){
+                recycle = Assets.recycleTexture;
+            } else {
+                recycle = Assets.recycleCutoutTexture;
+            }
+            batch.draw(recycle, bounds.x + bounds.width - (recycle.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y + CUTOUT_Y_OFFSET);
+        }
+        if (supportsDumpster){
+            TextureRegion dumpster;
+            if (hasDumpster){
+                dumpster = Assets.dumpsterTexture;
+            } else {
+                dumpster = Assets.dumpsterCutoutTexture;
+            }
+            batch.draw(dumpster, bounds.x + CUTOUT_X_OFFSET, bounds.y + CUTOUT_Y_OFFSET);
+        }
+        if (supportsGreenCert){
+            TextureRegion greenCert;
+            if (hasGreenCert){
+                greenCert = Assets.leafTexture;
+            } else {
+                greenCert = Assets.leafCutoutTexture;
+            }
+            batch.draw(greenCert, bounds.x + bounds.width - (greenCert.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y +  bounds.height - (greenCert.getRegionHeight() + CUTOUT_Y_OFFSET));
+        }
     }
 
 }
