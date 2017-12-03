@@ -61,11 +61,15 @@ public class Building extends Tile {
 
     public Resource resource;
 
+    public boolean thisTurnActionsAreProcessed;
+    public float thisTurnAdditionalTrashGeneratedByTier;
+    public float thisTurnAdditionalValueGeneratedByTier;
     public float thisTurnGarbageCompacted;
     public float thisTurnGarbageGenerated;
     public float thisTurnGarbageIncinerated;
     public float thisTurnGarbageReceived;
     public float thisTurnGarbageRecycled;
+    public float thisTurnGreenCertTrashReduction;
     public float thisTurnValueGenerated;
     public float thisTurnValueGeneratedByRecycling;
 
@@ -338,13 +342,17 @@ public class Building extends Tile {
      * To be called at the start of the turn for each building.
      */
     public void resetForNewTurn() {
+        thisTurnAdditionalTrashGeneratedByTier = 0;
+        thisTurnAdditionalValueGeneratedByTier = 0;
         thisTurnGarbageCompacted = 0;
         thisTurnGarbageGenerated = 0;
         thisTurnGarbageIncinerated = 0;
         thisTurnGarbageReceived = 0;
         thisTurnGarbageRecycled = 0;
+        thisTurnGreenCertTrashReduction = 0;
         thisTurnValueGenerated = 0;
         thisTurnValueGeneratedByRecycling = 0;
+        thisTurnActionsAreProcessed = false;
     }
 
     /**
@@ -352,6 +360,9 @@ public class Building extends Tile {
      * @param trashAmount How much trash you're depositing.
      */
     public void depositTrash(float trashAmount) {
+        if (thisTurnActionsAreProcessed) {
+            throw new RuntimeException("Cannot add trash to a building that's already been processed this turn.  Did you forget to reset it?");
+        }
         if (hasRecycle) {
             float recycledAmount = trashAmount * RECYCLE_PERCENT;
             thisTurnGarbageRecycled += recycledAmount;
@@ -375,17 +386,19 @@ public class Building extends Tile {
      * This is where the building will go to work, generating trash, perhaps getting rid of it, etc.
      */
     public void processActions() {
-        // Generate Trash
-//        float newTrash = trashGeneratedPerRound;
+        if (thisTurnActionsAreProcessed) {
+            throw new RuntimeException("Building already processed this turn!");
+        }
         generateTrash();
         generateValue();
-
         // Incinerate!
         if (hasIncinerator) {
             float garbageIncinerated = Math.min(currentTrashLevel, INCINERATION_VALUE);
             thisTurnGarbageIncinerated += garbageIncinerated;
             currentTrashLevel -= garbageIncinerated;
         }
+        // At this point the building is done for the turn.
+        thisTurnActionsAreProcessed = true;
     }
 
     /**
@@ -394,31 +407,58 @@ public class Building extends Tile {
      * Add the trash to the building.
      */
     private void generateTrash() {
-        float newTrash;
+        float newTrash = trashGeneratedPerRound;
+        float additonalTrashFromTiers = getAdditionalValueByTiers(newTrash);
+        if (additonalTrashFromTiers > 0) {
+            thisTurnAdditionalTrashGeneratedByTier += additonalTrashFromTiers;
+            newTrash += additonalTrashFromTiers;
+        }
+        // Green cert reduction?
+        if (hasGreenCert) {
+            float greenCertTrashReduction = newTrash * GREEN_CERT_TRASH_GENERATION_REDUCTION_PERCENT;
+            thisTurnGreenCertTrashReduction += greenCertTrashReduction;
+            newTrash -= greenCertTrashReduction;
+        }
+        thisTurnGarbageGenerated += newTrash;
+        // Add the trash to the building.
+        currentTrashLevel += newTrash;
+    }
+
+    private void generateValue() {
+        float newValue = valueGeneratedPerRound;
+        float additonalValueFromTiers = getAdditionalValueByTiers(newValue);
+        if (additonalValueFromTiers > 0) {
+            thisTurnAdditionalValueGeneratedByTier += additonalValueFromTiers;
+            newValue += additonalValueFromTiers;
+        }
+        thisTurnValueGenerated += newValue;
+    }
+
+    /**
+     * For both Trash and Value
+     * @param baseValue
+     * @return
+     */
+    private float getAdditionalValueByTiers(float baseValue) {
         if (supportsTiers) {
+            float additionalValue;
             switch (currentTier) {
                 case ONE:
-                    newTrash = trashGeneratedPerRound * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 1);
+                    additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 1);
                     break;
                 case TWO:
-                    newTrash = trashGeneratedPerRound * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 2);
+                    additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 2);
                     break;
                 default:
                     throw new RuntimeException("Unrecognized Tier");
             }
+            return additionalValue;
         } else {
-            newTrash = trashGeneratedPerRound;
+            return 0;
         }
-        // Green cert reduction?
-        if (hasGreenCert) {
-            // TODO, working
-        }
-        // Add the trash to the building.
     }
 
-    private void generateValue() {
-        // TODO, in progress.
-    }
+
 
     // -----------------------------------------------------------------------------------------------------------------
 
