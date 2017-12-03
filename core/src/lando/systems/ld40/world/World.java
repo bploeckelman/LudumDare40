@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.GameObject;
-import lando.systems.ld40.gameobjects.Tile;
 
 public class World {
 
@@ -36,10 +35,10 @@ public class World {
         tiles = new Array<GameObject>();
         for (int y = 0; y < tiles_high; ++y) {
             for (int x = 0; x < tiles_wide; ++x) {
-                type = MathUtils.random(9);
-                Tile newTile = Building.getBuilding(Building.Type.values()[type]);
-                newTile.setLocation(x * tile_pixels_wide, y * tile_pixels_high);
-                tiles.add(newTile);
+                type = MathUtils.random(Building.Type.values().length - 1);
+                Building newBuilding = Building.getBuilding(Building.Type.values()[type]);
+                newBuilding.setLocation(x * tile_pixels_wide, y * tile_pixels_high);
+                tiles.add(newBuilding);
 
                 if (++type > 9) {
                     type = 0;

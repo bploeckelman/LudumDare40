@@ -1,53 +1,170 @@
 package lando.systems.ld40.buildings;
 
-import lando.systems.ld40.gameobjects.Tile;
+import lando.systems.ld40.gameobjects.GameObject;
+import lando.systems.ld40.utils.Assets;
 
-public class Building extends Tile {
-    public enum Type {
-        None, ResidentialLow, ResidentalMedium, ResidentailHigh, IndustrialLow, IndustrialMedium, IndustrialHigh, ComercialLow, ComercialMedium, ComercialHigh
+import java.util.HashMap;
+
+public class Building extends GameObject {
+
+//    public static final
+
+    private Type type;
+
+    private boolean supportsCompactor;
+    private boolean hasCompactor;
+    private boolean supportsDumpster;
+    private boolean hasDumpster;
+    private boolean supportsGreenCert;
+    private boolean hasGreenCert;
+    private boolean supportsIncinerator;
+    private boolean hasIncinerator;
+    private boolean supportsTiers;
+    private Tier currentTier;
+
+    private float trashGeneratedPerRound;
+    private float valueGeneratedPerRound;
+    private float trashCapacity;
+    private float currentTrashLevel;
+
+    private int turnsOverCapacity = 0;
+    private boolean isMarkedForRemoval = false;
+
+    private enum Tier {
+        ONE,
+        TWO,
+        THREE
     }
 
-    public static Tile getBuilding(Type type) {
-        String buildingName;
-        switch (type) {
-            case ResidentialLow:
-                buildingName = "res-low";
+    public enum Type {
+        COMMERCIAL_HIGH,
+        COMMERCIAL_LOW,
+        COMMERCIAL_MEDIUM,
+        DUMP,
+        INDUSTRIAL_HIGH,
+        INDUSTRIAL_LOW,
+        INDUSTRIAL_MEDIUM,
+        RECYCLING_CENTER,
+        RESIDENTIAL_HIGH,
+        RESIDENTIAL_LOW,
+        RESIDENTIAL_MEDIUM,
+    }
+
+    private static HashMap<Type, String> buildingTypeTextureLookup = new HashMap<Type, String>();
+    static {
+        buildingTypeTextureLookup.put(Type.COMMERCIAL_HIGH, "com-high");
+        buildingTypeTextureLookup.put(Type.COMMERCIAL_LOW, "com-low");
+        buildingTypeTextureLookup.put(Type.COMMERCIAL_MEDIUM, "com-med");
+        // TODO: TEXTURE
+        buildingTypeTextureLookup.put(Type.DUMP, "white-pixel");
+        buildingTypeTextureLookup.put(Type.INDUSTRIAL_HIGH, "ind-high");
+        buildingTypeTextureLookup.put(Type.INDUSTRIAL_LOW, "ind-low");
+        buildingTypeTextureLookup.put(Type.INDUSTRIAL_MEDIUM, "ind-med");
+        // TODO: TEXTURE
+        buildingTypeTextureLookup.put(Type.RECYCLING_CENTER, "white-pixel");
+        buildingTypeTextureLookup.put(Type.RESIDENTIAL_HIGH, "res-high");
+        buildingTypeTextureLookup.put(Type.RESIDENTIAL_LOW, "res-low");
+        buildingTypeTextureLookup.put(Type.RESIDENTIAL_MEDIUM, "res-med");
+    }
+
+    private Building(Type type,
+                    boolean supportsCompactor, boolean hasCompactor,
+                    boolean supportsDumpster, boolean hasDumpster,
+                    boolean supportsGreenCert, boolean hasGreenCert,
+                    boolean supportsIncinerator, boolean hasIncinerator,
+                    boolean supportsTiers, Tier currentTier,
+                    float trashGeneratedPerRound,
+                    float valueGeneratedPerRound,
+                    float trashCapacity,
+                    float currentTrashLevel
+                    ) {
+
+        this.type = type;
+        String textureName = buildingTypeTextureLookup.get(type);
+        if (textureName == null) {
+            throw new RuntimeException();
+        }
+        System.out.println(textureName);
+        setTexture(Assets.atlas.findRegion(textureName));
+
+        this.currentTier = currentTier;
+        this.currentTrashLevel = currentTrashLevel;
+        this.hasCompactor = hasCompactor;
+        this.hasDumpster = hasDumpster;
+        this.hasGreenCert = hasGreenCert;
+        this.hasIncinerator = hasIncinerator;
+        this.supportsCompactor = supportsCompactor;
+        this.supportsDumpster = supportsDumpster;
+        this.supportsGreenCert = supportsGreenCert;
+        this.supportsIncinerator = supportsIncinerator;
+        this.supportsTiers = supportsTiers;
+        this.trashCapacity = trashCapacity;
+        this.trashGeneratedPerRound = trashGeneratedPerRound;
+        this.valueGeneratedPerRound = valueGeneratedPerRound;
+
+    }
+
+    public static Building getBuilding(Type buildingType) {
+
+        // Defaults
+        boolean supportsCompactor = false;
+        boolean hasCompactor = false;
+        boolean supportsDumpster = false;
+        boolean hasDumpster = false;
+        boolean supportsGreenCert = false;
+        boolean hasGreenCert = false;
+        boolean supportsIncinerator = false;
+        boolean hasIncinerator = false;
+        boolean supportsTiers = false;
+        Tier currentTier = null;
+        float trashGeneratedPerRound = 0;
+        float valueGeneratedPerRound = 0;
+        float trashCapacity = 0;
+        float currentTrashLevel = 0;
+
+        // Customize the types!
+
+        switch (buildingType) {
+
+            case RESIDENTIAL_LOW:
+                supportsDumpster = true;
+                supportsGreenCert = true;
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                trashGeneratedPerRound = 1;
+                valueGeneratedPerRound = 1;
                 break;
-            case ResidentalMedium:
-                buildingName = "res-med";
+
+            case RESIDENTIAL_MEDIUM:
+                supportsDumpster = true;
+                supportsGreenCert = true;
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                trashGeneratedPerRound = 2;
+                valueGeneratedPerRound = 3;
                 break;
-            case ResidentailHigh:
-                buildingName = "res-high";
+
+            case RESIDENTIAL_HIGH:
+                supportsDumpster = true;
+                supportsGreenCert = true;
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                trashGeneratedPerRound = 3;
+                valueGeneratedPerRound = 5;
                 break;
-            case IndustrialLow:
-                buildingName = "ind-low";
-                break;
-            case IndustrialMedium:
-                buildingName = "ind-med";
-                break;
-            case IndustrialHigh:
-                buildingName = "ind-high";
-                break;
-            case ComercialLow:
-                buildingName = "com-low";
-                break;
-            case ComercialMedium:
-                buildingName = "com-med";
-                break;
-            case ComercialHigh:
-                buildingName = "com-high";
-                break;
-            default:
-                return new Tile("grass");
 
         }
 
-        System.out.println(buildingName);
-
-        return new Building(buildingName);
+        return new Building(buildingType,
+                supportsCompactor, hasCompactor,
+                supportsDumpster, hasDumpster,
+                supportsGreenCert, hasGreenCert,
+                supportsIncinerator, hasIncinerator,
+                supportsTiers, currentTier,
+                trashGeneratedPerRound,
+                valueGeneratedPerRound,
+                trashCapacity,
+                currentTrashLevel);
     }
 
-    public Building(String buildingName) {
-        super(buildingName);
-    }
 }
