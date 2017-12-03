@@ -486,6 +486,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         }
     }
 
+
     private void renderAddOnButtons(SpriteBatch batch)
     {
         for(UpgradeButton button : addOnButtons)
