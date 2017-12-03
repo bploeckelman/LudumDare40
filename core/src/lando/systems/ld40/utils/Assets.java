@@ -33,6 +33,9 @@ public class Assets {
     public static BitmapFont eightBitFont;
     public static ShaderProgram fontShader;
     public static ShaderProgram blindsShader;
+    public static ShaderProgram fadeShader;
+    public static ShaderProgram radialShader;
+    public static ShaderProgram doomShader;
 
     public static TextureAtlas atlas;
 
@@ -116,6 +119,9 @@ public class Assets {
         fontShader = loadShader("shaders/dist.vert", "shaders/dist.frag");
 
         blindsShader = loadShader("shaders/default.vert", "shaders/blinds.frag");
+        fadeShader = loadShader("shaders/default.vert", "shaders/dissolve.frag");
+        radialShader = loadShader("shaders/default.vert", "shaders/radial.frag");
+        doomShader = loadShader("shaders/default.vert", "shaders/doomdrip.frag");
         return 1f;
     }
 

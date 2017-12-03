@@ -29,7 +29,7 @@ public class TitleScreen extends BaseScreen {
             game.setScreen(new ResolutionPhaseScreen());
         }
         if (Gdx.input.justTouched()) {
-            game.setScreen(new PlanPhaseScreen());
+            game.setScreen(new PlanPhaseScreen(), Assets.doomShader);
         }
     }
 
