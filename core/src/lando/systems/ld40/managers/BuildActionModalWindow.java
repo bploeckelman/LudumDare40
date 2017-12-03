@@ -50,22 +50,9 @@ public class BuildActionModalWindow extends ModalWindow {
     }
 
     @Override
-    public void hide() {
-        if (!isActive) return;
-        showText = false;
-
-        float modal_target_x = camera.viewportWidth / 2f;
-        float modal_target_y = camera.viewportHeight / 2f;
-        Tween.to(modalRect, RectangleAccessor.XYWH, 0.2f)
-                .target(modal_target_x, modal_target_y, 0f, 0f)
-                .setCallback(new TweenCallback() {
-                    @Override
-                    public void onEvent(int type, BaseTween<?> source) {
-                        buildAction.complete();
-                        isActive = false;
-                    }
-                })
-                .start(Assets.tween);
+    public void handleTouch(float windowX, float windowY) {
+        // temp - remove handle properly
+        hide();
     }
 
     @Override

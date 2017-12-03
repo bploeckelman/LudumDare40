@@ -47,6 +47,8 @@ public abstract class ActionManager implements IManager {
         return worldVector;
     }
 
+    public void activate() { }
+
     public void deactivate() {
         complete();
     }
@@ -74,19 +76,30 @@ public abstract class ActionManager implements IManager {
 
         if (window != null) {
             window.update(dt);
+            // modal has been closed, no longer active, clean up
+            if (!window.isActive) {
+                onModalClose();
+                window = null;
+            }
         }
 
         updateManager(dt);
     }
 
-    protected abstract void updateManager(float dt);
+    protected void onModalClose() {
+
+    }
+
+    protected void updateManager(float dt) {
+
+    }
 
 
     public boolean touchUp(float screenX, float screenY) {
         Vector3 position = unprojectHud(screenX, screenY);
         if (isModal()) {
             if (window.contains(position)) {
-                window.touchUp(position.x, position.y);
+                window.handleTouch(position.x, position.y);
             }
             return true;
         }
@@ -100,13 +113,6 @@ public abstract class ActionManager implements IManager {
 
     @Override
     public boolean isModal() {
-        return (window != null);
-    }
-
-    public void hide() {
-        if (window != null) {
-            window.hide();
-            window = null;
-        }
+        return (window != null && window.isActive);
     }
 }
