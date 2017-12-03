@@ -15,9 +15,11 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.compression.lzma.Base;
 import lando.systems.ld40.screens.BaseScreen;
+import lando.systems.ld40.screens.EndGameStatsScreen;
 import lando.systems.ld40.screens.TitleScreen;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
+import lando.systems.ld40.world.World;
 
 /**
  * Created by Brian 11/28/2017
@@ -50,6 +52,11 @@ public class LudumDare40 extends ApplicationAdapter {
             progress = Assets.update();
         } while (progress != 1f);
         game = this;
+
+//        for (int i = 0; i < 50;  i++) {
+//            World.GetWorld().nextTurn();
+//        }
+//        setScreen(new EndGameStatsScreen());
 
         setScreen(new TitleScreen());
     }
@@ -110,14 +117,14 @@ public class LudumDare40 extends ApplicationAdapter {
             screen.allowInput = false;
             transitionPercent.setValue(0);
             Timeline.createSequence()
-                    .pushPause(.2f)
+                    .pushPause(.1f)
                     .push(Tween.call(new TweenCallback() {
                         @Override
                         public void onEvent(int i, BaseTween<?> baseTween) {
                             nextScreen = newScreen;
                         }
                     }))
-                    .push(Tween.to(transitionPercent, 1, 2f)
+                    .push(Tween.to(transitionPercent, 1, 2.5f)
                         .target(1f))
                     .push(Tween.call(new TweenCallback() {
                         @Override

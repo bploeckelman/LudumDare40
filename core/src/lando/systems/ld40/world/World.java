@@ -29,7 +29,7 @@ public class World {
         return world;
     }
 
-    Array<Building> tiles;
+    public static Array<Building> buildings;
     public Rectangle bounds;
     public int turnNumber;
     public Inventory inventory;
@@ -41,7 +41,7 @@ public class World {
         inventory = new Inventory();
         routes = new Routes();
 
-        tiles = new Array<Building>();
+        buildings = new Array<Building>();
         for (int y = 0; y < tiles_high; ++y) {
             for (int x = 0; x < tiles_wide; ++x) {
                 Building.Type type = Building.Type.EMPTY;
@@ -51,7 +51,7 @@ public class World {
 
                 Building newBuilding = Building.getBuilding(type);
                 newBuilding.setLocation(x * tile_pixels_wide, y * tile_pixels_high);
-                tiles.add(newBuilding);
+                buildings.add(newBuilding);
             }
         }
 
@@ -63,27 +63,27 @@ public class World {
     private void setRandom(Building.Type buildingType) {
         int index;
         do {
-            index = MathUtils.random.nextInt(tiles.size - 1);
-        } while(!tiles.get(index).canBuild);
+            index = MathUtils.random.nextInt(buildings.size - 1);
+        } while(!buildings.get(index).canBuild);
 
         setTile(index, buildingType);
     }
 
     public void setTile(int index, Building.Type buildingType) {
-        Building building = tiles.get(index);
+        Building building = buildings.get(index);
         Building newBuilding = Building.getBuilding(buildingType);
         newBuilding.setLocation(building.position.x, building.position.y);
-        tiles.set(index, newBuilding);
+        buildings.set(index, newBuilding);
     }
 
     public void update(float dt){
-        for (GameObject tile : tiles){
+        for (GameObject tile : buildings){
             tile.update(dt);
         }
     }
 
     public void render(SpriteBatch batch){
-        for (GameObject tile : tiles){
+        for (GameObject tile : buildings){
             tile.render(batch);
         }
     }
@@ -91,7 +91,7 @@ public class World {
     public GameObject getSelectedObject(float x, float y) {
         int index = getSelectedObjectIndex(x, y);
         System.out.println("tile: " + index);
-        return (index == -1) ? null : tiles.get(index);
+        return (index == -1) ? null : buildings.get(index);
     }
 
     public int getSelectedObjectIndex(float x, float y) {
@@ -107,11 +107,15 @@ public class World {
     public void nextTurn(){
         Statistics.getStatistics().onTurnComplete(turnNumber);
         turnNumber++;
+        // Reset all buildings!
+        for (Building building : buildings) {
+            building.resetForNewTurn();
+        }
     }
 
     private int totalBuildings(){
         int count = 0;
-        for (Building tile : tiles){
+        for (Building tile : buildings){
             if (tile.type != Building.Type.EMPTY) count++;
         }
         return count;

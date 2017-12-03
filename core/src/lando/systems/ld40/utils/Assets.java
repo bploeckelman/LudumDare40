@@ -38,6 +38,7 @@ public class Assets {
     public static ShaderProgram fadeShader;
     public static ShaderProgram radialShader;
     public static ShaderProgram doomShader;
+    public static ShaderProgram pizelizeShader;
 
     public static TextureAtlas atlas;
 
@@ -125,10 +126,12 @@ public class Assets {
         fadeShader = loadShader("shaders/default.vert", "shaders/dissolve.frag");
         radialShader = loadShader("shaders/default.vert", "shaders/radial.frag");
         doomShader = loadShader("shaders/default.vert", "shaders/doomdrip.frag");
+        pizelizeShader = loadShader("shaders/default.vert", "shaders/pixelize.frag");
 
         randomTransitions.add(blindsShader);
         randomTransitions.add(fadeShader);
         randomTransitions.add(radialShader);
+//        randomTransitions.add(pizelizeShader);
 
         return 1f;
     }

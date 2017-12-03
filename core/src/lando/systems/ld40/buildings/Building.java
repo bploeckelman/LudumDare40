@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 public class Building extends Tile {
 
+    private static final float DUMPSTER_CAPACITY_BONUS = 3;
     /**
      * Of trash deposited, reduce by this percent. 0 through 1f;
      */
@@ -62,7 +63,9 @@ public class Building extends Tile {
 
     public Resource resource;
 
-    public boolean thisTurnActionsAreProcessed;
+    private boolean thisTurnTrashHasBeenGenerated;
+    private boolean thisTurnUpkeepHasBeenRun;
+    private boolean thisTurnValueHasBeenGenerated;
     public float thisTurnAdditionalTrashGeneratedByTier;
     public float thisTurnAdditionalValueGeneratedByTier;
     public float thisTurnGarbageCompacted;
@@ -74,6 +77,9 @@ public class Building extends Tile {
     public float thisTurnValueGenerated;
     public float thisTurnValueGeneratedByRecycling;
 
+    /**
+     * This tracks contiguous turns over capacity
+     */
     private int turnsOverCapacity = 0;
     private boolean isMarkedForRemoval = false;
 
@@ -353,7 +359,9 @@ public class Building extends Tile {
         thisTurnGreenCertTrashReduction = 0;
         thisTurnValueGenerated = 0;
         thisTurnValueGeneratedByRecycling = 0;
-        thisTurnActionsAreProcessed = false;
+        thisTurnTrashHasBeenGenerated = false;
+        thisTurnValueHasBeenGenerated = false;
+        thisTurnUpkeepHasBeenRun = false;
     }
 
     /**
@@ -361,8 +369,8 @@ public class Building extends Tile {
      * @param trashAmount How much trash you're depositing.
      */
     public void depositTrash(float trashAmount) {
-        if (thisTurnActionsAreProcessed) {
-            throw new RuntimeException("Cannot add trash to a building that's already been processed this turn.  Did you forget to reset it?");
+        if (thisTurnUpkeepHasBeenRun) {
+            throw new RuntimeException("Cannot deposit trash af");  // TODO.
         }
         if (hasRecycle) {
             float recycledAmount = trashAmount * RECYCLE_PERCENT;
@@ -384,22 +392,14 @@ public class Building extends Tile {
     }
 
     /**
-     * This is where the building will go to work, generating trash, perhaps getting rid of it, etc.
+     * Deducts trash from this building.
+     * @param trashRequested How much trash would you like to take?
+     * @return The amount of trash the building gives you.
      */
-    public void processActions() {
-        if (thisTurnActionsAreProcessed) {
-            throw new RuntimeException("Building already processed this turn!");
-        }
-        generateTrash();
-        generateValue();
-        // Incinerate!
-        if (hasIncinerator) {
-            float garbageIncinerated = Math.min(currentTrashLevel, INCINERATION_VALUE);
-            thisTurnGarbageIncinerated += garbageIncinerated;
-            currentTrashLevel -= garbageIncinerated;
-        }
-        // At this point the building is done for the turn.
-        thisTurnActionsAreProcessed = true;
+    public float removeTrash(float trashRequested) {
+        float trashToRemove = Math.min(trashRequested, currentTrashLevel);
+        currentTrashLevel -= trashToRemove;
+        return trashToRemove;
     }
 
     /**
@@ -408,6 +408,7 @@ public class Building extends Tile {
      * Add the trash to the building.
      */
     private void generateTrash() {
+        if (thisTurnTrashHasBeenGenerated) { throw new RuntimeException("You've already generated trash this turn"); }
         float newTrash = trashGeneratedPerRound;
         float additonalTrashFromTiers = getAdditionalValueByTiers(newTrash);
         if (additonalTrashFromTiers > 0) {
@@ -423,9 +424,30 @@ public class Building extends Tile {
         thisTurnGarbageGenerated += newTrash;
         // Add the trash to the building.
         currentTrashLevel += newTrash;
+        thisTurnTrashHasBeenGenerated = true;
+    }
+
+    private void runUpkeep() {
+        if (thisTurnUpkeepHasBeenRun) { throw new RuntimeException("You've already run upkeep this turn"); }
+        if (!thisTurnTrashHasBeenGenerated) { throw new RuntimeException("Must generate your trash before running upkeep!"); }
+        // Incinerate!
+        if (hasIncinerator) {
+            float garbageIncinerated = Math.min(currentTrashLevel, INCINERATION_VALUE);
+            thisTurnGarbageIncinerated += garbageIncinerated;
+            currentTrashLevel -= garbageIncinerated;
+        }
+        // Capacity check!
+        if (currentTrashLevel > getCurrentTrashCapacity()) {
+            turnsOverCapacity += 1;
+        } else {
+            turnsOverCapacity = 0;
+        }
+        thisTurnUpkeepHasBeenRun = true;
     }
 
     private void generateValue() {
+        if (thisTurnValueHasBeenGenerated) { throw new RuntimeException("You've already run value generation this turn"); }
+        if (!thisTurnUpkeepHasBeenRun) { throw new RuntimeException("Must run upkeep before generating value!"); }
         float newValue = valueGeneratedPerRound;
         float additonalValueFromTiers = getAdditionalValueByTiers(newValue);
         if (additonalValueFromTiers > 0) {
@@ -433,6 +455,7 @@ public class Building extends Tile {
             newValue += additonalValueFromTiers;
         }
         thisTurnValueGenerated += newValue;
+        thisTurnValueHasBeenGenerated = true;
     }
 
     /**
@@ -450,6 +473,9 @@ public class Building extends Tile {
                 case TWO:
                     additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 2);
                     break;
+                case THREE:
+                    additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 3);
+                    break;
                 default:
                     throw new RuntimeException("Unrecognized Tier");
             }
@@ -459,7 +485,27 @@ public class Building extends Tile {
         }
     }
 
+    private float getCurrentTrashCapacity() {
+        float trashCapacity = baseTrashCapacity;
+        if (hasDumpster) {
+            trashCapacity += DUMPSTER_CAPACITY_BONUS;
+        }
+        return trashCapacity;
+    }
 
+    public boolean allowsUpgrade(UpgradeType upgradeType) {
+        switch (upgradeType) {
+            case DEMOLITION:   return canRaze;
+            case COMPACTOR:    return supportsCompactor   && !hasCompactor;
+            case DUMPSTER:     return supportsDumpster    && !hasDumpster;
+            case GREEN_TOKEN:  return supportsGreenCert   && !hasGreenCert;
+            case INCINERATOR:  return supportsIncinerator && !hasIncinerator;
+            case RECLAMATION:  return supportsRecycle     && !hasRecycle;
+            case TIER_UPGRADE: return supportsTiers       && currentTier != Tier.THREE;
+            case TRUCK:        return false;
+            default:           return false;
+        }
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -486,6 +532,11 @@ public class Building extends Tile {
             TextureRegion greenCert = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
             batch.draw(greenCert, bounds.x + bounds.width - (greenCert.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y +  bounds.height - (greenCert.getRegionHeight() + CUTOUT_Y_OFFSET));
         }
+
+//        Color c = batch.getColor();
+//        batch.setColor(Color.RED);
+//        Assets.drawString(batch, "BUILDING", bounds.x, bounds.y, Color.GOLD, 0.5f, Assets.font);
+//        batch.setColor(c);
     }
 
     @Override
@@ -537,18 +588,9 @@ public class Building extends Tile {
         }
     }
 
-    public boolean allowsUpgrade(UpgradeType upgradeType) {
-        switch (upgradeType) {
-            case DEMOLITION:   return canRaze;
-            case COMPACTOR:    return supportsCompactor   && !hasCompactor;
-            case DUMPSTER:     return supportsDumpster    && !hasDumpster;
-            case GREEN_TOKEN:  return supportsGreenCert   && !hasGreenCert;
-            case INCINERATOR:  return supportsIncinerator && !hasIncinerator;
-            case RECLAMATION:  return supportsRecycle     && !hasRecycle;
-            case TIER_UPGRADE: return supportsTiers       && currentTier != Tier.THREE;
-            case TRUCK:        return false;
-            default:           return false;
-        }
+    @Override
+    public void update(float dt) {
+        super.update(dt);
     }
 
 }
