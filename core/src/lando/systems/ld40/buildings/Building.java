@@ -9,6 +9,31 @@ import java.util.HashMap;
 
 public class Building extends Tile {
 
+    /**
+     * Of trash deposited, reduce by this percent. 0 through 1f;
+     */
+    private static final float RECYCLE_PERCENT = 0.2f;
+    /**
+     * When reducing trash via recycling, generate this much revenue for each 1 trash.
+     */
+    private static final float RECYCLE_VALUE_GENERATION = 0.5f;
+    /**
+     *
+     */
+    private static final float COMPACTOR_REDUCTION_PERCENT = 0.4f;
+    /**
+     * The amount of trash that can be incinerated per turn
+     */
+    private static final float INCINERATION_VALUE = 2f;
+    /**
+     * Green certs will reduce the garbage generated per turn by a fixed percent.
+     */
+    private static final float GREEN_CERT_TRASH_GENERATION_REDUCTION_PERCENT = 0.2f;
+    /**
+     * If the building supports tiers, each level will increase both value and garbage generation by a fixed percent.
+     */
+    private static final float TIER_LEVEL_GENERATION_BOOST_PERCENT = 0.25f;
+
     public static float CUTOUT_Y_OFFSET = 8;
     public static float CUTOUT_X_OFFSET = 8;
 
@@ -29,13 +54,20 @@ public class Building extends Tile {
     public boolean canRaze;
     public Tier currentTier;
 
-
     public float trashGeneratedPerRound;
     public float valueGeneratedPerRound;
-    public float trashCapacity;
+    public float baseTrashCapacity;
     public float currentTrashLevel;
 
     public Resource resource;
+
+    public float thisTurnGarbageCompacted;
+    public float thisTurnGarbageGenerated;
+    public float thisTurnGarbageIncinerated;
+    public float thisTurnGarbageReceived;
+    public float thisTurnGarbageRecycled;
+    public float thisTurnValueGenerated;
+    public float thisTurnValueGeneratedByRecycling;
 
     private int turnsOverCapacity = 0;
     private boolean isMarkedForRemoval = false;
@@ -104,7 +136,7 @@ public class Building extends Tile {
                     Tier currentTier,
                     float trashGeneratedPerRound,
                     float valueGeneratedPerRound,
-                    float trashCapacity,
+                    float baseTrashCapacity,
                     float currentTrashLevel,
                     Resource resource) {
 
@@ -132,7 +164,7 @@ public class Building extends Tile {
         this.supportsGreenCert = supportsGreenCert;
         this.supportsIncinerator = supportsIncinerator;
         this.supportsTiers = supportsTiers;
-        this.trashCapacity = trashCapacity;
+        this.baseTrashCapacity = baseTrashCapacity;
         this.trashGeneratedPerRound = trashGeneratedPerRound;
         this.valueGeneratedPerRound = valueGeneratedPerRound;
         this.resource = resource;
@@ -157,7 +189,7 @@ public class Building extends Tile {
         Tier currentTier = null;
         float trashGeneratedPerRound = 0;
         float valueGeneratedPerRound = 0;
-        float trashCapacity = 0;
+        float baseTrashCapacity = 0;
         float currentTrashLevel = 0;
         Resource resource = null;
 
@@ -172,7 +204,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 1;
                 valueGeneratedPerRound = 1;
-                trashCapacity = 10;
+                baseTrashCapacity = 10;
                 resource = Resource.MONEY;
                 break;
 
@@ -183,7 +215,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 2;
                 valueGeneratedPerRound = 3;
-                trashCapacity = 13;
+                baseTrashCapacity = 13;
                 resource = Resource.MONEY;
                 break;
 
@@ -194,7 +226,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 3;
                 valueGeneratedPerRound = 5;
-                trashCapacity = 16;
+                baseTrashCapacity = 16;
                 resource = Resource.MONEY;
                 break;
 
@@ -203,7 +235,7 @@ public class Building extends Tile {
                 supportsIncinerator = true;
                 supportsRecycle = true;
                 canRaze = false;
-                trashCapacity = 100;
+                baseTrashCapacity = 100;
                 break;
 
             case INDUSTRIAL_LOW:
@@ -213,7 +245,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 1;
                 valueGeneratedPerRound = 1;
-                trashCapacity = 10;
+                baseTrashCapacity = 10;
                 resource = Resource.MONEY;
                 break;
 
@@ -224,7 +256,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 2;
                 valueGeneratedPerRound = 3;
-                trashCapacity = 13;
+                baseTrashCapacity = 13;
                 resource = Resource.MONEY;
                 break;
 
@@ -235,7 +267,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 3;
                 valueGeneratedPerRound = 5;
-                trashCapacity = 16;
+                baseTrashCapacity = 16;
                 resource = Resource.MONEY;
                 break;
 
@@ -252,7 +284,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 1;
                 valueGeneratedPerRound = 1;
-                trashCapacity = 10;
+                baseTrashCapacity = 10;
                 resource = Resource.MONEY;
                 break;
 
@@ -263,7 +295,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 2;
                 valueGeneratedPerRound = 3;
-                trashCapacity = 13;
+                baseTrashCapacity = 13;
                 resource = Resource.MONEY;
                 break;
 
@@ -274,7 +306,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 3;
                 valueGeneratedPerRound = 5;
-                trashCapacity = 16;
+                baseTrashCapacity = 16;
                 resource = Resource.MONEY;
                 break;
 
@@ -297,10 +329,98 @@ public class Building extends Tile {
                 supportsTiers, currentTier,
                 trashGeneratedPerRound,
                 valueGeneratedPerRound,
-                trashCapacity,
+                baseTrashCapacity,
                 currentTrashLevel,
                 resource);
     }
+
+    /**
+     * To be called at the start of the turn for each building.
+     */
+    public void resetForNewTurn() {
+        thisTurnGarbageCompacted = 0;
+        thisTurnGarbageGenerated = 0;
+        thisTurnGarbageIncinerated = 0;
+        thisTurnGarbageReceived = 0;
+        thisTurnGarbageRecycled = 0;
+        thisTurnValueGenerated = 0;
+        thisTurnValueGeneratedByRecycling = 0;
+    }
+
+    /**
+     * Add trash to this Building
+     * @param trashAmount How much trash you're depositing.
+     */
+    public void depositTrash(float trashAmount) {
+        if (hasRecycle) {
+            float recycledAmount = trashAmount * RECYCLE_PERCENT;
+            thisTurnGarbageRecycled += recycledAmount;
+            float recycleValue = recycledAmount * RECYCLE_VALUE_GENERATION;
+            thisTurnValueGeneratedByRecycling += recycleValue;
+            thisTurnValueGenerated += recycleValue;
+            // Reduce the trash
+            trashAmount -= recycledAmount;
+        }
+        if (hasCompactor) {
+            float compactedAmount = trashAmount * COMPACTOR_REDUCTION_PERCENT;
+            thisTurnGarbageCompacted += compactedAmount;
+            // Reduce the trash
+            trashAmount -= compactedAmount;
+        }
+        thisTurnGarbageReceived += trashAmount;
+        currentTrashLevel += trashAmount;
+    }
+
+    /**
+     * This is where the building will go to work, generating trash, perhaps getting rid of it, etc.
+     */
+    public void processActions() {
+        // Generate Trash
+//        float newTrash = trashGeneratedPerRound;
+        generateTrash();
+        generateValue();
+
+        // Incinerate!
+        if (hasIncinerator) {
+            float garbageIncinerated = Math.min(currentTrashLevel, INCINERATION_VALUE);
+            thisTurnGarbageIncinerated += garbageIncinerated;
+            currentTrashLevel -= garbageIncinerated;
+        }
+    }
+
+    /**
+     * Generate the trash for the building.
+     * Track it in the thisTurn variables
+     * Add the trash to the building.
+     */
+    private void generateTrash() {
+        float newTrash;
+        if (supportsTiers) {
+            switch (currentTier) {
+                case ONE:
+                    newTrash = trashGeneratedPerRound * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 1);
+                    break;
+                case TWO:
+                    newTrash = trashGeneratedPerRound * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 2);
+                    break;
+                default:
+                    throw new RuntimeException("Unrecognized Tier");
+            }
+        } else {
+            newTrash = trashGeneratedPerRound;
+        }
+        // Green cert reduction?
+        if (hasGreenCert) {
+            // TODO, working
+        }
+        // Add the trash to the building.
+    }
+
+    private void generateValue() {
+        // TODO, in progress.
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     @Override
     public void render(SpriteBatch batch){
