@@ -1,4 +1,4 @@
-package managers;
+package lando.systems.ld40.managers;
 
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;

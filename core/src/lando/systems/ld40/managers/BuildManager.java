@@ -1,4 +1,4 @@
-package managers;
+package lando.systems.ld40.managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;

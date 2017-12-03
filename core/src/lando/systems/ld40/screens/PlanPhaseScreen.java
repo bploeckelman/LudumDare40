@@ -20,9 +20,9 @@ import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
 import lando.systems.ld40.world.World;
-import managers.BuildManager;
-import managers.IManager;
-import managers.RouteManager;
+import lando.systems.ld40.managers.BuildManager;
+import lando.systems.ld40.managers.IManager;
+import lando.systems.ld40.managers.RouteManager;
 
 /**
  * Created by Brian on 7/25/2017
