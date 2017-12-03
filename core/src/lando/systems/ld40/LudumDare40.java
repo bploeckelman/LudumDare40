@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 import lando.systems.ld40.screens.BaseScreen;
 import lando.systems.ld40.screens.TitleScreen;
 import lando.systems.ld40.utils.Assets;
@@ -27,14 +30,20 @@ public class LudumDare40 extends ApplicationAdapter {
     private BaseScreen nextScreen;
     private MutableFloat transitionPercent;
     private FrameBuffer transitionFBO;
-    TextureRegion transitionTexture;
+    private FrameBuffer originalFBO;
+    Texture originalTexture;
+    Texture transitionTexture;
+    ShaderProgram transitionShader;
 
     @Override
     public void create () {
         transitionPercent = new MutableFloat(0);
         transitionFBO = FrameBuffer.createFrameBuffer(Pixmap.Format.RGBA8888, Config.gameWidth, Config.gameHeight, false);
-        transitionTexture = new TextureRegion(transitionFBO.getColorBufferTexture());
-        transitionTexture.flip(false, true);
+        transitionTexture = transitionFBO.getColorBufferTexture();
+
+        originalFBO = FrameBuffer.createFrameBuffer(Pixmap.Format.RGBA8888, Config.gameWidth, Config.gameHeight, false);
+        originalTexture = originalFBO.getColorBufferTexture();
+
         Assets.load();
         float progress = 0f;
         do {
@@ -50,18 +59,29 @@ public class LudumDare40 extends ApplicationAdapter {
         float dt = Math.min(Gdx.graphics.getDeltaTime(), 1f / 30f);
         Assets.tween.update(dt);
         screen.update(dt);
-        screen.render(Assets.batch);
+
         if (nextScreen != null) {
             nextScreen.update(dt);
+
             transitionFBO.begin();
             nextScreen.render(Assets.batch);
             transitionFBO.end();
-            Assets.batch.setShader(Assets.blindsShader);
+
+            originalFBO.begin();
+            screen.render(Assets.batch);
+            originalFBO.end();
+
+            Assets.batch.setShader(transitionShader);
             Assets.batch.begin();
-            Assets.blindsShader.setUniformf("u_percent", transitionPercent.floatValue());
+            originalTexture.bind(1);
+            transitionShader.setUniformi("u_texture1", 1);
+            transitionTexture.bind(0);
+            transitionShader.setUniformf("u_percent", transitionPercent.floatValue());
             Assets.batch.draw(transitionTexture, 0, 0, Config.gameWidth, Config.gameHeight);
             Assets.batch.end();
             Assets.batch.setShader(null);
+        } else {
+            screen.render(Assets.batch);
         }
 //        Gdx.app.log("Render Calls", "" + Assets.batch.renderCalls);
     }
@@ -72,17 +92,41 @@ public class LudumDare40 extends ApplicationAdapter {
     }
 
     public void setScreen(final BaseScreen newScreen){
+        setScreen(newScreen, null);
+    }
+
+    public void setScreen(final BaseScreen newScreen, ShaderProgram transitionType){
         if (nextScreen != null) return;
         if (screen == null) { // First time i hope
             screen = newScreen;
             Gdx.input.setInputProcessor(screen);
         } else { // transition
             Gdx.input.setInputProcessor(null);
+            if (transitionType == null) {
+                switch (MathUtils.random(2)) {
+                    case 0:
+                        transitionShader = Assets.fadeShader;
+                        break;
+                    case 1:
+                        transitionShader = Assets.blindsShader;
+                        break;
+                    case 2:
+                        transitionShader = Assets.radialShader;
+                        break;
+                }
+            } else {
+                transitionShader = transitionType;
+            }
             screen.allowInput = false;
-            nextScreen = newScreen;
             transitionPercent.setValue(0);
             Timeline.createSequence()
-                    .pushPause(.5f)
+                    .pushPause(.2f)
+                    .push(Tween.call(new TweenCallback() {
+                        @Override
+                        public void onEvent(int i, BaseTween<?> baseTween) {
+                            nextScreen = newScreen;
+                        }
+                    }))
                     .push(Tween.to(transitionPercent, 1, 2f)
                         .target(1f))
                     .push(Tween.call(new TweenCallback() {
