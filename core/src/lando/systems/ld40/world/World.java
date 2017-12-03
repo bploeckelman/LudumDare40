@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.gameobjects.Inventory;
+import lando.systems.ld40.gameobjects.Routes;
 
 public class World {
 
@@ -32,11 +33,13 @@ public class World {
     public Rectangle bounds;
     public int turnNumber;
     public Inventory inventory;
+    public Routes routes;
 
     public World() {
         turnNumber = 0;
         bounds = new Rectangle(0, 0, pixels_wide, pixels_high);
         inventory = new Inventory();
+        routes = new Routes();
 
         tiles = new Array<Building>();
         for (int y = 0; y < tiles_high; ++y) {

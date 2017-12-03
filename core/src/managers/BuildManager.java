@@ -17,8 +17,6 @@ public class BuildManager extends ActionManager {
 
     private BuildState state =  BuildState.START;
     public GameObject selectedObject;
-    private BuildActionModalWindow modalWindow;
-    private boolean isCompleted;
 
     public BuildManager(OrthographicCamera actionCamera, OrthographicCamera worldCamera) {
         super(actionCamera, worldCamera);
@@ -29,26 +27,16 @@ public class BuildManager extends ActionManager {
         state = BuildState.PICK_TILE;
     }
 
-    public void deactivate() {
-        state = BuildState.NONE;
-    }
-
-    public void complete() {
-        isCompleted = true;
-    }
 
     @Override
-    public void update(float dt) {
-        if (isCompleted) return;
-
+    public void updateManager(float dt) {
         switch(state) {
             case PICK_TILE:
                 // ...
                 break;
             case PICK_ITEM:
-                modalWindow.update(dt);
                 if (Gdx.input.justTouched()) {
-                    modalWindow.hide();
+                    window.hide();
                 }
                 break;
             case DONE:
@@ -59,9 +47,7 @@ public class BuildManager extends ActionManager {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
-        if (isCompleted) return;
-
+    public void renderManager(SpriteBatch batch) {
         switch (state) {
             case START:
                 drawText(batch, "Building...");
@@ -70,7 +56,6 @@ public class BuildManager extends ActionManager {
                 drawText(batch, "Click a tile to build on...");
                 break;
             case PICK_ITEM:
-                modalWindow.render(batch);
                 break;
             case DONE:
                 // nothing to see here
@@ -87,8 +72,8 @@ public class BuildManager extends ActionManager {
         switch (state) {
             case PICK_TILE:
                 selectedObject = World.GetWorld().getSelectedObject(touchPoisition.x, touchPoisition.y);
-                modalWindow = new BuildActionModalWindow(hudCamera, this);
-                modalWindow.show();
+                window = new BuildActionModalWindow(hudCamera, this);
+                window.show();
                 state = BuildState.PICK_ITEM;
                 break;
             case PICK_ITEM:

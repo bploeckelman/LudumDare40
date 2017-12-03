@@ -9,8 +9,8 @@ import lando.systems.ld40.gameobjects.GameObject;
  */
 public class RouteManager extends ActionManager {
 
-    private enum RouteState { NONE, START, PICK_SOURCES, PICK_DEST, DONE }
-    private RouteState state = RouteState.START;
+    public enum RouteState { NONE, START, PICK_ROUTE, PICK_SOURCES, PICK_DEST, DONE }
+    public RouteState state = RouteState.START;
     public GameObject selectedTruck;
 
     public RouteManager(OrthographicCamera hudCamera, OrthographicCamera worldCamera) {
@@ -19,18 +19,18 @@ public class RouteManager extends ActionManager {
 
     @Override
     public void activate() {
-        state = RouteState.PICK_SOURCES;
+        state = RouteState.START;
     }
 
     @Override
-    public void deactivate() {
-        state = RouteState.NONE;
-    }
-
-    @Override
-    public void render(SpriteBatch batch) {
+    public void renderManager(SpriteBatch batch) {
         switch (state) {
             case START:
+                drawText(batch, "Select Route...");
+                window = new RouteActionModalWindow(hudCamera, this);
+                state = RouteState.PICK_ROUTE;
+                break;
+            case PICK_ROUTE:
                 drawText(batch, "Select Route...");
                 break;
             case PICK_SOURCES:
@@ -47,7 +47,7 @@ public class RouteManager extends ActionManager {
     }
 
     @Override
-    public void update(float dt) {
+    public void updateManager(float dt) {
 
     }
 

@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectIntMap;
-import com.badlogic.gdx.utils.Sort;
 import lando.systems.ld40.gameobjects.Inventory;
 import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.ui.Button;
@@ -18,8 +16,6 @@ import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.accessors.RectangleAccessor;
 import lando.systems.ld40.world.World;
-
-import java.util.Comparator;
 
 public class BuildActionModalWindow extends ModalWindow {
 
