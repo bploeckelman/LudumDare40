@@ -4,10 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
+//import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.world.World;
+
 
 /**
  * Created by Brian on 12/2/2017.
@@ -15,12 +20,48 @@ import lando.systems.ld40.world.World;
 public class ResolutionPhaseScreen extends BaseScreen {
     private World world;
 
+    //Button bBuildings;
+    //Button bAddons;
+    //Button bResearch;
+
+    Rectangle rectHeadBut1;
+    Rectangle rectHeadBut2;
+    Rectangle rectHeadBut3;
+
+    Rectangle rectButBox;
+    Rectangle rectInfoBox;
+
+    Rectangle rectButContinueBox;
+
+    Rectangle buttonHeaderRegion;
+    Rectangle buttonRegion;
+
+    Rectangle infoHeaderRegion;
+    Rectangle infoRegion;
+
+    Rectangle carRegion;
+
+    //Button continueButton;
+    //Button purchaseButton;
+
     public ResolutionPhaseScreen() {
         world = World.GetWorld();
         Gdx.input.setInputProcessor(this);
         camera.zoom = 2.5f;
         camera.position.x = 500;
         camera.position.y = 500;
+
+        float fScreenWidth = hudCamera.viewportWidth;
+        float fScreenHeight = hudCamera.viewportHeight;
+
+        rectHeadBut1 = new Rectangle(20, 450, 240, fScreenHeight / 12);
+        rectHeadBut2 = new Rectangle(280, 450, 240, fScreenHeight / 12);
+        rectHeadBut3 = new Rectangle(540, 450, 240, fScreenHeight / 12);
+
+        rectButBox = new Rectangle(20, 90, fScreenWidth * 0.55f, 330);
+        rectInfoBox = new Rectangle(rectButBox.x + rectButBox.width + fScreenWidth * 0.05f, 90, fScreenWidth * 0.35f, 330);
+
+        rectButContinueBox = new Rectangle(fScreenWidth * 0.75f, fScreenHeight / 30, fScreenWidth * 0.225f, fScreenHeight / 12);
     }
 
     @Override
@@ -44,23 +85,44 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
     @Override
     public void render(SpriteBatch batch) {
-        Gdx.gl.glClearColor(Config.bgColor.r, Config.bgColor.g, Config.bgColor.b, Config.bgColor.a);
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Draw world
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        {
-            renderWorld(batch);
-            renderObjects(batch);
-        }
-        batch.end();
-
-        // Draw hud
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
         {
-            renderHud(batch);
+            // Draw screen background
+            //batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
+
+            // Draw section backgrounds
+            //batch.setColor(64f / 255f, 64f / 255f, 64f / 255f, 0.9f);
+
+            // Draw header buttons
+            batch.draw(Assets.whitePixel, rectHeadBut1.x, rectHeadBut1.y, rectHeadBut1.width, rectHeadBut1.height);
+            batch.draw(Assets.whitePixel, rectHeadBut2.x, rectHeadBut2.y, rectHeadBut2.width, rectHeadBut2.height);
+            batch.draw(Assets.whitePixel, rectHeadBut3.x, rectHeadBut3.y, rectHeadBut3.width, rectHeadBut3.height);
+
+            batch.draw(Assets.whitePixel, rectButBox.x, rectButBox.y, rectButBox.width, rectButBox.height);
+            batch.draw(Assets.whitePixel, rectInfoBox.x, rectInfoBox.y, rectInfoBox.width, rectInfoBox.height);
+
+            batch.draw(Assets.whitePixel, rectButContinueBox.x, rectButContinueBox.y, rectButContinueBox.width, rectButContinueBox.height);
+
+            // Draw header text
+
+
+            // Draw cash moneys
+
+
+            // Draw upgrade item buttons
+
+
+            // Draw info section details
+
+
+
+
+            // Screen transition overlay
+
         }
         batch.end();
     }
@@ -83,7 +145,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-        LudumDare40.game.setScreen(new PlanPhaseScreen());
+
         return true;
     }
 }

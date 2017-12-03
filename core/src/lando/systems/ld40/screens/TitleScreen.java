@@ -25,6 +25,9 @@ public class TitleScreen extends BaseScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            game.setScreen(new ResolutionPhaseScreen());
+        }
         if (Gdx.input.justTouched()) {
             game.setScreen(new PlanPhaseScreen());
         }
