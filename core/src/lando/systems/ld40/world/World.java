@@ -11,8 +11,10 @@ public class World {
 
     private static World world;
 
-    public static final int tiles_wide = 12;
-    public static final int tiles_high = 10;
+    public static final int tiles_wide = 13;
+    public static final int tiles_high = 11;
+    public static final int hq_x = 7;
+    public static final int hq_y = 5;
     public static final float tile_pixels_wide = 128;
     public static final float tile_pixels_high = 128;
     public static final float pixels_wide = tiles_wide * tile_pixels_wide;
@@ -31,22 +33,22 @@ public class World {
 
 
     public World(){
-        int type = 0;
+
         tiles = new Array<GameObject>();
         for (int y = 0; y < tiles_high; ++y) {
             for (int x = 0; x < tiles_wide; ++x) {
-                type = MathUtils.random(Building.Type.values().length - 1);
-                Building newBuilding = Building.getBuilding(Building.Type.values()[type]);
+                Building.Type type = Building.Type.EMPTY;
+                if (x == hq_x && y == hq_y) {
+                    type = Building.Type.GARBAGE_HQ;
+                }
+
+                Building newBuilding = Building.getBuilding(type);
                 newBuilding.setLocation(x * tile_pixels_wide, y * tile_pixels_high);
                 tiles.add(newBuilding);
-
-                if (++type > 9) {
-                    type = 0;
-                }                
             }
         }
-        bounds = new Rectangle(0, 0,
-                pixels_wide, pixels_high);
+
+        bounds = new Rectangle(0, 0, pixels_wide, pixels_high);
     }
 
 

@@ -11,21 +11,23 @@ public class Building extends GameObject {
 
     private Type type;
 
-    private boolean supportsCompactor;
-    private boolean hasCompactor;
-    private boolean supportsDumpster;
-    private boolean hasDumpster;
-    private boolean supportsGreenCert;
-    private boolean hasGreenCert;
-    private boolean supportsIncinerator;
-    private boolean hasIncinerator;
-    private boolean supportsTiers;
-    private Tier currentTier;
+    public boolean supportsCompactor;
+    public boolean hasCompactor;
+    public boolean supportsDumpster;
+    public boolean hasDumpster;
+    public boolean supportsGreenCert;
+    public boolean hasGreenCert;
+    public boolean supportsIncinerator;
+    public boolean hasIncinerator;
+    public boolean supportsTiers;
+    public boolean canBuild;
+    public boolean canRaze;
+    public Tier currentTier;
 
-    private float trashGeneratedPerRound;
-    private float valueGeneratedPerRound;
-    private float trashCapacity;
-    private float currentTrashLevel;
+    public float trashGeneratedPerRound;
+    public float valueGeneratedPerRound;
+    public float trashCapacity;
+    public float currentTrashLevel;
 
     private int turnsOverCapacity = 0;
     private boolean isMarkedForRemoval = false;
@@ -48,6 +50,8 @@ public class Building extends GameObject {
         RESIDENTIAL_HIGH,
         RESIDENTIAL_LOW,
         RESIDENTIAL_MEDIUM,
+        GARBAGE_HQ,
+        EMPTY
     }
 
     private static HashMap<Type, String> buildingTypeTextureLookup = new HashMap<Type, String>();
@@ -65,6 +69,8 @@ public class Building extends GameObject {
         buildingTypeTextureLookup.put(Type.RESIDENTIAL_HIGH, "res-high");
         buildingTypeTextureLookup.put(Type.RESIDENTIAL_LOW, "res-low");
         buildingTypeTextureLookup.put(Type.RESIDENTIAL_MEDIUM, "res-med");
+        buildingTypeTextureLookup.put(Type.GARBAGE_HQ, "hq");
+        buildingTypeTextureLookup.put(Type.EMPTY, "grass");
     }
 
     private Building(Type type,
@@ -72,12 +78,13 @@ public class Building extends GameObject {
                     boolean supportsDumpster, boolean hasDumpster,
                     boolean supportsGreenCert, boolean hasGreenCert,
                     boolean supportsIncinerator, boolean hasIncinerator,
-                    boolean supportsTiers, Tier currentTier,
+                    boolean supportsTiers, boolean canBuild,
+                    boolean canRaze,
+                    Tier currentTier,
                     float trashGeneratedPerRound,
                     float valueGeneratedPerRound,
                     float trashCapacity,
-                    float currentTrashLevel
-                    ) {
+                    float currentTrashLevel) {
 
         this.type = type;
         String textureName = buildingTypeTextureLookup.get(type);
@@ -93,6 +100,8 @@ public class Building extends GameObject {
         this.hasDumpster = hasDumpster;
         this.hasGreenCert = hasGreenCert;
         this.hasIncinerator = hasIncinerator;
+        this.canBuild = canBuild;
+        this.canRaze = canRaze;
         this.supportsCompactor = supportsCompactor;
         this.supportsDumpster = supportsDumpster;
         this.supportsGreenCert = supportsGreenCert;
@@ -101,7 +110,6 @@ public class Building extends GameObject {
         this.trashCapacity = trashCapacity;
         this.trashGeneratedPerRound = trashGeneratedPerRound;
         this.valueGeneratedPerRound = valueGeneratedPerRound;
-
     }
 
     public static Building getBuilding(Type buildingType) {
@@ -116,6 +124,8 @@ public class Building extends GameObject {
         boolean supportsIncinerator = false;
         boolean hasIncinerator = false;
         boolean supportsTiers = false;
+        boolean canBuild = false;
+        boolean canRaze = true;
         Tier currentTier = null;
         float trashGeneratedPerRound = 0;
         float valueGeneratedPerRound = 0;
@@ -153,6 +163,13 @@ public class Building extends GameObject {
                 valueGeneratedPerRound = 5;
                 break;
 
+            case EMPTY:
+                canBuild = true;
+                break;
+
+            case GARBAGE_HQ:
+                canRaze = false;
+                break;
         }
 
         return new Building(buildingType,
@@ -160,6 +177,7 @@ public class Building extends GameObject {
                 supportsDumpster, hasDumpster,
                 supportsGreenCert, hasGreenCert,
                 supportsIncinerator, hasIncinerator,
+                canBuild, canRaze,
                 supportsTiers, currentTier,
                 trashGeneratedPerRound,
                 valueGeneratedPerRound,
