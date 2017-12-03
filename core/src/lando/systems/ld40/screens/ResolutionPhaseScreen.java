@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
@@ -13,6 +14,8 @@ import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.world.World;
+import lando.systems.ld40.ui.Button;
+import com.badlogic.gdx.math.Rectangle;
 
 
 /**
@@ -46,6 +49,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     //Button purchaseButton;
 
     public ResolutionPhaseScreen() {
+        subButtons = new Array<Button>();
         world = World.GetWorld();
         Gdx.input.setInputProcessor(this);
         camera.zoom = 2.5f;
@@ -63,6 +67,15 @@ public class ResolutionPhaseScreen extends BaseScreen {
         rectInfoBox = new Rectangle(rectButBox.x + rectButBox.width + fScreenWidth * 0.05f, 90, fScreenWidth * 0.35f, 330);
 
         rectButContinueBox = new Rectangle(fScreenWidth * 0.75f, fScreenHeight / 30, fScreenWidth * 0.225f, fScreenHeight / 12);
+                buttonCount++;
+                j += 100;
+            }
+            i += 100;
+        }
+
+
+        subButton1Region = new Rectangle(subButtonRegion.x, subButtonRegion.y, 100, 100);
+        subButton1 = new Button(Assets.defaultNinePatch, subButton1Region, hudCamera, "Test1", "tooltip");
     }
 
     @Override
@@ -142,6 +155,12 @@ public class ResolutionPhaseScreen extends BaseScreen {
         batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
         batch.setColor(Color.WHITE);
         Assets.drawString(batch, "Resolution Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+        batch.setColor(Color.LIGHT_GRAY);
+        for(Button sub : subButtons)
+        {
+            batch.draw(Assets.whitePixel, sub.bounds.x, sub.bounds.y, sub.bounds.width, sub.bounds.height);
+            sub.render(batch);
+        }
     }
 
     @Override

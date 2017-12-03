@@ -57,6 +57,12 @@ public class PlanPhaseScreen extends BaseScreen {
             game.setScreen(new TitleScreen());
         }
 
+        //More test code
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W))
+        {
+            game.setScreen(new ResolutionPhaseScreen());
+        }
+
         updateWorld(dt);
         updateObjects(dt);
         updateCamera();
