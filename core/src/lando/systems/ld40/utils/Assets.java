@@ -35,6 +35,7 @@ public class Assets {
     public static ShaderProgram blindsShader;
     public static ShaderProgram fadeShader;
     public static ShaderProgram radialShader;
+    public static ShaderProgram doomShader;
 
     public static TextureAtlas atlas;
 
@@ -120,6 +121,7 @@ public class Assets {
         blindsShader = loadShader("shaders/default.vert", "shaders/blinds.frag");
         fadeShader = loadShader("shaders/default.vert", "shaders/dissolve.frag");
         radialShader = loadShader("shaders/default.vert", "shaders/radial.frag");
+        doomShader = loadShader("shaders/default.vert", "shaders/doomdrip.frag");
         return 1f;
     }
 
