@@ -1,4 +1,4 @@
-package lando.systems.ld40.ui;
+package managers;
 
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
@@ -8,14 +8,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.screens.PlanPhaseScreen;
+import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.accessors.RectangleAccessor;
 
 public class BuildActionModalWindow extends ModalWindow {
 
-    private PlanPhaseScreen.BuildAction buildAction;
+    private BuildManager buildAction;
 
-    public BuildActionModalWindow(OrthographicCamera camera, PlanPhaseScreen.BuildAction buildAction) {
+    public BuildActionModalWindow(OrthographicCamera camera, BuildManager buildAction) {
         super(camera);
         this.buildAction = buildAction;
     }
@@ -32,7 +33,7 @@ public class BuildActionModalWindow extends ModalWindow {
                 .setCallback(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
-                        buildAction.state = PlanPhaseScreen.BuildState.DONE;
+                        buildAction.complete();
                         isActive = false;
                     }
                 })

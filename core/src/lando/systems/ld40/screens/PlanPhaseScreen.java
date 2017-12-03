@@ -17,12 +17,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.gameobjects.GameObject;
-import lando.systems.ld40.ui.BuildActionModalWindow;
-import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
 import lando.systems.ld40.world.World;
+import managers.BuildManager;
+import managers.IManager;
 
 /**
  * Created by Brian on 7/25/2017
@@ -52,19 +52,7 @@ public class PlanPhaseScreen extends BaseScreen {
     private Rectangle routesButtonBounds;
     private Vector3 projectionVector = new Vector3();
 
-    public enum BuildState { START, PICK_TILE, PICK_ITEM, DONE }
-    public class BuildAction {
-        public BuildState state;
-        public GameObject selectedObject;
-        public BuildActionModalWindow modalWindow;
-        // TODO: access inventory how?
-        public BuildAction() {
-            state = BuildState.START;
-            selectedObject = null;
-            modalWindow = new BuildActionModalWindow(hudCamera, this);
-        }
-    }
-    private BuildAction buildAction;
+    private IManager actionManager;
 
     private enum RouteState { START, PICK_SOURCES, PICK_DEST, DONE }
     private class RouteAction {
@@ -94,7 +82,6 @@ public class PlanPhaseScreen extends BaseScreen {
         routesButtonBounds = new Rectangle(margin, hudCamera.viewportHeight - 2f * margin - 2f * size, size, size);
 //        buildTileHudBounds = new Rectangle()
 
-        buildAction = null;
         routeAction = null;
     }
 
@@ -125,50 +112,8 @@ public class PlanPhaseScreen extends BaseScreen {
     }
 
     private void updateAction(float dt) {
-        if (buildAction != null) {
-            switch (buildAction.state) {
-                case START: {
-                    // Zoom out
-                    float camTargetX = World.pixels_wide / 2f;
-                    float camTargetY = World.pixels_high / 2f;
-                    float camTargetZoom = Math.max(
-                            World.pixels_wide * 1.2f / hudCamera.viewportWidth,
-                            World.pixels_high * 1.2f / hudCamera.viewportHeight
-                    );
-                    Timeline.createSequence()
-                            .push(Timeline.createParallel()
-                                          .push(Tween.to(cameraTargetPos, Vector3Accessor.XY, 0.5f).target(camTargetX, camTargetY).ease(Quad.INOUT))
-                                          .push(Tween.to(targetZoom, -1, 0.5f).target(camTargetZoom).ease(Quad.INOUT)))
-                            .push(Tween.call(new TweenCallback() {
-                                @Override
-                                public void onEvent(int type, BaseTween<?> source) {
-                                    buildAction.state = BuildState.PICK_TILE;
-                                }
-                            }))
-                            .start(Assets.tween);
-                }
-                break;
-                case PICK_TILE: {
-//                    if (buildAction.selectedObject != null) {
-//                        buildAction.modalWindow.show();
-//                        buildAction.state = BuildState.PICK_ITEM;
-//                    }
-                }
-                break;
-                case PICK_ITEM: {
-                    // TODO: ...
-                    if (Gdx.input.justTouched()) {
-                        buildAction.modalWindow.hide();
-                    }
-                }
-                break;
-                case DONE: {
-                    buildAction = null;
-                }
-                break;
-            }
-        } else if (routeAction != null) {
-            // ...
+        if (actionManager != null) {
+            actionManager.update();
         }
     }
 
@@ -236,21 +181,9 @@ public class PlanPhaseScreen extends BaseScreen {
         batch.setColor(Color.SKY);
         batch.draw(Assets.whitePixel, buildButtonBounds.x, buildButtonBounds.y, buildButtonBounds.width, buildButtonBounds.height);
         batch.setColor(Color.WHITE);
-        if (buildAction == null) return;
 
-        switch (buildAction.state) {
-            case START:
-                drawText(batch, "Building...");
-                break;
-            case PICK_TILE:
-                drawText(batch, "Click a tile to build on...");
-                break;
-            case PICK_ITEM:
-                buildAction.modalWindow.render(batch);
-                break;
-            case DONE:
-                // nothing to see here
-                break;
+        if (actionManager != null) {
+            actionManager.render(batch);
         }
     }
 
@@ -263,29 +196,19 @@ public class PlanPhaseScreen extends BaseScreen {
 
         switch (routeAction.state) {
             case START:
-                drawText(batch, "Select Route...");
+               //drawText(batch, "Select Route...");
                 break;
             case PICK_SOURCES:
-                drawText(batch, "Select Source...");
+                //drawText(batch, "Select Source...");
                 break;
             case PICK_DEST:
-                drawText(batch, "Click a destination...");
+                //drawText(batch, "Click a destination...");
                 break;
             case DONE: {
                 // nothing to see here
             }
             break;
         }
-    }
-
-    private void drawText(SpriteBatch batch, String text) {
-        batch.setShader(Assets.fontShader);
-        Assets.layout.setText(Assets.font, text);
-        Assets.font.draw(batch, text,
-                0, hudCamera.viewportHeight - Assets.layout.height,
-                hudCamera.viewportWidth,
-                Align.center, true);
-        batch.setShader(null);
     }
 
     private void renderNextActionHud(SpriteBatch batch) {
@@ -295,6 +218,28 @@ public class PlanPhaseScreen extends BaseScreen {
         batch.setColor(Color.WHITE);
 
         // ...
+    }
+
+    private void zoomOut(final IManager manager) {
+        // Zoom out
+        float camTargetX = World.pixels_wide / 2f;
+        float camTargetY = World.pixels_high / 2f;
+        float camTargetZoom = Math.max(
+                World.pixels_wide * 1.2f / hudCamera.viewportWidth,
+                World.pixels_high * 1.2f / hudCamera.viewportHeight
+        );
+
+        Timeline.createSequence()
+                .push(Timeline.createParallel()
+                        .push(Tween.to(cameraTargetPos, Vector3Accessor.XY, 0.5f).target(camTargetX, camTargetY).ease(Quad.INOUT))
+                        .push(Tween.to(targetZoom, -1, 0.5f).target(camTargetZoom).ease(Quad.INOUT)))
+                .push(Tween.call(new TweenCallback() {
+                    @Override
+                    public void onEvent(int type, BaseTween<?> source) {
+                        actionManager.activate();
+                    }
+                }))
+                .start(Assets.tween);
     }
 
     @Override
@@ -311,36 +256,27 @@ public class PlanPhaseScreen extends BaseScreen {
             return false;
         }
 
+        // if one of the buttons, disable button presses, zoom out and create correct action maanger
+
         projectionVector.set(screenX, screenY, 0);
         hudCamera.unproject(projectionVector);
         if (nextButtonBounds.contains(projectionVector.x, projectionVector.y)) {
             game.setScreen(new ActionPhaseScreen());
             return true;
         } else if (buildButtonBounds.contains(projectionVector.x, projectionVector.y)) {
-            buildAction = new BuildAction();
-            routeAction = null;
+            actionManager = new BuildManager(hudCamera, camera);
+            zoomOut(actionManager);
             return true;
         } else if (routesButtonBounds.contains(projectionVector.x, projectionVector.y)) {
             routeAction = new RouteAction();
-            buildAction = null;
+            //buildAction = null;
             return true;
         }
 
-        if (buildAction != null) {
-            projectionVector.set(screenX, screenY, 0);
-            camera.unproject(projectionVector);
-
-            if (buildAction.state == BuildState.PICK_TILE) {
-                GameObject selectedObject = world.getSelectedObject(projectionVector.x, projectionVector.y);
-                if (selectedObject != null) {
-                    buildAction.selectedObject = selectedObject;
-                    buildAction.modalWindow.show();
-                    buildAction.state = BuildState.PICK_ITEM;
-                }
-            } else if (buildAction.state == BuildState.PICK_ITEM) {
-                // check for item pick in inventory view
-            }
+        if (actionManager != null) {
+            actionManager.touchUp(screenX, screenY);
         }
+
 
         return true;
     }
