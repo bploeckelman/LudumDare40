@@ -239,32 +239,18 @@ public class PlanPhaseScreen extends BaseScreen {
         if (buildAction == null) return;
 
         switch (buildAction.state) {
-            case START: {
-                batch.setShader(Assets.fontShader);
-                String text = "Building...";
-                Assets.layout.setText(Assets.font, text);
-                Assets.font.draw(batch, text,
-                        0, hudCamera.viewportHeight - Assets.layout.height,
-                        hudCamera.viewportWidth,
-                        Align.center, true);
-                batch.setShader(null);
-            } break;
-            case PICK_TILE: {
-                batch.setShader(Assets.fontShader);
-                String text = "Click a tile to build on...";
-                Assets.layout.setText(Assets.font, text);
-                Assets.font.draw(batch, text,
-                        0, hudCamera.viewportHeight - Assets.layout.height,
-                        hudCamera.viewportWidth,
-                        Align.center, true);
-                batch.setShader(null);
-            } break;
-            case PICK_ITEM: {
+            case START:
+                drawText(batch, "Building...");
+                break;
+            case PICK_TILE:
+                drawText(batch, "Click a tile to build on...");
+                break;
+            case PICK_ITEM:
                 buildAction.modalWindow.render(batch);
-            } break;
-            case DONE: {
+                break;
+            case DONE:
                 // nothing to see here
-            } break;
+                break;
         }
     }
 
@@ -274,6 +260,32 @@ public class PlanPhaseScreen extends BaseScreen {
         batch.draw(Assets.whitePixel, routesButtonBounds.x, routesButtonBounds.y, routesButtonBounds.width, routesButtonBounds.height);
         batch.setColor(Color.WHITE);
         if (routeAction == null) return;
+
+        switch (routeAction.state) {
+            case START:
+                drawText(batch, "Select Route...");
+                break;
+            case PICK_SOURCES:
+                drawText(batch, "Select Source...");
+                break;
+            case PICK_DEST:
+                drawText(batch, "Click a destination...");
+                break;
+            case DONE: {
+                // nothing to see here
+            }
+            break;
+        }
+    }
+
+    private void drawText(SpriteBatch batch, String text) {
+        batch.setShader(Assets.fontShader);
+        Assets.layout.setText(Assets.font, text);
+        Assets.font.draw(batch, text,
+                0, hudCamera.viewportHeight - Assets.layout.height,
+                hudCamera.viewportWidth,
+                Align.center, true);
+        batch.setShader(null);
     }
 
     private void renderNextActionHud(SpriteBatch batch) {
