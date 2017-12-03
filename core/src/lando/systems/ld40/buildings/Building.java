@@ -1,13 +1,11 @@
 package lando.systems.ld40.buildings;
 
-import lando.systems.ld40.gameobjects.GameObject;
+import lando.systems.ld40.gameobjects.Tile;
 import lando.systems.ld40.utils.Assets;
 
 import java.util.HashMap;
 
-public class Building extends GameObject {
-
-//    public static final
+public class Building extends Tile {
 
     private Type type;
 
@@ -29,8 +27,13 @@ public class Building extends GameObject {
     public float trashCapacity;
     public float currentTrashLevel;
 
+    public Resource resource;
+
     private int turnsOverCapacity = 0;
     private boolean isMarkedForRemoval = false;
+
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     private enum Tier {
         ONE,
@@ -54,6 +57,13 @@ public class Building extends GameObject {
         EMPTY
     }
 
+    public enum Resource {
+        MONEY
+    }
+
+
+    // -----------------------------------------------------------------------------------------------------------------
+
     private static HashMap<Type, String> buildingTypeTextureLookup = new HashMap<Type, String>();
     static {
         buildingTypeTextureLookup.put(Type.COMMERCIAL_HIGH, "com-high");
@@ -73,6 +83,9 @@ public class Building extends GameObject {
         buildingTypeTextureLookup.put(Type.EMPTY, "grass");
     }
 
+
+    // -----------------------------------------------------------------------------------------------------------------
+
     private Building(Type type,
                     boolean supportsCompactor, boolean hasCompactor,
                     boolean supportsDumpster, boolean hasDumpster,
@@ -84,14 +97,16 @@ public class Building extends GameObject {
                     float trashGeneratedPerRound,
                     float valueGeneratedPerRound,
                     float trashCapacity,
-                    float currentTrashLevel) {
+                    float currentTrashLevel,
+                    Resource resource) {
+
+        super("grass");
 
         this.type = type;
         String textureName = buildingTypeTextureLookup.get(type);
         if (textureName == null) {
             throw new RuntimeException();
         }
-        System.out.println(textureName);
         setTexture(Assets.atlas.findRegion(textureName));
 
         this.currentTier = currentTier;
@@ -110,19 +125,20 @@ public class Building extends GameObject {
         this.trashCapacity = trashCapacity;
         this.trashGeneratedPerRound = trashGeneratedPerRound;
         this.valueGeneratedPerRound = valueGeneratedPerRound;
+        this.resource = resource;
     }
 
     public static Building getBuilding(Type buildingType) {
 
         // Defaults
-        boolean supportsCompactor = false;
         boolean hasCompactor = false;
-        boolean supportsDumpster = false;
         boolean hasDumpster = false;
-        boolean supportsGreenCert = false;
         boolean hasGreenCert = false;
-        boolean supportsIncinerator = false;
         boolean hasIncinerator = false;
+        boolean supportsCompactor = false;
+        boolean supportsDumpster = false;
+        boolean supportsGreenCert = false;
+        boolean supportsIncinerator = false;
         boolean supportsTiers = false;
         boolean canBuild = false;
         boolean canRaze = true;
@@ -131,10 +147,89 @@ public class Building extends GameObject {
         float valueGeneratedPerRound = 0;
         float trashCapacity = 0;
         float currentTrashLevel = 0;
+        Resource resource = null;
 
         // Customize the types!
 
         switch (buildingType) {
+
+            case COMMERCIAL_LOW:
+                supportsDumpster = true;
+                supportsGreenCert = true;
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                trashGeneratedPerRound = 1;
+                valueGeneratedPerRound = 1;
+                trashCapacity = 10;
+                resource = Resource.MONEY;
+                break;
+
+            case COMMERCIAL_MEDIUM:
+                supportsDumpster = true;
+                supportsGreenCert = true;
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                trashGeneratedPerRound = 2;
+                valueGeneratedPerRound = 3;
+                trashCapacity = 13;
+                resource = Resource.MONEY;
+                break;
+
+            case COMMERCIAL_HIGH:
+                supportsDumpster = true;
+                supportsGreenCert = true;
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                trashGeneratedPerRound = 3;
+                valueGeneratedPerRound = 5;
+                trashCapacity = 16;
+                resource = Resource.MONEY;
+                break;
+
+            case DUMP:
+                supportsCompactor = true;
+                supportsIncinerator = true;
+                trashCapacity = 100;
+                break;
+
+            case INDUSTRIAL_LOW:
+                supportsDumpster = true;
+                supportsGreenCert = true;
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                trashGeneratedPerRound = 1;
+                valueGeneratedPerRound = 1;
+                trashCapacity = 10;
+                resource = Resource.MONEY;
+                break;
+
+            case INDUSTRIAL_MEDIUM:
+                supportsDumpster = true;
+                supportsGreenCert = true;
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                trashGeneratedPerRound = 2;
+                valueGeneratedPerRound = 3;
+                trashCapacity = 13;
+                resource = Resource.MONEY;
+                break;
+
+            case INDUSTRIAL_HIGH:
+                supportsDumpster = true;
+                supportsGreenCert = true;
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                trashGeneratedPerRound = 3;
+                valueGeneratedPerRound = 5;
+                trashCapacity = 16;
+                resource = Resource.MONEY;
+                break;
+
+            case RECYCLING_CENTER:
+                supportsTiers = true;
+                currentTier = Tier.ONE;
+                resource = Resource.MONEY;
+                break;
 
             case RESIDENTIAL_LOW:
                 supportsDumpster = true;
@@ -143,6 +238,8 @@ public class Building extends GameObject {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 1;
                 valueGeneratedPerRound = 1;
+                trashCapacity = 10;
+                resource = Resource.MONEY;
                 break;
 
             case RESIDENTIAL_MEDIUM:
@@ -152,6 +249,8 @@ public class Building extends GameObject {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 2;
                 valueGeneratedPerRound = 3;
+                trashCapacity = 13;
+                resource = Resource.MONEY;
                 break;
 
             case RESIDENTIAL_HIGH:
@@ -161,6 +260,8 @@ public class Building extends GameObject {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 3;
                 valueGeneratedPerRound = 5;
+                trashCapacity = 16;
+                resource = Resource.MONEY;
                 break;
 
             case EMPTY:
@@ -182,7 +283,8 @@ public class Building extends GameObject {
                 trashGeneratedPerRound,
                 valueGeneratedPerRound,
                 trashCapacity,
-                currentTrashLevel);
+                currentTrashLevel,
+                resource);
     }
 
 }
