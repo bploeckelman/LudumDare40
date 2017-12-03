@@ -102,7 +102,7 @@ public class World {
     }
 
     public void nextTurn(){
-        Statistics.getStatistics().addTurnStatistics(turnNumber, MathUtils.random(100), totalBuildings());
+        Statistics.getStatistics().onTurnComplete(turnNumber);
         turnNumber++;
     }
 
