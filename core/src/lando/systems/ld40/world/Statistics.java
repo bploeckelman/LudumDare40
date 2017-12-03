@@ -5,6 +5,8 @@ import com.badlogic.gdx.utils.Array;
 
 public class Statistics {
 
+    private static final int STARTING_MONEY = 100;
+
     private static Statistics stats;
 
     public static Statistics getStatistics(){
@@ -14,20 +16,32 @@ public class Statistics {
         return stats;
     }
 
-    private Array<TurnStatistics> turns;
+    private Array<TurnStatistics> turnStatistics;
+    private TurnStatistics currentTurnStatistics;
 
     private Statistics(){
-        turns = new Array<TurnStatistics>();
+        turnStatistics = new Array<TurnStatistics>();
+        currentTurnStatistics = new TurnStatistics(STARTING_MONEY);
     }
 
-    public void addTurnStatistics(int turn, int money, int buildings){
-        TurnStatistics turnStats = new TurnStatistics(turn, money, buildings);
-        turns.insert(turn, turnStats);
+    public TurnStatistics getCurrentTurnStatistics() {
+        return currentTurnStatistics;
+    }
+
+    public void onTurnComplete(int turnNumber) {
+        // Archive the current term
+        currentTurnStatistics.turnNumber = turnNumber;
+        turnStatistics.insert(turnNumber, currentTurnStatistics);
+        // New turn
+        currentTurnStatistics = new TurnStatistics(
+                currentTurnStatistics.money);
     }
 
     public void render(SpriteBatch batch){
-        if (turns.size == 0) return;
+        if (turnStatistics.size == 0) return;
 
     }
+
+
 
 }
