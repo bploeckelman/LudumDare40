@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 public class Building extends Tile {
 
+    private static final float DUMPSTER_CAPACITY_BONUS = 3;
     /**
      * Of trash deposited, reduce by this percent. 0 through 1f;
      */
@@ -74,6 +75,9 @@ public class Building extends Tile {
     public float thisTurnValueGenerated;
     public float thisTurnValueGeneratedByRecycling;
 
+    /**
+     * This tracks contiguous turns over capacity
+     */
     private int turnsOverCapacity = 0;
     private boolean isMarkedForRemoval = false;
 
@@ -384,6 +388,17 @@ public class Building extends Tile {
     }
 
     /**
+     * Deducts trash from this building.
+     * @param trashRequested How much trash would you like to take?
+     * @return The amount of trash the building gives you.
+     */
+    public float removeTrash(float trashRequested) {
+        float trashToRemove = Math.min(trashRequested, currentTrashLevel);
+        currentTrashLevel -= trashToRemove;
+        return trashToRemove;
+    }
+
+    /**
      * This is where the building will go to work, generating trash, perhaps getting rid of it, etc.
      */
     public void processActions() {
@@ -397,6 +412,12 @@ public class Building extends Tile {
             float garbageIncinerated = Math.min(currentTrashLevel, INCINERATION_VALUE);
             thisTurnGarbageIncinerated += garbageIncinerated;
             currentTrashLevel -= garbageIncinerated;
+        }
+        // Capacity check!
+        if (currentTrashLevel > getCurrentTrashCapacity()) {
+            turnsOverCapacity += 1;
+        } else {
+            turnsOverCapacity = 0;
         }
         // At this point the building is done for the turn.
         thisTurnActionsAreProcessed = true;
@@ -450,6 +471,9 @@ public class Building extends Tile {
                 case TWO:
                     additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 2);
                     break;
+                case THREE:
+                    additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 3);
+                    break;
                 default:
                     throw new RuntimeException("Unrecognized Tier");
             }
@@ -459,7 +483,27 @@ public class Building extends Tile {
         }
     }
 
+    private float getCurrentTrashCapacity() {
+        float trashCapacity = baseTrashCapacity;
+        if (hasDumpster) {
+            trashCapacity += DUMPSTER_CAPACITY_BONUS;
+        }
+        return trashCapacity;
+    }
 
+    public boolean allowsUpgrade(UpgradeType upgradeType) {
+        switch (upgradeType) {
+            case DEMOLITION:   return canRaze;
+            case COMPACTOR:    return supportsCompactor   && !hasCompactor;
+            case DUMPSTER:     return supportsDumpster    && !hasDumpster;
+            case GREEN_TOKEN:  return supportsGreenCert   && !hasGreenCert;
+            case INCINERATOR:  return supportsIncinerator && !hasIncinerator;
+            case RECLAMATION:  return supportsRecycle     && !hasRecycle;
+            case TIER_UPGRADE: return supportsTiers       && currentTier != Tier.THREE;
+            case TRUCK:        return false;
+            default:           return false;
+        }
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -537,18 +581,5 @@ public class Building extends Tile {
         }
     }
 
-    public boolean allowsUpgrade(UpgradeType upgradeType) {
-        switch (upgradeType) {
-            case DEMOLITION:   return canRaze;
-            case COMPACTOR:    return supportsCompactor   && !hasCompactor;
-            case DUMPSTER:     return supportsDumpster    && !hasDumpster;
-            case GREEN_TOKEN:  return supportsGreenCert   && !hasGreenCert;
-            case INCINERATOR:  return supportsIncinerator && !hasIncinerator;
-            case RECLAMATION:  return supportsRecycle     && !hasRecycle;
-            case TIER_UPGRADE: return supportsTiers       && currentTier != Tier.THREE;
-            case TRUCK:        return false;
-            default:           return false;
-        }
-    }
 
 }
