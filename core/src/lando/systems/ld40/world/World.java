@@ -32,7 +32,8 @@ public class World {
     public Rectangle bounds;
 
 
-    public World(){
+    public World() {
+        bounds = new Rectangle(0, 0, pixels_wide, pixels_high);
 
         tiles = new Array<Building>();
         for (int y = 0; y < tiles_high; ++y) {
@@ -42,28 +43,24 @@ public class World {
                     type = Building.Type.GARBAGE_HQ;
                 }
 
-                if (x == 0 && y == 0) {
-                    type = Building.Type.COMMERCIAL_HIGH;
-                }
-
                 Building newBuilding = Building.getBuilding(type);
                 newBuilding.setLocation(x * tile_pixels_wide, y * tile_pixels_high);
                 tiles.add(newBuilding);
             }
         }
 
-        placeDump();
-
-        bounds = new Rectangle(0, 0, pixels_wide, pixels_high);
+        setRandom(Building.Type.DUMP);
+        setRandom(Building.Type.COMMERCIAL_LOW);
+        setRandom(Building.Type.COMMERCIAL_LOW);
     }
 
-    private void placeDump() {
-        int dumpIndex = 0;
+    private void setRandom(Building.Type buildingType) {
+        int index;
         do {
-            dumpIndex = MathUtils.random.nextInt(tiles.size - 1);
-        } while(!tiles.get(dumpIndex).canBuild);
+            index = MathUtils.random.nextInt(tiles.size - 1);
+        } while(!tiles.get(index).canBuild);
 
-        setTile(dumpIndex, Building.Type.DUMP);
+        setTile(index, buildingType);
     }
 
     public void setTile(int index, Building.Type buildingType) {
