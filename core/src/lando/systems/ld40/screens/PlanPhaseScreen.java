@@ -10,12 +10,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.ui.Button;
+import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
@@ -23,6 +26,8 @@ import lando.systems.ld40.world.World;
 import lando.systems.ld40.managers.BuildManager;
 import lando.systems.ld40.managers.IManager;
 import lando.systems.ld40.managers.RouteManager;
+import lando.systems.ld40.buildings.Building;
+import static com.badlogic.gdx.Gdx.input;
 
 /**
  * Created by Brian on 7/25/2017
@@ -50,6 +55,22 @@ public class PlanPhaseScreen extends BaseScreen {
     private Button buildButton;
     private Button routeButton;
 
+    private static final float TOOLTIP_TEXT_PADDING_X = 8f;
+    private static final float TOOLTIP_TEXT_SCALE = 0.3f;
+    private static final float TOOLTIP_SHOW_DELAY = 0.3f;
+    private static final float TOOLTIP_CURSOR_OFFSET_X = 8f;
+
+    private float tooltipBackgroundHeight = 120f;
+    private float tooltipBackgroundWidth = 270f;
+    private float tooltipTextOffsetY = 0;
+    public String tooltip = null;
+    private boolean showTooltip = false;
+    Vector3 tempVec3 = new Vector3();
+    private Vector2 touchPosScreen = new Vector2();
+    private float timeHovered = 0;
+    private Building previousMouseOveredTile = null;
+    private Building currentMouseOveredTile = null;
+
     private IManager actionManager;
 
     public PlanPhaseScreen() {
@@ -62,11 +83,16 @@ public class PlanPhaseScreen extends BaseScreen {
         float margin = 10f;
         float size = 80f;
 
+
         nextButton = new Button("nextButton", hudCamera, hudCamera.viewportWidth - margin - size,
                 hudCamera.viewportHeight - margin - size, "this goes next, duh");
 
         buildButton = new Button("buildButton", hudCamera, margin, hudCamera.viewportHeight - margin - size, "Build somethin'");
         routeButton = new Button("routeButton", hudCamera, margin, hudCamera.viewportHeight - 2f * margin - 2f * size, "Route something'");
+
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(buildButton);
+        bg.add(routeButton);
     }
 
     @Override
@@ -86,6 +112,7 @@ public class PlanPhaseScreen extends BaseScreen {
             updateWorld(dt);
             updateHud(dt);
             updateCamera();
+            updateTileTooltip(dt);
         }
     }
 
@@ -116,6 +143,20 @@ public class PlanPhaseScreen extends BaseScreen {
         camera.update();
     }
 
+    private void updateTileTooltip(float dt) {
+        //Tooltip when tile is mouseovered
+        boolean isTouching = checkForTouch(input.getX(), input.getY());
+        if (isTouching && (timeHovered == 0 || previousMouseOveredTile == currentMouseOveredTile)) {
+            timeHovered += dt;
+            previousMouseOveredTile = currentMouseOveredTile;
+
+        } else {
+            timeHovered = 0;
+        }
+        showTooltip = timeHovered >= TOOLTIP_SHOW_DELAY;
+
+    }
+
     @Override
     public void render(SpriteBatch batch) {
         Gdx.gl.glClearColor(Config.bgColor.r, Config.bgColor.g, Config.bgColor.b, Config.bgColor.a);
@@ -135,6 +176,7 @@ public class PlanPhaseScreen extends BaseScreen {
         batch.begin();
         {
             renderHud(batch);
+            renderTooltip(batch,hudCamera);
             if (DEBUG) {
                 Assets.drawString(batch, "DEBUG TEXT: " + Gdx.graphics.getDeltaTime(), 10f, 20f, Color.WHITE, 0.3f, Assets.font);
             }
@@ -165,6 +207,77 @@ public class PlanPhaseScreen extends BaseScreen {
             actionManager.render(batch);
         }
         batch.setColor(Color.WHITE);
+    }
+
+    public void renderTooltip(SpriteBatch batch, OrthographicCamera hudCamera){
+        // Tooltip
+
+        if (tooltip == null || tooltip.equals("") || !showTooltip) return;
+
+        tempVec3.set(input.getX(), input.getY(), 0);
+        hudCamera.unproject(tempVec3);
+        float tX = tempVec3.x;
+        float tY = tempVec3.y;
+        float backgroundX;
+        float backgroundY;
+        float stringTX ;
+        float stringTY;
+
+        // Screen spacee
+        if (tX < Config.gameWidth / 2) {
+            // left half of the screen: align left edge of tooltip at cursor
+            backgroundX = tX;
+            if (tY > Config.gameHeight / 2) {
+                // Tooltip will appear under the cursor (bottom-right).  Offset it
+                backgroundX += TOOLTIP_CURSOR_OFFSET_X;
+
+            }
+        } else {
+            // Right side of screen: align right edge of tooltip at cursor
+            backgroundX = tX - tooltipBackgroundWidth;
+
+        }
+        stringTX = backgroundX + TOOLTIP_TEXT_PADDING_X;
+        if (tY <= Config.gameHeight / 2) {
+            // bottom half of screen: align bottom edge of tooltip with cursor
+            backgroundY = tY + tooltipBackgroundHeight;
+        } else {
+            // top half of screen: align top edge of tooltip with cursor
+            backgroundY = tY;
+        }
+        stringTY = backgroundY + tooltipTextOffsetY;
+
+        // DRAW
+        batch.setColor(Color.DARK_GRAY);
+        batch.draw(Assets.whitePixel, backgroundX, backgroundY - 100f, tooltipBackgroundWidth, tooltipBackgroundHeight);
+        batch.setColor(Color.WHITE);
+        Assets.defaultNinePatch.draw(batch, backgroundX, backgroundY - 100f, tooltipBackgroundWidth, tooltipBackgroundHeight);
+        Assets.drawString(batch,
+                tooltip,
+                stringTX,
+                stringTY,
+                Color.WHITE,
+                TOOLTIP_TEXT_SCALE,
+                Assets.font);
+    }
+
+    public boolean checkForTouch(int screenX, int screenY) {
+        Vector3 touchPosUnproject = camera.unproject(tempVec3.set(screenX, screenY, 0));
+        touchPosScreen.set(touchPosUnproject.x, touchPosUnproject.y);
+
+        for (Building tile : World.buildings) {
+            if (tile.bounds.contains(touchPosScreen.x, touchPosScreen.y) && !nextButton.checkForTouch(screenX, screenY) && !buildButton.checkForTouch(screenX, screenY) && !routeButton.checkForTouch(screenX, screenY)) {
+                tooltip = "Type: " + tile.type;
+                if (tile.currentTier != null) {
+                    tooltip += "\nTier: " + tile.currentTier;
+                }
+                tooltip += "\nBase Trash Capacity: " + tile.baseTrashCapacity + "\nTrash per Round: " + tile.trashGeneratedPerRound
+                        + "\nResource Generated: " + tile.valueGeneratedPerRound;
+                currentMouseOveredTile = tile;
+                return true;
+            }
+        }
+        return false;
     }
 
     private void zoomOut(final IManager manager) {
@@ -225,9 +338,11 @@ public class PlanPhaseScreen extends BaseScreen {
             game.setScreen(new ActionPhaseScreen());
             return true;
         } else if (buildButton.checkForTouch(screenX, screenY)) {
+            buildButton.select();
             setManager(new BuildManager(hudCamera, camera));
             return true;
         } else if (routeButton.checkForTouch(screenX, screenY)) {
+            routeButton.select();
             setManager(new RouteManager(hudCamera, camera));
             return true;
         }

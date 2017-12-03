@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
 import lando.systems.ld40.LudumDare40;
+import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.world.World;
@@ -13,9 +13,20 @@ import lando.systems.ld40.world.World;
 /**
  * Created by Brian on 12/2/2017.
  */
-public class ActionPhaseScreen extends BaseScreen {
+class ActionPhaseScreen extends BaseScreen {
 
     private World world;
+
+    private enum Phase {
+        READY,  // Waiting
+        ANIMATING_ACTIONS, // Show everything happening
+        ANIMATING_REWARDS, // Pop up the UI and count up the points
+        REWARDS_FINAL, // Show all the points counted up
+    }
+
+    private Phase currentPhase;
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     public ActionPhaseScreen() {
         world = World.GetWorld();
@@ -23,7 +34,52 @@ public class ActionPhaseScreen extends BaseScreen {
         camera.zoom = 2.5f;
         camera.position.x = 500;
         camera.position.y = 500;
+        setPhase(Phase.READY);
     }
+
+    private void nextPhase() {
+        switch (currentPhase) {
+            case READY:
+                setPhase(Phase.ANIMATING_ACTIONS);
+                break;
+            case ANIMATING_ACTIONS:
+                setPhase(Phase.ANIMATING_REWARDS);
+                break;
+            case ANIMATING_REWARDS:
+                setPhase(Phase.REWARDS_FINAL);
+                break;
+            case REWARDS_FINAL:
+                LudumDare40.game.setScreen(new ResolutionPhaseScreen());
+                break;
+        }
+    }
+
+    private void setPhase(Phase phase) {
+        currentPhase = phase;
+        switch (phase) {
+            case READY:
+                break;
+            case ANIMATING_ACTIONS:
+                // Order of actions:
+                // Generate all trash
+                // Run the tracks, moving trash around
+                // Building upkeep (e.g. incineration)
+                // Generate value
+                break;
+            case ANIMATING_REWARDS:
+                break;
+            case REWARDS_FINAL:
+                break;
+        }
+    }
+
+    private void processAllBuidlings() {
+        for (Building building : World.GetWorld().buildings) {
+
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     @Override
     public void update(float dt) {
@@ -85,7 +141,7 @@ public class ActionPhaseScreen extends BaseScreen {
 
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-        LudumDare40.game.setScreen(new ResolutionPhaseScreen());
+        nextPhase();
         return true;
     }
 }
