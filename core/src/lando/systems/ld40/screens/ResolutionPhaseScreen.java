@@ -15,6 +15,7 @@ import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
+import lando.systems.ld40.world.Statistics;
 import lando.systems.ld40.world.World;
 
 
@@ -147,6 +148,11 @@ public class ResolutionPhaseScreen extends BaseScreen {
             else if (bResearch.checkForTouch(touchX, touchY)) {
                 selectedGroup = ItemGroups.Research;
             }
+            else if (bContinue.checkForTouch(touchX, touchY)){
+                world.nextTurn();
+                LudumDare40.game.setScreen(new PlanPhaseScreen());
+            }
+
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.A))
         {

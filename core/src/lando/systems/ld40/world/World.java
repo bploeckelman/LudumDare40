@@ -30,9 +30,11 @@ public class World {
 
     Array<Building> tiles;
     public Rectangle bounds;
+    public int turnNumber;
 
 
     public World() {
+        turnNumber = 0;
         bounds = new Rectangle(0, 0, pixels_wide, pixels_high);
 
         tiles = new Array<Building>();
@@ -96,5 +98,18 @@ public class World {
         int yOffset = (int)(tiles_high * y / pixels_high);
 
         return yOffset * tiles_wide + xOffset;
+    }
+
+    public void nextTurn(){
+        Statistics.getStatistics().addTurnStatistics(turnNumber, MathUtils.random(100), totalBuildings());
+        turnNumber++;
+    }
+
+    private int totalBuildings(){
+        int count = 0;
+        for (Building tile : tiles){
+            if (tile.type != Building.Type.EMPTY) count++;
+        }
+        return count;
     }
 }

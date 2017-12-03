@@ -12,7 +12,7 @@ public class Building extends Tile {
     public static float CUTOUT_Y_OFFSET = 8;
     public static float CUTOUT_X_OFFSET = 8;
 
-    private Type type;
+    public Type type;
 
     public boolean supportsCompactor;
     public boolean hasCompactor;
