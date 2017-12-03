@@ -9,5 +9,5 @@ public class Config {
     public static int gameWidth = 800;
     public static int gameHeight = 600;
     public static boolean resizable = true;
-    public static Color bgColor = new Color(.1f,.1f,.3f,1);
+    public static Color bgColor = new Color(82f/255f,60f /255f,20f /255f,1);
 }

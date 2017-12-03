@@ -117,12 +117,10 @@ public class PlanPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
-        batch.setColor(Color.LIGHT_GRAY);
-
-        batch.draw(Assets.whitePixel, nextButtonBounds.x, nextButtonBounds.y, nextButtonBounds.width, nextButtonBounds.height);
-        batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
-        batch.setColor(Color.WHITE);
-        Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+//        batch.setColor(Color.LIGHT_GRAY);
+//        batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
+//        batch.setColor(Color.WHITE);
+//        Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
     }
 
 
