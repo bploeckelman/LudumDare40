@@ -73,10 +73,12 @@ public class BuildManager extends ActionManager {
         switch (state) {
             case PICK_TILE:
                 selectedObject = World.GetWorld().getSelectedObject(touchPosition.x, touchPosition.y);
-                window = new BuildActionModalWindow(hudCamera, this);
-                window.show();
-                state = BuildState.PICK_ITEM;
-                handled = true;
+                if (selectedObject != null) {
+                    window = new BuildActionModalWindow(hudCamera, this);
+                    window.show();
+                    state = BuildState.PICK_ITEM;
+                    handled = true;
+                }
                 break;
             case PICK_ITEM:
                 // check inventory
