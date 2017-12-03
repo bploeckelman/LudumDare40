@@ -47,6 +47,19 @@ public class Button {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    public Button(String atlasRegion, OrthographicCamera camera, float x, float y, String tooltip) {
+        this(atlasRegion, camera, x, y, null, tooltip);
+    }
+
+    public Button(String atlasRegion, OrthographicCamera camera, float x, float y, String text, String tooltip) {
+        this.region = Assets.atlas.findRegion(atlasRegion);
+        this.bounds = new Rectangle(x, y, region.getRegionWidth(), region.getRegionHeight());
+        this.camera = camera;
+        this.setText(text);
+        this.setTooltip(tooltip);
+        this.ninePatch = null;
+    }
+
     public Button(TextureRegion region, Rectangle bounds, OrthographicCamera camera, String text, String tooltip) {
         this.bounds = new Rectangle(bounds);
         this.camera = camera;
@@ -94,8 +107,9 @@ public class Button {
         if (text != null && !text.equals("")) {
             Assets.drawString(batch, text, textX, textY, textColor, textScale, Assets.font);
         }
-    }
 
+        renderTooltip(batch, camera);
+    }
 
     public void renderTooltip(SpriteBatch batch, OrthographicCamera hudCamera){
         // Tooltip

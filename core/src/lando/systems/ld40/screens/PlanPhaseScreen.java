@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.gameobjects.GameObject;
+import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
@@ -47,10 +48,9 @@ public class PlanPhaseScreen extends BaseScreen {
     public MutableFloat targetZoom = new MutableFloat(1f);
     public Vector3 cameraTargetPos;
 
-    private Rectangle nextButtonBounds;
-    private Rectangle buildButtonBounds;
-    private Rectangle routesButtonBounds;
-    private Vector3 projectionVector = new Vector3();
+    private Button nextButton;
+    private Button buildButton;
+    private Button routeButton;
 
     private IManager actionManager;
 
@@ -63,9 +63,12 @@ public class PlanPhaseScreen extends BaseScreen {
 
         float margin = 10f;
         float size = 80f;
-        nextButtonBounds = new Rectangle(hudCamera.viewportWidth - margin - size, hudCamera.viewportHeight - margin - size, size, size);
-        buildButtonBounds = new Rectangle(margin, hudCamera.viewportHeight - margin - size, size, size);
-        routesButtonBounds = new Rectangle(margin, hudCamera.viewportHeight - 2f * margin - 2f * size, size, size);
+
+        nextButton = new Button("nextButton", hudCamera, hudCamera.viewportWidth - margin - size,
+                hudCamera.viewportHeight - margin - size, "this goes next, duh");
+
+        buildButton = new Button("buildButton", hudCamera, margin, hudCamera.viewportHeight - margin - size, "Build somethin'");
+        routeButton = new Button("routeButton", hudCamera, margin, hudCamera.viewportHeight - 2f * margin - 2f * size, "Route something'");
     }
 
     @Override
@@ -81,7 +84,7 @@ public class PlanPhaseScreen extends BaseScreen {
         }
 
         updateWorld(dt);
-        updateObjects(dt);
+        updateHud(dt);
         updateAction(dt);
         updateCamera();
     }
@@ -90,8 +93,10 @@ public class PlanPhaseScreen extends BaseScreen {
         world.update(dt);
     }
 
-    private void updateObjects(float dt) {
-        // todo
+    private void updateHud(float dt) {
+        nextButton.update(dt);
+        buildButton.update(dt);
+        routeButton.update(dt);
     }
 
     private void updateAction(float dt) {
@@ -150,20 +155,11 @@ public class PlanPhaseScreen extends BaseScreen {
         batch.setColor(Color.WHITE);
         Assets.layout.setText(Assets.font, "Plan Phase", Color.GOLD, hudCamera.viewportWidth, Align.center, true);
         Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
-
-        // Build button
-        batch.setColor(Color.SKY);
-        batch.draw(Assets.whitePixel, buildButtonBounds.x, buildButtonBounds.y, buildButtonBounds.width, buildButtonBounds.height);
-
-        // Route button
-        batch.setColor(Color.ORANGE);
-        batch.draw(Assets.whitePixel, routesButtonBounds.x, routesButtonBounds.y, routesButtonBounds.width, routesButtonBounds.height);
-
-        // Next button
-        batch.setColor(Color.FOREST);
-        batch.draw(Assets.whitePixel, nextButtonBounds.x, nextButtonBounds.y, nextButtonBounds.width, nextButtonBounds.height);
-
         batch.setColor(Color.WHITE);
+
+        buildButton.render(batch);
+        routeButton.render(batch);
+        nextButton.render(batch);
 
         if (actionManager != null) {
             actionManager.render(batch);
@@ -209,15 +205,13 @@ public class PlanPhaseScreen extends BaseScreen {
 
         // if one of the buttons, disable button presses, zoom out and create correct action maanger
 
-        projectionVector.set(screenX, screenY, 0);
-        hudCamera.unproject(projectionVector);
-        if (nextButtonBounds.contains(projectionVector.x, projectionVector.y)) {
+        if (nextButton.checkForTouch(screenX, screenY)) {
             game.setScreen(new ActionPhaseScreen());
             return true;
-        } else if (buildButtonBounds.contains(projectionVector.x, projectionVector.y)) {
+        } else if (buildButton.checkForTouch(screenX, screenY)) {
             setManager(new BuildManager(hudCamera, camera));
             return true;
-        } else if (routesButtonBounds.contains(projectionVector.x, projectionVector.y)) {
+        } else if (routeButton.checkForTouch(screenX, screenY)) {
             setManager(new RouteManager(hudCamera, camera));
             return true;
         }
