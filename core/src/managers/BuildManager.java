@@ -20,7 +20,6 @@ public class BuildManager extends ActionManager {
 
     public BuildManager(OrthographicCamera actionCamera, OrthographicCamera worldCamera) {
         super(actionCamera, worldCamera);
-
     }
 
     public void activate() {
