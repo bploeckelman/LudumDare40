@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import lando.systems.ld40.utils.accessors.*;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -32,6 +33,7 @@ public class Assets {
     public static BitmapFont font;
     public static BitmapFont eightBitFont;
     public static ShaderProgram fontShader;
+    public static Array<ShaderProgram> randomTransitions;
     public static ShaderProgram blindsShader;
     public static ShaderProgram fadeShader;
     public static ShaderProgram radialShader;
@@ -118,10 +120,16 @@ public class Assets {
 
         fontShader = loadShader("shaders/dist.vert", "shaders/dist.frag");
 
+        randomTransitions = new Array<ShaderProgram>();
         blindsShader = loadShader("shaders/default.vert", "shaders/blinds.frag");
         fadeShader = loadShader("shaders/default.vert", "shaders/dissolve.frag");
         radialShader = loadShader("shaders/default.vert", "shaders/radial.frag");
         doomShader = loadShader("shaders/default.vert", "shaders/doomdrip.frag");
+
+        randomTransitions.add(blindsShader);
+        randomTransitions.add(fadeShader);
+        randomTransitions.add(radialShader);
+
         return 1f;
     }
 

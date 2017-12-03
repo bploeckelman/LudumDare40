@@ -103,17 +103,7 @@ public class LudumDare40 extends ApplicationAdapter {
         } else { // transition
             Gdx.input.setInputProcessor(null);
             if (transitionType == null) {
-                switch (MathUtils.random(2)) {
-                    case 0:
-                        transitionShader = Assets.fadeShader;
-                        break;
-                    case 1:
-                        transitionShader = Assets.blindsShader;
-                        break;
-                    case 2:
-                        transitionShader = Assets.radialShader;
-                        break;
-                }
+                transitionShader = Assets.randomTransitions.get(MathUtils.random(Assets.randomTransitions.size-1));
             } else {
                 transitionShader = transitionType;
             }
