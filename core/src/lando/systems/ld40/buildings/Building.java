@@ -306,49 +306,73 @@ public class Building extends Tile {
     public void render(SpriteBatch batch){
         super.render(batch);
         if (supportsCompactor){
-            TextureRegion compactor;
-            if (hasCompactor){
-                compactor = Assets.compactorTexture;
-            } else {
-                compactor = Assets.compactorCutoutTexture;
-            }
+            TextureRegion compactor = hasCompactor ? Assets.compactorTexture : Assets.compactorCutoutTexture;
             batch.draw(compactor, bounds.x + CUTOUT_X_OFFSET, bounds.y + CUTOUT_Y_OFFSET);
         }
         if (supportsIncinerator){
-            TextureRegion incinerator;
-            if (hasIncinerator){
-                incinerator = Assets.incineratorTexture;
-            } else {
-                incinerator = Assets.incineratorCutoutTexture;
-            }
+            TextureRegion incinerator = hasIncinerator ? Assets.incineratorTexture : Assets.incineratorCutoutTexture;
             batch.draw(incinerator, bounds.x + (bounds.width - incinerator.getRegionWidth())/2, bounds.y + CUTOUT_Y_OFFSET);
         }
         if (supportsRecycle){
-            TextureRegion recycle;
-            if (hasRecycle){
-                recycle = Assets.recycleTexture;
-            } else {
-                recycle = Assets.recycleCutoutTexture;
-            }
+            TextureRegion recycle = hasRecycle ? Assets.recycleTexture : Assets.recycleCutoutTexture;
             batch.draw(recycle, bounds.x + bounds.width - (recycle.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y + CUTOUT_Y_OFFSET);
         }
         if (supportsDumpster){
-            TextureRegion dumpster;
-            if (hasDumpster){
-                dumpster = Assets.dumpsterTexture;
-            } else {
-                dumpster = Assets.dumpsterCutoutTexture;
-            }
+            TextureRegion dumpster = hasDumpster ? Assets.dumpsterTexture : Assets.dumpsterCutoutTexture;
             batch.draw(dumpster, bounds.x + CUTOUT_X_OFFSET, bounds.y + CUTOUT_Y_OFFSET);
         }
         if (supportsGreenCert){
-            TextureRegion greenCert;
-            if (hasGreenCert){
-                greenCert = Assets.leafTexture;
-            } else {
-                greenCert = Assets.leafCutoutTexture;
-            }
+            TextureRegion greenCert = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
             batch.draw(greenCert, bounds.x + bounds.width - (greenCert.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y +  bounds.height - (greenCert.getRegionHeight() + CUTOUT_Y_OFFSET));
+        }
+    }
+
+    @Override
+    public void render(SpriteBatch batch, float x, float y, float w, float h) {
+        super.render(batch, x, y, w, h);
+        float wScale = w / texture.getRegionWidth();
+        float hScale = h / texture.getRegionHeight();
+        TextureRegion addonTexture;
+        if (supportsCompactor){
+            addonTexture = hasCompactor ? Assets.compactorTexture : Assets.compactorCutoutTexture;
+            batch.draw(addonTexture,
+                    x + CUTOUT_X_OFFSET * wScale,
+                    y + CUTOUT_Y_OFFSET * hScale,
+                    wScale  * addonTexture.getRegionWidth(),
+                    hScale * addonTexture.getRegionHeight());
+        }
+        if (supportsIncinerator){
+            addonTexture = hasIncinerator ? Assets.incineratorTexture : Assets.incineratorCutoutTexture;
+            batch.draw(addonTexture,
+                    x + (w - wScale * addonTexture.getRegionWidth()) / 2,
+                    y + CUTOUT_Y_OFFSET * hScale,
+                    wScale  * addonTexture.getRegionWidth(),
+                    hScale * addonTexture.getRegionHeight());
+        }
+        if (supportsRecycle){
+            addonTexture = hasRecycle ? Assets.recycleTexture : Assets.recycleCutoutTexture;
+            batch.draw(addonTexture,
+                    x + w - wScale * (addonTexture.getRegionWidth() + CUTOUT_X_OFFSET),
+                    y + CUTOUT_Y_OFFSET * hScale,
+                    wScale  * addonTexture.getRegionWidth(),
+                    hScale * addonTexture.getRegionHeight());
+        }
+        if (supportsDumpster){
+            addonTexture = hasDumpster ? Assets.dumpsterTexture : Assets.dumpsterCutoutTexture;
+            batch.draw(addonTexture,
+                    x + CUTOUT_X_OFFSET * wScale,
+                    y + CUTOUT_Y_OFFSET * hScale,
+                    wScale  * addonTexture.getRegionWidth(),
+                    hScale * addonTexture.getRegionHeight());
+        }
+        if (supportsGreenCert){
+            addonTexture = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
+            batch.draw(addonTexture,
+                    x + w - wScale * (addonTexture.getRegionWidth()  + CUTOUT_X_OFFSET),
+                    y + h - hScale * (addonTexture.getRegionHeight() + CUTOUT_Y_OFFSET),
+                    wScale  * addonTexture.getRegionWidth(),
+                    hScale * addonTexture.getRegionHeight());
+
         }
     }
 
