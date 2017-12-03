@@ -45,7 +45,7 @@ public class World {
                 }                
             }
         }
-        bounds = new Rectangle(-tile_pixels_wide/2f, -tile_pixels_high/2f,
+        bounds = new Rectangle(0, 0,
                 pixels_wide, pixels_high);
     }
 

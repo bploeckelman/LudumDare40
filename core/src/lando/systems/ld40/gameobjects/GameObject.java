@@ -47,8 +47,8 @@ public class GameObject {
         bounds.width = width;
         bounds.height = height;
 
-        bounds_offset_x = width / 2;
-        bounds_offset_y = height /2;
+        bounds_offset_x = 0;
+        bounds_offset_y = 0;
     }
     
     public void setBoundsLocation(float x, float y) {
