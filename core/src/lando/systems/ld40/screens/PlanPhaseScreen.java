@@ -127,8 +127,8 @@ public class PlanPhaseScreen extends BaseScreen {
             switch (buildAction.state) {
                 case START: {
                     // Zoom out
-                    float camTargetX = World.pixels_wide / 2f;
-                    float camTargetY = World.pixels_high / 2f;
+                    float camTargetX = World.pixels_wide / 2f - World.tile_pixels_wide / 2f;
+                    float camTargetY = World.pixels_high / 2f - World.tile_pixels_high / 2f;
                     float camTargetZoom = Math.max(
                             World.pixels_wide * 1.2f / hudCamera.viewportWidth,
                             World.pixels_high * 1.2f / hudCamera.viewportHeight
