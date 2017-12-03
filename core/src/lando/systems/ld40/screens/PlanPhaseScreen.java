@@ -17,6 +17,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.gameobjects.GameObject;
+import lando.systems.ld40.ui.BuildActionModalWindow;
+import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
@@ -48,18 +50,18 @@ public class PlanPhaseScreen extends BaseScreen {
     private Rectangle nextButtonBounds;
     private Rectangle buildButtonBounds;
     private Rectangle routesButtonBounds;
-    private Rectangle buildTileHudBounds;
-    private Rectangle buildInventoryHudBounds;
     private Vector3 projectionVector = new Vector3();
 
-    private enum BuildState { START, PICK_TILE, PICK_ITEM, DONE }
-    private class BuildAction {
-        BuildState state;
-        GameObject selectedObject;
+    public enum BuildState { START, PICK_TILE, PICK_ITEM, DONE }
+    public class BuildAction {
+        public BuildState state;
+        public GameObject selectedObject;
+        public BuildActionModalWindow modalWindow;
         // TODO: access inventory how?
         public BuildAction() {
             state = BuildState.START;
             selectedObject = null;
+            modalWindow = new BuildActionModalWindow(hudCamera, this);
         }
     }
     private BuildAction buildAction;
@@ -147,21 +149,16 @@ public class PlanPhaseScreen extends BaseScreen {
                 }
                 break;
                 case PICK_TILE: {
-                    if (buildAction.selectedObject != null) {
-                        // TODO: tween the selected tile out to hud size from it's place in the world map
-                        Tween.call(new TweenCallback() {
-                            @Override
-                            public void onEvent(int i, BaseTween<?> baseTween) {
-                                buildAction.state = BuildState.PICK_ITEM;
-                            }
-                        }).delay(1f).start(Assets.tween);
-                    }
+//                    if (buildAction.selectedObject != null) {
+//                        buildAction.modalWindow.show();
+//                        buildAction.state = BuildState.PICK_ITEM;
+//                    }
                 }
                 break;
                 case PICK_ITEM: {
                     // TODO: ...
                     if (Gdx.input.justTouched()) {
-                        buildAction.state = BuildState.DONE;
+                        buildAction.modalWindow.hide();
                     }
                 }
                 break;
@@ -263,15 +260,7 @@ public class PlanPhaseScreen extends BaseScreen {
                 batch.setShader(null);
             } break;
             case PICK_ITEM: {
-                batch.setShader(Assets.fontShader);
-                String text = "Click an item to build...";
-                Assets.layout.setText(Assets.font, text);
-                Assets.font.draw(batch, text,
-                        0, hudCamera.viewportHeight - Assets.layout.height,
-                        hudCamera.viewportWidth,
-                        Align.center, true);
-                batch.setShader(null);
-                buildAction.selectedObject.render(batch, 100f, 100f, hudCamera.viewportWidth - 200f, hudCamera.viewportHeight - 200f);
+                buildAction.modalWindow.render(batch);
             } break;
             case DONE: {
                 // nothing to see here
@@ -333,6 +322,7 @@ public class PlanPhaseScreen extends BaseScreen {
                 GameObject selectedObject = world.getSelectedObject(projectionVector.x, projectionVector.y);
                 if (selectedObject != null) {
                     buildAction.selectedObject = selectedObject;
+                    buildAction.modalWindow.show();
                     buildAction.state = BuildState.PICK_ITEM;
                 }
             } else if (buildAction.state == BuildState.PICK_ITEM) {
