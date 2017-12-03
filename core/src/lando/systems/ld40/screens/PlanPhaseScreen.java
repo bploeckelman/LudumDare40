@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.utils.Assets;
@@ -33,6 +33,9 @@ public class PlanPhaseScreen extends BaseScreen {
     public boolean cancelTouchUp = false;
     public float targetZoom = 1;
 
+    private Rectangle nextButtonBounds;
+    private Vector3 projectionVector = new Vector3();
+
 
     public PlanPhaseScreen() {
         this.game = LudumDare40.game;
@@ -40,6 +43,8 @@ public class PlanPhaseScreen extends BaseScreen {
         touchStart = new Vector3();
         world = World.GetWorld();
         Gdx.input.setInputProcessor(this);
+
+        nextButtonBounds = new Rectangle(camera.viewportWidth - 100, camera.viewportHeight - 40, 80, 20);
     }
 
     @Override
@@ -107,6 +112,8 @@ public class PlanPhaseScreen extends BaseScreen {
 
     private void renderHud(SpriteBatch batch) {
         batch.setColor(Color.LIGHT_GRAY);
+
+        batch.draw(Assets.whitePixel, nextButtonBounds.x, nextButtonBounds.y, nextButtonBounds.width, nextButtonBounds.height);
         batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
         batch.setColor(Color.WHITE);
         Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
@@ -115,6 +122,15 @@ public class PlanPhaseScreen extends BaseScreen {
 
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+        projectionVector.x = screenX;
+        projectionVector.y = screenY;
+        Vector3 hudClick = hudCamera.unproject(projectionVector);
+        if (nextButtonBounds.contains(hudClick.x, hudClick.y)) {
+            game.setScreen(new ActionPhaseScreen());
+            return true;
+        }
+
+
         cameraTouchStart.set(camera.position);
         touchStart.set(screenX, screenY, 0);
         return true;
