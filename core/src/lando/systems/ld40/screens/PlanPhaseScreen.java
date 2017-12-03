@@ -23,6 +23,7 @@ import lando.systems.ld40.utils.accessors.Vector3Accessor;
 import lando.systems.ld40.world.World;
 import managers.BuildManager;
 import managers.IManager;
+import managers.RouteManager;
 
 /**
  * Created by Brian on 7/25/2017
@@ -33,7 +34,6 @@ public class PlanPhaseScreen extends BaseScreen {
 
     private final LudumDare40 game;
     private World world;
-
 
     public Vector3 cameraTouchStart;
     public Vector3 touchStart;
@@ -54,35 +54,18 @@ public class PlanPhaseScreen extends BaseScreen {
 
     private IManager actionManager;
 
-    private enum RouteState { START, PICK_SOURCES, PICK_DEST, DONE }
-    private class RouteAction {
-        RouteState state;
-        GameObject selectedTruck;
-        // TODO: store route, in truck?
-        public RouteAction() {
-            state = RouteState.START;
-            selectedTruck = null;
-        }
-    }
-    private RouteAction routeAction;
-
-
     public PlanPhaseScreen() {
         this.game = LudumDare40.game;
         cameraTouchStart = new Vector3();
         touchStart = new Vector3();
         cameraTargetPos = new Vector3(camera.position);
         world = World.GetWorld();
-//        Gdx.input.setInputProcessor(this);
 
         float margin = 10f;
         float size = 80f;
         nextButtonBounds = new Rectangle(hudCamera.viewportWidth - margin - size, hudCamera.viewportHeight - margin - size, size, size);
         buildButtonBounds = new Rectangle(margin, hudCamera.viewportHeight - margin - size, size, size);
         routesButtonBounds = new Rectangle(margin, hudCamera.viewportHeight - 2f * margin - 2f * size, size, size);
-//        buildTileHudBounds = new Rectangle()
-
-        routeAction = null;
     }
 
     @Override
@@ -164,60 +147,28 @@ public class PlanPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
-//        batch.setColor(Color.LIGHT_GRAY);
-//        batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
-
         batch.setColor(Color.WHITE);
         Assets.layout.setText(Assets.font, "Plan Phase", Color.GOLD, hudCamera.viewportWidth, Align.center, true);
         Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
 
-        renderBuildActionHud(batch);
-        renderRouteActionHud(batch);
-        renderNextActionHud(batch);
-    }
-
-    private void renderBuildActionHud(SpriteBatch batch) {
         // Build button
         batch.setColor(Color.SKY);
         batch.draw(Assets.whitePixel, buildButtonBounds.x, buildButtonBounds.y, buildButtonBounds.width, buildButtonBounds.height);
+
+        // Route button
+        batch.setColor(Color.ORANGE);
+        batch.draw(Assets.whitePixel, routesButtonBounds.x, routesButtonBounds.y, routesButtonBounds.width, routesButtonBounds.height);
+
+        // Next button
+        batch.setColor(Color.FOREST);
+        batch.draw(Assets.whitePixel, nextButtonBounds.x, nextButtonBounds.y, nextButtonBounds.width, nextButtonBounds.height);
+
         batch.setColor(Color.WHITE);
 
         if (actionManager != null) {
             actionManager.render(batch);
         }
-    }
-
-    private void renderRouteActionHud(SpriteBatch batch) {
-        // Routes button
-        batch.setColor(Color.ORANGE);
-        batch.draw(Assets.whitePixel, routesButtonBounds.x, routesButtonBounds.y, routesButtonBounds.width, routesButtonBounds.height);
         batch.setColor(Color.WHITE);
-        if (routeAction == null) return;
-
-        switch (routeAction.state) {
-            case START:
-               //drawText(batch, "Select Route...");
-                break;
-            case PICK_SOURCES:
-                //drawText(batch, "Select Source...");
-                break;
-            case PICK_DEST:
-                //drawText(batch, "Click a destination...");
-                break;
-            case DONE: {
-                // nothing to see here
-            }
-            break;
-        }
-    }
-
-    private void renderNextActionHud(SpriteBatch batch) {
-        // Next button
-        batch.setColor(Color.FOREST);
-        batch.draw(Assets.whitePixel, nextButtonBounds.x, nextButtonBounds.y, nextButtonBounds.width, nextButtonBounds.height);
-        batch.setColor(Color.WHITE);
-
-        // ...
     }
 
     private void zoomOut(final IManager manager) {
@@ -236,7 +187,7 @@ public class PlanPhaseScreen extends BaseScreen {
                 .push(Tween.call(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
-                        actionManager.activate();
+                        manager.activate();
                     }
                 }))
                 .start(Assets.tween);
@@ -264,12 +215,10 @@ public class PlanPhaseScreen extends BaseScreen {
             game.setScreen(new ActionPhaseScreen());
             return true;
         } else if (buildButtonBounds.contains(projectionVector.x, projectionVector.y)) {
-            actionManager = new BuildManager(hudCamera, camera);
-            zoomOut(actionManager);
+            setManager(new BuildManager(hudCamera, camera));
             return true;
         } else if (routesButtonBounds.contains(projectionVector.x, projectionVector.y)) {
-            routeAction = new RouteAction();
-            //buildAction = null;
+            setManager(new RouteManager(hudCamera, camera));
             return true;
         }
 
@@ -277,8 +226,16 @@ public class PlanPhaseScreen extends BaseScreen {
             actionManager.touchUp(screenX, screenY);
         }
 
-
         return true;
+    }
+
+    private void setManager(IManager manager) {
+        if (actionManager != null) {
+            actionManager.deactivate();
+        }
+
+        actionManager = manager;
+        zoomOut(actionManager);
     }
 
     @Override

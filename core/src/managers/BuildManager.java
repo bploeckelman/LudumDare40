@@ -1,7 +1,6 @@
 package managers;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
@@ -13,7 +12,7 @@ import lando.systems.ld40.world.World;
  */
 public class BuildManager extends ActionManager {
 
-    public enum BuildState { START, PICK_TILE, PICK_ITEM, DONE }
+    public enum BuildState { NONE, START, PICK_TILE, PICK_ITEM, DONE }
 
     private BuildState state =  BuildState.START;
     public GameObject selectedObject;
@@ -27,6 +26,10 @@ public class BuildManager extends ActionManager {
 
     public void activate() {
         state = BuildState.PICK_TILE;
+    }
+
+    public void deactivate() {
+        state = BuildState.NONE;
     }
 
     public void complete() {
@@ -51,7 +54,7 @@ public class BuildManager extends ActionManager {
                 }
                 break;
             case DONE:
-                state = BuildState.DONE;
+
                 break;
         }
 

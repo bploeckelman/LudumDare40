@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public interface IManager {
 
     void activate();
+    void deactivate();
 
     void render(SpriteBatch batch);
     void update();
