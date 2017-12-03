@@ -160,7 +160,9 @@ public class PlanPhaseScreen extends BaseScreen {
                 break;
                 case PICK_ITEM: {
                     // TODO: ...
-                    buildAction.state = BuildState.DONE;
+                    if (Gdx.input.justTouched()) {
+                        buildAction.state = BuildState.DONE;
+                    }
                 }
                 break;
                 case DONE: {
