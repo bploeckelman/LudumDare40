@@ -50,6 +50,10 @@ public abstract class ModalWindow {
         this.touchDelay = 0f;
     }
 
+    public boolean contains(Vector3 position) {
+        return modalRect.contains(position.x, position.y);
+    }
+
     public void show() {
         if (isActive) return;
         isActive = true;
@@ -120,5 +124,9 @@ public abstract class ModalWindow {
     }
 
     protected abstract void renderWindowContents(SpriteBatch batch);
+
+    public void touchUp(float windowX, float windowY) {
+
+    }
 
 }

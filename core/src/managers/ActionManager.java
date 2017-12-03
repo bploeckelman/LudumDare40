@@ -81,4 +81,33 @@ public abstract class ActionManager implements IManager {
     }
 
     protected abstract void updateManager(float dt);
+
+
+    public boolean touchUp(float screenX, float screenY) {
+        Vector3 position = unprojectHud(screenX, screenY);
+        if (isModal()) {
+            if (window.contains(position)) {
+                window.touchUp(position.x, position.y);
+            }
+            return true;
+        }
+
+        return handleTouch(screenX, screenY);
+    }
+
+    public boolean handleTouch(float screenX, float screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean isModal() {
+        return (window != null);
+    }
+
+    public void hide() {
+        if (window != null) {
+            window.hide();
+            window = null;
+        }
+    }
 }

@@ -67,6 +67,7 @@ public class BuildActionModalWindow extends ModalWindow {
     protected void renderWindowContents(SpriteBatch batch) {
         if (buildAction == null || !showText) return;
 
+        if (buildAction.selectedObject == null) return;
         // Draw 'selected' building / tile
         float tile_size = modalRect.width / 2f - 2f * margin_left;
         buildAction.selectedObject.render(batch,

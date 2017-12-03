@@ -50,9 +50,4 @@ public class RouteManager extends ActionManager {
     public void updateManager(float dt) {
 
     }
-
-    @Override
-    public void touchUp(float screenX, float screenY) {
-
-    }
 }

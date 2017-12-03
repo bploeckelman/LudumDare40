@@ -14,5 +14,6 @@ public interface IManager {
     void render(SpriteBatch batch);
     void update(float dt);
 
-    void touchUp(float screenX, float screenY);
+    boolean touchUp(float screenX, float screenY);
+    boolean isModal();
 }

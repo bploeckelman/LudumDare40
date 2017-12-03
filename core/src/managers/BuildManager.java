@@ -35,7 +35,7 @@ public class BuildManager extends ActionManager {
                 break;
             case PICK_ITEM:
                 if (Gdx.input.justTouched()) {
-                    window.hide();
+                    hide();
                 }
                 break;
             case DONE:
@@ -64,20 +64,25 @@ public class BuildManager extends ActionManager {
     }
 
     @Override
-    public void touchUp(float screenX, float screenY) {
+    public boolean handleTouch(float screenX, float screenY) {
 
-        Vector3 touchPoisition = unprojectWorld(screenX, screenY);
+        boolean handled = false;
+
+        Vector3 touchPosition = unprojectWorld(screenX, screenY);
 
         switch (state) {
             case PICK_TILE:
-                selectedObject = World.GetWorld().getSelectedObject(touchPoisition.x, touchPoisition.y);
+                selectedObject = World.GetWorld().getSelectedObject(touchPosition.x, touchPosition.y);
                 window = new BuildActionModalWindow(hudCamera, this);
                 window.show();
                 state = BuildState.PICK_ITEM;
+                handled = true;
                 break;
             case PICK_ITEM:
                 // check inventory
                 break;
         }
+
+        return handled;
     }
 }
