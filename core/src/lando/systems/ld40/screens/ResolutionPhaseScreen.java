@@ -1,6 +1,7 @@
 package lando.systems.ld40.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,19 +38,17 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
     Rectangle rectButContinueBox;
 
-    Rectangle buttonHeaderRegion;
-    Rectangle buttonRegion;
-
-    Rectangle infoHeaderRegion;
-    Rectangle infoRegion;
-
-    Rectangle carRegion;
+    Button purchaseUpgradeButton;
 
     //Button continueButton;
     //Button purchaseButton;
 
+    Array<UpgradeButton> buildingsButtons;
+
+    UpgradeButton currentUpgrade;
+
     public ResolutionPhaseScreen() {
-        subButtons = new Array<Button>();
+        buildingsButtons = new Array<UpgradeButton>();
         world = World.GetWorld();
         Gdx.input.setInputProcessor(this);
         camera.zoom = 2.5f;
@@ -66,16 +65,30 @@ public class ResolutionPhaseScreen extends BaseScreen {
         rectButBox = new Rectangle(20, 90, fScreenWidth * 0.55f, 330);
         rectInfoBox = new Rectangle(rectButBox.x + rectButBox.width + fScreenWidth * 0.05f, 90, fScreenWidth * 0.35f, 330);
 
+        purchaseUpgradeButton = new Button(Assets.defaultNinePatch, new Rectangle(rectInfoBox.x + 10, rectInfoBox.y + 10, rectInfoBox.width - 20, 50),
+                hudCamera, "Upgrade", null);
+
+        initBuildingsUpgrades();
+
         rectButContinueBox = new Rectangle(fScreenWidth * 0.75f, fScreenHeight / 30, fScreenWidth * 0.225f, fScreenHeight / 12);
-                buttonCount++;
-                j += 100;
-            }
-            i += 100;
-        }
+    }
 
+    void initBuildingsUpgrades()
+    {
+        UpgradeButton bUpgrade1 = new UpgradeButton();
+        bUpgrade1.name = "Low Residential";
+        bUpgrade1.description = "LOW RESIDENTIAL STATS";
+        bUpgrade1.picture = Assets.atlas.findRegion("res-low");
+        bUpgrade1.cost = 10;
 
-        subButton1Region = new Rectangle(subButtonRegion.x, subButtonRegion.y, 100, 100);
-        subButton1 = new Button(Assets.defaultNinePatch, subButton1Region, hudCamera, "Test1", "tooltip");
+        UpgradeButton bUpgrade2 = new UpgradeButton();
+        bUpgrade2.name = "Low Commercial";
+        bUpgrade2.description = "LOW COMMERCIAL STATS";
+        bUpgrade2.picture = Assets.atlas.findRegion("com-low");
+        bUpgrade2.cost = 20;
+
+        buildingsButtons.add(bUpgrade1);
+        buildingsButtons.add(bUpgrade2);
     }
 
     @Override
@@ -83,6 +96,15 @@ public class ResolutionPhaseScreen extends BaseScreen {
         updateWorld(dt);
         updateObjects(dt);
         updateCamera(dt);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.A))
+        {
+            currentUpgrade = buildingsButtons.get(0);
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.S))
+        {
+            currentUpgrade = buildingsButtons.get(1);
+        }
     }
 
     private void updateWorld(float dt) {
@@ -121,22 +143,18 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
             batch.draw(Assets.whitePixel, rectButContinueBox.x, rectButContinueBox.y, rectButContinueBox.width, rectButContinueBox.height);
 
-            // Draw header text
-
-
-            // Draw cash moneys
-
-
-            // Draw upgrade item buttons
-
-
-            // Draw info section details
-
-
-
-
-            // Screen transition overlay
-
+            //Render upgrade information
+            if(currentUpgrade != null)
+            {
+                Assets.drawString(batch, currentUpgrade.name, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 20,
+                        Color.BLACK, 0.5f, Assets.font, rectInfoBox.width, Align.center);
+                batch.draw(currentUpgrade.picture, rectInfoBox.x + 80, rectInfoBox.y + rectInfoBox.height - 180);
+                Assets.drawString(batch, currentUpgrade.description, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 200,
+                        Color.BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
+                Assets.drawString(batch, "Cost: " + currentUpgrade.cost, rectInfoBox.x, rectInfoBox.y + 100,
+                        Color.BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
+                purchaseUpgradeButton.render(batch);
+            }
         }
         batch.end();
     }
@@ -155,12 +173,6 @@ public class ResolutionPhaseScreen extends BaseScreen {
         batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
         batch.setColor(Color.WHITE);
         Assets.drawString(batch, "Resolution Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
-        batch.setColor(Color.LIGHT_GRAY);
-        for(Button sub : subButtons)
-        {
-            batch.draw(Assets.whitePixel, sub.bounds.x, sub.bounds.y, sub.bounds.width, sub.bounds.height);
-            sub.render(batch);
-        }
     }
 
     @Override
@@ -175,6 +187,8 @@ public class ResolutionPhaseScreen extends BaseScreen {
         public String name;
         public TextureRegion picture;
         public Button button;
+        public int cost;
+        public int quantity;
     }
 }
 
