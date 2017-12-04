@@ -89,11 +89,11 @@ public class PlanPhaseScreen extends BaseScreen {
         float size = 80f;
 
 
-        nextButton = new Button("nextButton", hudCamera, hudCamera.viewportWidth - margin - size,
+        nextButton = new Button("next_button", hudCamera, hudCamera.viewportWidth - margin - size,
                 hudCamera.viewportHeight - margin - size, "this goes next, duh");
 
-        buildButton = new Button("buildButton", hudCamera, margin, hudCamera.viewportHeight - margin - size, "Build somethin'");
-        routeButton = new Button("routeButton", hudCamera, margin, hudCamera.viewportHeight - 2f * margin - 2f * size, "Route something'");
+        buildButton = new Button("build_button", hudCamera, margin, hudCamera.viewportHeight - margin - size, "Build somethin'");
+        routeButton = new Button("route_button", hudCamera, margin, hudCamera.viewportHeight - 2f * margin - 2f * size, "Route something'");
 
         ButtonGroup bg = new ButtonGroup();
         bg.add(buildButton);
@@ -227,7 +227,7 @@ public class PlanPhaseScreen extends BaseScreen {
         float stringTY;
 
         if (tooltip == null || tooltip.equals("") || !showTooltip) return;
-
+        if (actionManager != null && actionManager.isModal()) return;
 
         // Screen spacee
         if (tX < Config.gameWidth / 2) {

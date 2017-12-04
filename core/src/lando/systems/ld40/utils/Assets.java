@@ -74,8 +74,10 @@ public class Assets {
     public static TextureRegion grass5;
     public static TextureRegion grass6;
     public static TextureRegion grass7;
+    public static TextureRegion replayButton;
 
     public static Array<TextureRegion> grassTiles;
+    public static Array<TextureRegion> cloudTextures;
 
     public static Texture titleScreenBackground;
     public static Texture titleName;
@@ -155,6 +157,14 @@ public class Assets {
         grassTiles.add(grass5);
         grassTiles.add(grass6);
         grassTiles.add(grass7);
+        replayButton = atlas.findRegion("replay_button");
+
+        cloudTextures = new Array<TextureRegion>();
+        cloudTextures.add(atlas.findRegion("cloud1"));
+        cloudTextures.add(atlas.findRegion("cloud2"));
+        cloudTextures.add(atlas.findRegion("cloud3"));
+        cloudTextures.add(atlas.findRegion("cloud4"));
+        cloudTextures.add(atlas.findRegion("cloud5"));
 
         final Texture distText = new Texture(Gdx.files.internal("fonts/ubuntu.png"), true);
         distText.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);

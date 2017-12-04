@@ -24,7 +24,7 @@ public class EndGameStatsScreen extends BaseScreen {
     public EndGameStatsScreen(){
         stats = Statistics.getStatistics();
         // I am a bad person.  Here are some magic numbers
-        replayButton = new Button(Assets.whiteNinePatch, new Rectangle(60, 60, 50, 50), hudCamera);
+        replayButton = new Button(Assets.replayButton, new Rectangle(60, 60, 50, 50), hudCamera);
         showMoneyButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 400, 20, 20), hudCamera);
         showBuildingsButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 360, 20, 20), hudCamera);
         showAddonsButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 320, 20, 20), hudCamera);
@@ -35,7 +35,9 @@ public class EndGameStatsScreen extends BaseScreen {
 
     @Override
     public void update(float dt) {
-        stats.update(dt);
+        if (allowInput) {
+            stats.update(dt);
+        }
 
 
     }
