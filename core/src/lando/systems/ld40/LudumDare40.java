@@ -20,6 +20,8 @@ import lando.systems.ld40.screens.TitleScreen;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.world.World;
+import lando.systems.ld40.utils.SoundManager;
+
 
 /**
  * Created by Brian 11/28/2017
@@ -47,6 +49,7 @@ public class LudumDare40 extends ApplicationAdapter {
         originalTexture = originalFBO.getColorBufferTexture();
 
         Assets.load();
+        SoundManager.load(false);
         float progress = 0f;
         do {
             progress = Assets.update();
