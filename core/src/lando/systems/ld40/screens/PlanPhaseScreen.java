@@ -213,6 +213,8 @@ public class PlanPhaseScreen extends BaseScreen {
 
     public void renderTooltip(SpriteBatch batch, OrthographicCamera hudCamera){
 
+        tempVec3.set(input.getX(), input.getY(), 0);
+        hudCamera.unproject(tempVec3);
         float tX = tempVec3.x;
         float tY = tempVec3.y;
         float backgroundX;
@@ -222,8 +224,6 @@ public class PlanPhaseScreen extends BaseScreen {
 
         if (tooltip == null || tooltip.equals("") || !showTooltip) return;
 
-        tempVec3.set(input.getX(), input.getY(), 0);
-        hudCamera.unproject(tempVec3);
 
         // Screen spacee
         if (tX < Config.gameWidth / 2) {
@@ -267,8 +267,8 @@ public class PlanPhaseScreen extends BaseScreen {
         Vector3 touchPosUnproject = camera.unproject(tempVec3.set(screenX, screenY, 0));
         touchPosScreen.set(touchPosUnproject.x, touchPosUnproject.y);
 
-        int additionalLine = 0;
         for (Building tile : World.buildings) {
+            int additionalLine = 0;
             tooltipBackgroundHeight = 150f;
             tooltipBackgroundWidth = 270f;
             tooltipTextOffsetY = 130f;
