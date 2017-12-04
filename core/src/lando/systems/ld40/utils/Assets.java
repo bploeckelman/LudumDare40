@@ -67,6 +67,15 @@ public class Assets {
     public static TextureRegion buttonBackgroundTexture;
     public static TextureRegion bird1;
     public static TextureRegion bird2;
+    public static TextureRegion grass1;
+    public static TextureRegion grass2;
+    public static TextureRegion grass3;
+    public static TextureRegion grass4;
+    public static TextureRegion grass5;
+    public static TextureRegion grass6;
+    public static TextureRegion grass7;
+
+    public static Array<TextureRegion> grassTiles;
 
     public static Texture titleScreenBackground;
     public static Texture titleName;
@@ -131,6 +140,21 @@ public class Assets {
         buttonBackgroundTexture = atlas.findRegion("button-background");
         bird1 = atlas.findRegion("bird1");
         bird2 = atlas.findRegion("bird2");
+        grass1 = atlas.findRegion("grass1");
+        grass2 = atlas.findRegion("grass2");
+        grass3 = atlas.findRegion("grass3");
+        grass4 = atlas.findRegion("grass4");
+        grass5 = atlas.findRegion("grass5");
+        grass6 = atlas.findRegion("grass6");
+        grass7 = atlas.findRegion("grass7");
+        grassTiles = new Array<TextureRegion>();
+        grassTiles.add(grass1);
+        grassTiles.add(grass2);
+        grassTiles.add(grass3);
+        grassTiles.add(grass4);
+        grassTiles.add(grass5);
+        grassTiles.add(grass6);
+        grassTiles.add(grass7);
 
         final Texture distText = new Texture(Gdx.files.internal("fonts/ubuntu.png"), true);
         distText.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
