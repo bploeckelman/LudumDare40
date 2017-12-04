@@ -83,6 +83,9 @@ public class Building extends Tile {
     private int turnsOverCapacity = 0;
     private boolean isMarkedForRemoval = false;
 
+    // if this gets grayed out in world
+    public boolean filtered = false;
+
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -531,6 +534,10 @@ public class Building extends Tile {
         if (supportsGreenCert){
             TextureRegion greenCert = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
             batch.draw(greenCert, bounds.x + bounds.width - (greenCert.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y +  bounds.height - (greenCert.getRegionHeight() + CUTOUT_Y_OFFSET));
+        }
+
+        if (filtered) {
+            batch.draw(Assets.tileCover, bounds.x, bounds.y, bounds.width, bounds.height);
         }
 
 //        Color c = batch.getColor();

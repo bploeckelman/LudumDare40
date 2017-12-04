@@ -21,14 +21,11 @@ public class Routes {
         routes.put(truck, new IntArray(type.speed));
     }
 
-    public void addIndex(DumpTruck dumpTruck, int index) {
-        IntArray route = routes.get(dumpTruck);
-        int existingIndex = route.indexOf(index);
-        if (existingIndex != -1) {
-            route.removeIndex(existingIndex);
-        }
-        route.add(index);
+    public void setRoute(DumpTruck truck, IntArray route) {
+        routes.put(truck, route);
     }
+
+
 
     public void removeRoute(DumpTruck dumpTruck) {
         trucks.removeValue(dumpTruck, true);

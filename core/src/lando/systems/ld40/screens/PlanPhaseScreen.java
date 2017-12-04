@@ -290,8 +290,7 @@ public class PlanPhaseScreen extends BaseScreen {
         return false;
     }
 
-    private void zoomOut(final IManager manager) {
-        enableHud(false);
+    private void zoomOut(IManager manager) {
         // Zoom out
         float camTargetX = World.pixels_wide / 2f;
         float camTargetY = World.pixels_high / 2f;
@@ -299,11 +298,16 @@ public class PlanPhaseScreen extends BaseScreen {
                 World.pixels_wide * 1.2f / hudCamera.viewportWidth,
                 World.pixels_high * 1.2f / hudCamera.viewportHeight
         );
+        zoomOut(manager, camTargetX, camTargetY, camTargetZoom);
+    }
+
+    private void zoomOut(final IManager manager, float x, float y, float zoom) {
+        enableHud(false);
 
         Timeline.createSequence()
                 .push(Timeline.createParallel()
-                        .push(Tween.to(cameraTargetPos, Vector3Accessor.XY, 0.5f).target(camTargetX, camTargetY).ease(Quad.INOUT))
-                        .push(Tween.to(targetZoom, -1, 0.5f).target(camTargetZoom).ease(Quad.INOUT)))
+                        .push(Tween.to(cameraTargetPos, Vector3Accessor.XY, 0.5f).target(x, y).ease(Quad.INOUT))
+                        .push(Tween.to(targetZoom, -1, 0.5f).target(zoom).ease(Quad.INOUT)))
                 .push(Tween.call(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
@@ -349,16 +353,17 @@ public class PlanPhaseScreen extends BaseScreen {
             return true;
         } else if (buildButton.checkForTouch(screenX, screenY)) {
             buildButton.select();
-            setManager(new BuildManager(hudCamera, camera));
+            IManager manager = new BuildManager(hudCamera, camera);
+            setManager(manager);
+            zoomOut(manager);
             return true;
         } else if (routeButton.checkForTouch(screenX, screenY)) {
             routeButton.select();
-            setManager(new RouteManager(hudCamera, camera));
+            IManager manager = new RouteManager(hudCamera, camera);
+            setManager(manager);
+            zoomOut(manager, World.pixels_wide / 2f, 200, 4);
             return true;
         }
-
-
-
         return true;
     }
 
@@ -368,7 +373,6 @@ public class PlanPhaseScreen extends BaseScreen {
         }
 
         actionManager = manager;
-        zoomOut(actionManager);
     }
 
     @Override

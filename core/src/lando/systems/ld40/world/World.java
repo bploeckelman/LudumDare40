@@ -92,10 +92,6 @@ public class World {
         }
     }
 
-    private boolean shouldFilter(GameObject gameObject) {
-        return true;
-    }
-
     public GameObject getSelectedObject(float x, float y) {
         int index = getSelectedObjectIndex(x, y);
         System.out.println("tile: " + index);
@@ -129,7 +125,31 @@ public class World {
         return count;
     }
 
+    private Array<Building.Type> sources = new Array<Building.Type>(new Building.Type[] {
+            Building.Type.COMMERCIAL_HIGH,
+            Building.Type.COMMERCIAL_LOW,
+            Building.Type.COMMERCIAL_MEDIUM,
+            Building.Type.INDUSTRIAL_HIGH,
+            Building.Type.INDUSTRIAL_LOW,
+            Building.Type.INDUSTRIAL_MEDIUM,
+            Building.Type.RESIDENTIAL_HIGH,
+            Building.Type.RESIDENTIAL_LOW,
+            Building.Type.RESIDENTIAL_MEDIUM });
+
     public void setFilter(FilterType filter) {
         this.filter = filter;
+        for (Building building : buildings) {
+            switch(filter) {
+                case Source:
+                    building.filtered = !sources.contains(building.type, true);
+                    break;
+                case Desitination:
+                    building.filtered = building.type != Building.Type.DUMP;
+                    break;
+                default:
+                    building.filtered = false;
+                    break;
+            }
+        }
     }
 }
