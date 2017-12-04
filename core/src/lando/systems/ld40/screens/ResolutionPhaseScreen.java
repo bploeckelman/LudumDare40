@@ -595,44 +595,22 @@ public class ResolutionPhaseScreen extends BaseScreen {
     private void checkSubButtonTouch(int x, int y)
     {
         //Loop through the array pertaining to the selected item group
-        if(selectedGroup == ItemGroups.Building)
+        Array<UpgradeButton> currArr;
+
+        switch (selectedGroup)
         {
-            for(UpgradeButton button : buildingsButtons)
-            {
-                if(button.button.checkForTouch(x, y) && button.button.enabled)
-                {
-                    currentUpgrade = button;
-                }
-            }
+            case Building: currArr = buildingsButtons; break;
+            case Addon: currArr = addOnButtons; break;
+            case Research: currArr = researchButtons; break;
+            case Trucks: currArr = truckButtons; break;
+            default: currArr = new Array<UpgradeButton>();
         }
-        else if(selectedGroup == ItemGroups.Addon)
+
+        for(UpgradeButton button : currArr)
         {
-            for(UpgradeButton button : addOnButtons)
+            if(button.button.checkForTouch(x, y) && button.button.enabled)
             {
-                if(button.button.checkForTouch(x, y) && button.button.enabled)
-                {
-                    currentUpgrade = button;
-                }
-            }
-        }
-        else if(selectedGroup == ItemGroups.Research)
-        {
-            for(UpgradeButton button : researchButtons)
-            {
-                if(button.button.checkForTouch(x, y) && button.button.enabled)
-                {
-                    currentUpgrade = button;
-                }
-            }
-        }
-        else if(selectedGroup == ItemGroups.Trucks)
-        {
-            for(UpgradeButton button : truckButtons)
-            {
-                if (button.button.checkForTouch(x, y) && button.button.enabled)
-                {
-                    currentUpgrade = button;
-                }
+                currentUpgrade = button;
             }
         }
     }
@@ -672,23 +650,8 @@ public class ResolutionPhaseScreen extends BaseScreen {
             batch.draw(Assets.whitePixel, rectInfoBox.x, rectInfoBox.y, rectInfoBox.width, rectInfoBox.height);
             batch.setColor(Color.WHITE);
 
-            // Render buttons for selected item group
-            if(selectedGroup == ItemGroups.Building)
-            {
-                renderBuildingButtons(batch);
-            }
-            else if(selectedGroup == ItemGroups.Addon)
-            {
-                renderAddOnButtons(batch);
-            }
-            else if(selectedGroup == ItemGroups.Research)
-            {
-                renderResearchButtons(batch);
-            }
-            else if(selectedGroup == ItemGroups.Trucks)
-            {
-                renderTruckButtons(batch);
-            }
+            //Render sub-buttons
+            renderSubButtons(batch);
 
             // Draw continue button
             batch.draw(Assets.whitePixel, rectButContinueBox.x, rectButContinueBox.y, rectButContinueBox.width, rectButContinueBox.height);
@@ -701,6 +664,62 @@ public class ResolutionPhaseScreen extends BaseScreen {
             bContinue.render(batch);
         }
         batch.end();
+    }
+
+    private void renderSubButtons(SpriteBatch batch)
+    {
+        Array<UpgradeButton> currArr;
+        switch (selectedGroup)
+        {
+            case Building: currArr = buildingsButtons; break;
+            case Addon: currArr = addOnButtons; break;
+            case Research: currArr = researchButtons; break;
+            case Trucks: currArr = truckButtons; break;
+            default: currArr = new Array<UpgradeButton>();
+        }
+
+        boolean currButtonEnabled = true;
+        for(UpgradeButton button : currArr)
+        {
+            switch (button.group)
+            {
+                case Addon: currButtonEnabled = checkAddonEnabled(button); break;
+                case Trucks: currButtonEnabled = checkTruckEnabled(button); break;
+                case Building: currButtonEnabled = checkBuildingEnabled(button); break;
+                case Research: currButtonEnabled = checkResearchEnabled(button); break;
+            }
+
+            button.button.enable(currButtonEnabled);
+
+            if(currButtonEnabled)
+            {
+                batch.setColor(Color.WHITE);
+            }
+            else
+            {
+                batch.setColor(1f, 1f, 1f, 0.5f);
+            }
+
+            batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
+                    button.button.bounds.width - 6, button.button.bounds.height - 6);
+            button.button.render(batch);
+        }
+        batch.setColor(Color.WHITE);
+    }
+
+    boolean checkAddonEnabled(UpgradeButton button)
+    {
+        return storeManager.getUpgradeStatus(upgradeMap.get(button.name)) == StoreManager.Status.UNLOCKED;
+    }
+
+    boolean checkBuildingEnabled(UpgradeButton button)
+    {
+        return storeManager.getTileStatus(tileMap.get(button.name)) == StoreManager.Status.UNLOCKED;
+    }
+
+    boolean checkResearchEnabled(UpgradeButton button)
+    {
+        return storeManager.getResearchStatus(researchMap.get(button.name)) != StoreManager.ResearchStatus.LOCKED;
     }
 
     private void renderSelectedInfo(SpriteBatch batch)
@@ -737,92 +756,6 @@ public class ResolutionPhaseScreen extends BaseScreen {
         batch.draw(Assets.whitePixel, purchaseUpgradeButton.bounds.x, purchaseUpgradeButton.bounds.y,
                 purchaseUpgradeButton.bounds.width, purchaseUpgradeButton.bounds.height);
         purchaseUpgradeButton.render(batch);
-    }
-
-    private void renderBuildingButtons(SpriteBatch batch)
-    {
-        for(UpgradeButton button : buildingsButtons)
-        {
-            if(storeManager.getTileStatus(tileMap.get(button.name)) == StoreManager.Status.UNLOCKED)
-            {
-                button.button.enable(true);
-                batch.setColor(Color.WHITE);
-            }
-            else if(storeManager.getTileStatus(tileMap.get(button.name)) == StoreManager.Status.LOCKED)
-            {
-                button.button.enable(false);
-                batch.setColor(1f, 1f, 1f, 0.5f);
-            }
-            batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
-                    button.button.bounds.width - 6, button.button.bounds.height - 6);
-            button.button.render(batch);
-            //batch.setColor(1f, 1f, 1f, 0.5f);
-        }
-        batch.setColor(Color.WHITE);
-    }
-
-
-    private void renderAddOnButtons(SpriteBatch batch)
-    {
-        for(UpgradeButton button : addOnButtons)
-        {
-            if(storeManager.getUpgradeStatus(upgradeMap.get(button.name)) == StoreManager.Status.LOCKED)
-            {
-                button.button.enable(false);
-                batch.setColor(1f, 1f, 1f, 0.5f);
-            }
-            else
-            {
-                button.button.enable(true);
-                batch.setColor(Color.WHITE);
-            }
-            batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
-                    button.button.bounds.width - 6, button.button.bounds.height - 6);
-            button.button.render(batch);
-        }
-        batch.setColor(Color.WHITE);
-    }
-
-    private void renderResearchButtons(SpriteBatch batch)
-    {
-        for(UpgradeButton button : researchButtons)
-        {
-            if(storeManager.getResearchStatus(researchMap.get(button.name)) == StoreManager.ResearchStatus.LOCKED)
-            {
-                button.button.enable(false);
-                batch.setColor(1f, 1f, 1f, 0.5f);
-            }
-            else
-            {
-                button.button.enable(true);
-                batch.setColor(Color.WHITE);
-            }
-            batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
-                    button.button.bounds.width - 6, button.button.bounds.height - 6);
-            button.button.render(batch);
-        }
-        batch.setColor(Color.WHITE);
-    }
-
-    private void renderTruckButtons(SpriteBatch batch)
-    {
-        for(UpgradeButton button : truckButtons)
-        {
-            if(checkTruckEnabled(button))
-            {
-                button.button.enable(true);
-                batch.setColor(Color.WHITE);
-            }
-            else
-            {
-                button.button.enable(false);
-                batch.setColor(1f, 1f, 1f, 0.5f);
-            }
-            batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
-                    button.button.bounds.width - 6, button.button.bounds.height - 6);
-            button.button.render(batch);
-        }
-        batch.setColor(Color.WHITE);
     }
 
     private boolean checkTruckEnabled(UpgradeButton button)
