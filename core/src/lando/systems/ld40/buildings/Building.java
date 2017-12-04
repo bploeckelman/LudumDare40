@@ -636,12 +636,12 @@ public class Building extends Tile {
         if (!allowsUpgrade(upgradeType)) return;
 
         switch (upgradeType) {
-            case COMPACTOR:    if (supportsCompactor)   hasCompactor   = false; break;
-            case DUMPSTER:     if (supportsDumpster)    hasDumpster    = false; break;
-            case GREEN_TOKEN:  if (supportsGreenCert)   hasGreenCert   = false; break;
-            case INCINERATOR:  if (supportsIncinerator) hasIncinerator = false; break;
-            case RECLAMATION:  if (supportsRecycle)     hasRecycle     = false; break;
-            case TIER_UPGRADE: if (supportsTiers)       currentTier    = currentTier.prev(); break;
+            case COMPACTOR:    hasCompactor   = false; break;
+            case DUMPSTER:     hasDumpster    = false; break;
+            case GREEN_TOKEN:  hasGreenCert   = false; break;
+            case INCINERATOR:  hasIncinerator = false; break;
+            case RECLAMATION:  hasRecycle     = false; break;
+            case TIER_UPGRADE: currentTier    = currentTier.prev(); break;
         }
     }
 
