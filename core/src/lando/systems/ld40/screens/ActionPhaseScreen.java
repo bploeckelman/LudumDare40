@@ -8,8 +8,8 @@ import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
-import lando.systems.ld40.world.World;
 import lando.systems.ld40.utils.SoundManager;
+import lando.systems.ld40.world.World;
 
 /**
  * Created by Brian on 12/2/2017.
@@ -26,6 +26,7 @@ class ActionPhaseScreen extends BaseScreen {
     }
 
     private Phase currentPhase;
+    private String debugPhaseLabel;
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -34,8 +35,7 @@ class ActionPhaseScreen extends BaseScreen {
         SoundManager.playSound(SoundManager.SoundOptions.garbageTruck);
 //        Gdx.input.setInputProcessor(this);
         camera.zoom = 2.5f;
-        camera.position.x = 500;
-        camera.position.y = 500;
+        camera.position.set(World.pixels_wide /2f, World.pixels_high/2f, 0);
         setPhase(Phase.READY);
     }
 
@@ -60,24 +60,29 @@ class ActionPhaseScreen extends BaseScreen {
         currentPhase = phase;
         switch (phase) {
             case READY:
+                debugPhaseLabel = "wait for click";
                 break;
             case ANIMATING_ACTIONS:
                 // Order of actions:
                 // Generate all trash
+                debugPhaseLabel = "trash";
+                buildingsGenerateTrash();
                 // Run the tracks, moving trash around
                 // Building upkeep (e.g. incineration)
                 // Generate value
                 break;
             case ANIMATING_REWARDS:
+                debugPhaseLabel = "reward";
                 break;
             case REWARDS_FINAL:
+                debugPhaseLabel = "final";
                 break;
         }
     }
 
-    private void processAllBuidlings() {
-        for (Building building : World.GetWorld().buildings) {
-
+    private void buildingsGenerateTrash() {
+        for (Building building : World.buildings) {
+            building.generateTrash();
         }
     }
 
@@ -135,10 +140,10 @@ class ActionPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
-        batch.setColor(Color.LIGHT_GRAY);
-        batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
-        batch.setColor(Color.WHITE);
-        Assets.drawString(batch, "Action Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+//        batch.setColor(Color.LIGHT_GRAY);
+//        batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
+//        batch.setColor(Color.WHITE);
+        Assets.drawString(batch, "Action Phase ("+debugPhaseLabel+")", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
     }
 
     @Override

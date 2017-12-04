@@ -3,12 +3,9 @@ package lando.systems.ld40.screens;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Elastic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -74,6 +71,11 @@ public class TitleScreen extends BaseScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
+        // TODO: REMOVE DEV SHORTCUT
+        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+            game.setScreen(new ActionPhaseScreen());
+        }
+        // TODO: REMOVE DEV SHORTCUT
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             game.setScreen(new ResolutionPhaseScreen());
         }

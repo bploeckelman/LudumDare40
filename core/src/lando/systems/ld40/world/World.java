@@ -1,6 +1,5 @@
 package lando.systems.ld40.world;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -10,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import lando.systems.ld40.buildings.Building;
-import lando.systems.ld40.gameobjects.DumpTruck;
 import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.gameobjects.Inventory;
 import lando.systems.ld40.gameobjects.Routes;
@@ -70,6 +68,8 @@ public class World {
                 buildings.add(newBuilding);
             }
         }
+        // Reversing the array so that building render order goes from top down
+        buildings.reverse();
 
         setRandom(Building.Type.DUMP);
         setRandom(Building.Type.COMMERCIAL_LOW);
