@@ -17,7 +17,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import lando.systems.ld40.utils.accessors.*;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 /**
  * Created by Brian on 11/28/2017
@@ -94,6 +93,10 @@ public class Assets {
     public static TextureRegion tier1Texture;
     public static TextureRegion tier2Texture;
     public static TextureRegion tier3Texture;
+
+    public static Array<TextureAtlas.AtlasRegion> truck1AtlasRegions;
+    public static Array<TextureAtlas.AtlasRegion> truck2AtlasRegions;
+    public static Array<TextureAtlas.AtlasRegion> truck3AtlasRegions;
 
     public static Array<TextureRegion> grassTiles;
     public static Array<TextureRegion> cloudTextures;
@@ -232,6 +235,11 @@ public class Assets {
         randomTransitions.add(fadeShader);
         randomTransitions.add(radialShader);
 //        randomTransitions.add(pizelizeShader);
+
+        truck1AtlasRegions = atlas.findRegions("truck1");
+        truck2AtlasRegions = atlas.findRegions("truck2");
+        truck3AtlasRegions = atlas.findRegions("truck3");
+
 
         return 1f;
     }

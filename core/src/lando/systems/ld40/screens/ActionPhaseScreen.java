@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.buildings.Building;
+import lando.systems.ld40.gameobjects.DumpTruck;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.SoundManager;
@@ -20,16 +21,18 @@ class ActionPhaseScreen extends BaseScreen {
 
     private enum Phase {
         READY,  // Waiting
-        ANIMATING_ACTIONS_GENERATE_TRASH, // Show everything happening
+        ANIMATING_ACTIONS_GENERATE_TRASH,
+        ANIMATING_ACTIONS_RUN_TRUCKS,
         ANIMATING_REWARDS, // Pop up the UI and count up the points
         REWARDS_FINAL; // Show all the points counted up
 
         public static Phase getNextPhase(Phase phase) {
             switch (phase) {
-                case READY:                         return Phase.ANIMATING_ACTIONS_GENERATE_TRASH;
-                case ANIMATING_ACTIONS_GENERATE_TRASH:     return Phase.ANIMATING_REWARDS;
-                case ANIMATING_REWARDS:             return Phase.REWARDS_FINAL;
-                case REWARDS_FINAL:                 return Phase.REWARDS_FINAL;
+                case READY:                             return Phase.ANIMATING_ACTIONS_GENERATE_TRASH;
+                case ANIMATING_ACTIONS_GENERATE_TRASH:  return Phase.ANIMATING_ACTIONS_RUN_TRUCKS;
+                case ANIMATING_ACTIONS_RUN_TRUCKS:      return Phase.ANIMATING_REWARDS;
+                case ANIMATING_REWARDS:                 return Phase.REWARDS_FINAL;
+                case REWARDS_FINAL:                     return Phase.REWARDS_FINAL;
                 default:
                     throw new RuntimeException("Unknown Phase");
             }
@@ -53,6 +56,11 @@ class ActionPhaseScreen extends BaseScreen {
         );
         camera.zoom = camTargetZoom;
         camera.position.set(World.pixels_wide /2f, World.pixels_high/2f, 0);
+        // Reset all trucks for action phase
+        for (DumpTruck dumpTruck : world.routes.trucks) {
+            dumpTruck.resetForActionPhase();
+        }
+        // Set the phase!
         setPhase(Phase.READY);
     }
 
@@ -112,22 +120,33 @@ class ActionPhaseScreen extends BaseScreen {
     }
 
 
-    private static final float AA_GENERATE_TRASH_BUILDING_DELAY = 0.1f;
-    private int aaGenerateTrashBuildingsComplete = 0;
-    private int aaGenerateTrashLastBuildingIndex;
-    private Building aaGenerateTrashLastBuilding;
-    private boolean aaGenerateTrashBuildingsAreProcessed = false;
+    private static final float  AA_GENERATE_TRASH_BUILDING_DELAY = 0.1f;
+    private int                 aaGenerateTrashBuildingsComplete = 0;
+    private int                 aaGenerateTrashLastBuildingIndex;
+    private Building            aaGenerateTrashLastBuilding;
+    private boolean             aaGenerateTrashBuildingsAreProcessed = false;
+
+
+    private Building            aaRunTrucksLastBuildingModified; // use this to track animations
+    private boolean             aaRunTrucksTrucksAreRunning = false;
+    private boolean             aaRunTrucksAllTrucksAreDone = false;
 
     private void updateObjects(float dt) {
 
         currentPhaseDT += dt;
 
+        // Update the trucks
+        for (DumpTruck dumpTruck : world.routes.trucks) {
+            dumpTruck.update(dt);
+        }
+
         /**
          * NOTE: check the phases here in phase order so it is possible to flow through if the skip animation flag is set
          */
 
+        if (currentPhase == Phase.READY) { debugPhaseLabel = "ready..."; }
         if (currentPhase == Phase.ANIMATING_ACTIONS_GENERATE_TRASH) {
-
+            debugPhaseLabel = "trash";
             if (!aaGenerateTrashBuildingsAreProcessed) {
                 // We need to do work, generate trash and the like
                 int buildingsToCompleteTarget = 1 + (int) Math.floor(currentPhaseDT / AA_GENERATE_TRASH_BUILDING_DELAY);
@@ -160,15 +179,33 @@ class ActionPhaseScreen extends BaseScreen {
                     setPhase(Phase.getNextPhase(currentPhase));
                 }
             }
-
+        }
+        if (currentPhase == Phase.ANIMATING_ACTIONS_RUN_TRUCKS) {
+            debugPhaseLabel = "trucking...";
+            if (!aaRunTrucksTrucksAreRunning) {
+                for (DumpTruck dumpTruck : world.routes.trucks) {
+                    dumpTruck.actionPhaseRun(!currentPhaseSkipAnimation);
+                }
+                aaRunTrucksTrucksAreRunning = true;
+            }
+            // Check to see if the trucks are done.
+            boolean trucksAreDone = true;
+            for (DumpTruck dumpTruck : world.routes.trucks) {
+                if (!dumpTruck.actionPhaseIsComplete()) {
+                    trucksAreDone = false;
+                    break;
+                }
+            }
+            if (trucksAreDone) {
+                setPhase(Phase.getNextPhase(currentPhase));
+            }
         }
 
         if (currentPhase == Phase.ANIMATING_REWARDS) {
-
             // This is a "halt" point... e.g. if we're skipping animations we'll restart them here.
             currentPhaseSkipAnimation = false;
-
         }
+
     }
 
     private void updateCamera(float dt) {
@@ -204,7 +241,10 @@ class ActionPhaseScreen extends BaseScreen {
     }
 
     private void renderObjects(SpriteBatch batch) {
-        // todo
+        // Render them trucks
+        for (DumpTruck dumpTruck : world.routes.trucks) {
+            dumpTruck.render(batch);
+        }
     }
 
     private void renderHud(SpriteBatch batch) {

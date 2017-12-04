@@ -2,7 +2,6 @@ package lando.systems.ld40.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -17,7 +16,6 @@ import lando.systems.ld40.spline.Precision;
 import lando.systems.ld40.spline.SinglePointSplineIterator;
 import lando.systems.ld40.spline.SplinePoint;
 import lando.systems.ld40.utils.Assets;
-import lando.systems.ld40.utils.Config;
 
 public class World {
 
@@ -78,6 +76,15 @@ public class World {
 
         setRandom(Building.Type.DUMP);
         setRandom(Building.Type.COMMERCIAL_LOW);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
         setRandom(Building.Type.INDUSTRIAL_MEDIUM);
         setRandom(Building.Type.RESIDENTIAL_HIGH);
         setRandom(Building.Type.COMMERCIAL_MEDIUM);
