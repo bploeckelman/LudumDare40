@@ -264,6 +264,7 @@ public class PlanPhaseScreen extends BaseScreen {
     }
 
     public boolean checkForTouch(int screenX, int screenY) {
+        if (!allowInput) return false;
         Vector3 touchPosUnproject = camera.unproject(tempVec3.set(screenX, screenY, 0));
         touchPosScreen.set(touchPosUnproject.x, touchPosUnproject.y);
 

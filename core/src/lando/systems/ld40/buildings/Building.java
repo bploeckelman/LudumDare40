@@ -92,7 +92,20 @@ public class Building extends Tile {
     private enum Tier {
         ONE,
         TWO,
-        THREE
+        THREE;
+
+        public Tier next() {
+            if      (this == ONE)   return TWO;
+            else if (this == TWO)   return THREE;
+            else if (this == THREE) return THREE;
+            else                    return ONE;
+        }
+        public Tier prev() {
+            if      (this == ONE)   return ONE;
+            else if (this == TWO)   return ONE;
+            else if (this == THREE) return TWO;
+            else                    return THREE;
+        }
     }
 
     public enum Type {
@@ -598,6 +611,36 @@ public class Building extends Tile {
     @Override
     public void update(float dt) {
         super.update(dt);
+    }
+
+    public void applyUpgrade(UpgradeType upgradeType) {
+        if (!allowsUpgrade(upgradeType)) return;
+
+        switch (upgradeType) {
+            case COMPACTOR:    if (supportsCompactor)   hasCompactor   = true; break;
+            case DUMPSTER:     if (supportsDumpster)    hasDumpster    = true; break;
+            case GREEN_TOKEN:  if (supportsGreenCert)   hasGreenCert   = true; break;
+            case INCINERATOR:  if (supportsIncinerator) hasIncinerator = true; break;
+            case RECLAMATION:  if (supportsRecycle)     hasRecycle     = true; break;
+            case TIER_UPGRADE: if (supportsTiers)       currentTier    = currentTier.next(); break;
+        }
+    }
+
+    public void removeUpgrade(UpgradeType upgradeType) {
+        if (!allowsUpgrade(upgradeType)) return;
+
+        switch (upgradeType) {
+            case COMPACTOR:    if (supportsCompactor)   hasCompactor   = false; break;
+            case DUMPSTER:     if (supportsDumpster)    hasDumpster    = false; break;
+            case GREEN_TOKEN:  if (supportsGreenCert)   hasGreenCert   = false; break;
+            case INCINERATOR:  if (supportsIncinerator) hasIncinerator = false; break;
+            case RECLAMATION:  if (supportsRecycle)     hasRecycle     = false; break;
+            case TIER_UPGRADE: if (supportsTiers)       currentTier    = currentTier.prev(); break;
+        }
+    }
+
+    public void demolish() {
+        type = Type.EMPTY;
     }
 
 }
