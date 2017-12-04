@@ -110,6 +110,8 @@ public class RouteManager extends ActionManager {
                 drawHudText(batch, "Source selections: " + remainingSelections);
                 break;
         }
+
+        world.renderRoutes(batch, worldCamera);
     }
 
     private void drawHudText(SpriteBatch batch, String text) {

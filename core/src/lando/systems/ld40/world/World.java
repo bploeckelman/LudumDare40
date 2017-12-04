@@ -1,13 +1,20 @@
 package lando.systems.ld40.world;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
 import lando.systems.ld40.buildings.Building;
+import lando.systems.ld40.gameobjects.DumpTruck;
 import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.gameobjects.Inventory;
 import lando.systems.ld40.gameobjects.Routes;
+import lando.systems.ld40.utils.Assets;
 
 public class World {
 
@@ -19,6 +26,7 @@ public class World {
     public static final int tiles_high = 11;
     public static final int hq_x = 6;
     public static final int hq_y = 5;
+    public static int hqIndex;
     public static final float tile_pixels_wide = 128;
     public static final float tile_pixels_high = 128;
     public static final float pixels_wide = tiles_wide * tile_pixels_wide;
@@ -51,6 +59,7 @@ public class World {
                 Building.Type type = Building.Type.EMPTY;
                 if (x == hq_x && y == hq_y) {
                     type = Building.Type.GARBAGE_HQ;
+                    hqIndex = buildings.size;
                 }
 
                 Building newBuilding = Building.getBuilding(type);
@@ -61,7 +70,9 @@ public class World {
 
         setRandom(Building.Type.DUMP);
         setRandom(Building.Type.COMMERCIAL_LOW);
-        setRandom(Building.Type.COMMERCIAL_LOW);
+        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
+        setRandom(Building.Type.RESIDENTIAL_HIGH);
+        setRandom(Building.Type.COMMERCIAL_MEDIUM);
     }
 
     private void setRandom(Building.Type buildingType) {
@@ -91,6 +102,47 @@ public class World {
             tile.render(batch);
         }
     }
+
+    public void renderRoutes(SpriteBatch batch, OrthographicCamera camera) {
+        batch.end();
+        Assets.shapes.begin(ShapeRenderer.ShapeType.Filled);
+        Assets.shapes.setProjectionMatrix(camera.combined);
+
+
+        Vector2 hqPoint = getPoint(hqIndex);
+        Vector2 point = hqPoint;
+
+        Color[] colors = new Color[] {
+                new Color(104/255f,41/255f,62/255f, 1),
+                new Color(217/255f,126/255f,0, 1),
+                new Color(188/255f,139/255f,87/255f,1),
+                new Color(90/255f,178/255f,23/255f, 1),
+                new Color(71/255f,71/255f,87/255f, 1),
+                new Color(1/255f,163/255f,195/255f, 1)
+        };
+
+        float thickness = 25;
+
+        for (int d = 0; d < routes.trucks.size; d++) {
+            Assets.shapes.setColor(colors[d]);
+            IntArray route = routes.routes.get(routes.trucks.get(d));
+            for (int i = 0; i < route.size; i++) {
+                Vector2 newPoint = getPoint(route.get(i));
+                Assets.shapes.rectLine(point, newPoint, thickness);
+                point = newPoint;
+            }
+            Assets.shapes.rectLine(point, hqPoint, thickness);
+        }
+
+        Assets.shapes.end();
+        batch.begin();
+    }
+
+    private Vector2 getPoint(int index) {
+        Rectangle bounds = buildings.get(index).bounds;
+        return new Vector2(bounds.x + bounds.width/2, bounds.y + bounds.height/2);
+    }
+
 
     public GameObject getSelectedObject(float x, float y) {
         int index = getSelectedObjectIndex(x, y);
