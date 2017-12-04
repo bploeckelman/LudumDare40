@@ -227,7 +227,7 @@ public class PlanPhaseScreen extends BaseScreen {
         float stringTY;
 
         if (tooltip == null || tooltip.equals("") || !showTooltip) return;
-
+        if (actionManager != null && actionManager.isModal()) return;
 
         // Screen spacee
         if (tX < Config.gameWidth / 2) {
