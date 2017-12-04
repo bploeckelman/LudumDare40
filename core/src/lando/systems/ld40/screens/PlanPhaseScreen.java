@@ -59,7 +59,7 @@ public class PlanPhaseScreen extends BaseScreen {
     private Button routeButton;
 
     private static final float TOOLTIP_TEXT_PADDING_X = 8f;
-    private static final float TOOLTIP_TEXT_SCALE = 0.3f;
+    private static final float TOOLTIP_TEXT_SCALE = 0.35f;
     private static final float TOOLTIP_SHOW_DELAY = .5f;
     private static final float TOOLTIP_CURSOR_OFFSET_X = 8f;
 

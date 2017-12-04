@@ -259,7 +259,7 @@ public class Statistics {
             }
             TurnStatistics turnStats = turns.get(turn);
             tooltipBounds.set(left, 10, 350, 200);
-            batch.setColor(1,1,1, .8f);
+            batch.setColor(1,1,1, 1f);
             Assets.tooltipNinePatch.draw(batch, tooltipBounds.x, tooltipBounds.y, tooltipBounds.width, tooltipBounds.height);
             Assets.drawString(batch, "Turn " + (turn+1), tooltipBounds.x, tooltipBounds.y + tooltipBounds.height - 4,
                     Config.COLOR_TEXT, .5f, Assets.font, tooltipBounds.width, Align.center);
