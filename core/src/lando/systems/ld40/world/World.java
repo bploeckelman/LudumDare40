@@ -194,8 +194,9 @@ public class World {
         System.out.println("x: " + x + " y: " + y);
         if (x < 0 || y < 0 || x >= pixels_wide || y >= pixels_high) return -1;
 
-        int xOffset = (int)(tiles_wide * x / pixels_wide);
-        int yOffset = (int)(tiles_high * y / pixels_high);
+        // Have to reverse these offsets because the buildings array is reversed for painters algorithm reasons
+        int xOffset = tiles_wide - 1 - (int)(tiles_wide * x / pixels_wide);
+        int yOffset = tiles_high - 1 - (int)(tiles_high * y / pixels_high);
 
         return yOffset * tiles_wide + xOffset;
     }
