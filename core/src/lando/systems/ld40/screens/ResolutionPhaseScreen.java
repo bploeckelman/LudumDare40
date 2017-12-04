@@ -440,15 +440,15 @@ public class ResolutionPhaseScreen extends BaseScreen {
         buildingsButtons.add(bUpgrade8);
         buildingsButtons.add(bUpgrade9);
 
-        tileMap.put(bUpgrade1.name, TileType.RESIDENTIAL_LOW_DENSITY);
-        tileMap.put(bUpgrade2.name, TileType.COMMERCIAL_LOW_DENSITY);
-        tileMap.put(bUpgrade3.name, TileType.INDUSTRIAL_LOW_DENSITY);
-        tileMap.put(bUpgrade4.name, TileType.RESIDENTIAL_MEDIUM_DENSITY);
-        tileMap.put(bUpgrade5.name, TileType.COMMERCIAL_MEDIUM_DENSITY);
-        tileMap.put(bUpgrade6.name, TileType.INDUSTRIAL_MEDIUM_DENSITY);
-        tileMap.put(bUpgrade7.name, TileType.RESIDENTIAL_HIGH_DENSITY);
-        tileMap.put(bUpgrade8.name, TileType.COMMERCIAL_HIGH_DENSITY);
-        tileMap.put(bUpgrade9.name, TileType.INDUSTRIAL_HIGH_DENSITY);
+        tileMap.put(bUpgrade1.name, TileType.RESIDENTIAL_LOW);
+        tileMap.put(bUpgrade2.name, TileType.COMMERCIAL_LOW);
+        tileMap.put(bUpgrade3.name, TileType.INDUSTRIAL_LOW);
+        tileMap.put(bUpgrade4.name, TileType.RESIDENTIAL_MEDIUM);
+        tileMap.put(bUpgrade5.name, TileType.COMMERCIAL_MEDIUM);
+        tileMap.put(bUpgrade6.name, TileType.INDUSTRIAL_MEDIUM);
+        tileMap.put(bUpgrade7.name, TileType.RESIDENTIAL_HIGH);
+        tileMap.put(bUpgrade8.name, TileType.COMMERCIAL_HIGH);
+        tileMap.put(bUpgrade9.name, TileType.INDUSTRIAL_HIGH);
 
         //create buttons
         createButtons(ItemGroups.Building);

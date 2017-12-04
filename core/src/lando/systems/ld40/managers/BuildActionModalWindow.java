@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.buildings.Building;
+import lando.systems.ld40.gameobjects.TileType;
 import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.ui.ModalWindow;
@@ -30,9 +31,13 @@ public class BuildActionModalWindow extends ModalWindow {
     private BuildManager buildAction;
     private Rectangle inventoryRect;
     private Array<Button> inventoryButtons;
+    private Array<Button> buildingButtons;
     private UpgradeType lastSelectedUpgrade;
     private TextureRegion lastSelectedUpgradeTexture;
+    private TileType lastSelectedBuilding;
+    private TextureRegion lastSelectedBuildingTexture;
     private boolean isTweening;
+    private boolean isAddon;
     private Rectangle buildTweenRect;
     private Rectangle selectedTileRect;
     private Button buildButton;
@@ -41,6 +46,7 @@ public class BuildActionModalWindow extends ModalWindow {
     public BuildActionModalWindow(OrthographicCamera camera, BuildManager buildAction) {
         super(camera);
         this.buildAction = buildAction;
+        this.isAddon = ((Building) buildAction.selectedObject).type != Building.Type.EMPTY;
         this.inventoryRect = new Rectangle();
         this.inventoryButtons = new Array<Button>(UpgradeType.values().length);
         for (UpgradeType upgradeType : UpgradeType.values()) {
@@ -48,6 +54,13 @@ public class BuildActionModalWindow extends ModalWindow {
                     camera, upgradeType.shortName, upgradeType.description);
             button.meta = upgradeType;
             inventoryButtons.add(button);
+        }
+        this.buildingButtons = new Array<Button>(TileType.values().length);
+        for (TileType tileType : TileType.values()) {
+            Button button = new Button(tileType.texture, new Rectangle(),
+                    camera, tileType.shortName, tileType.description);
+            button.meta = tileType;
+            buildingButtons.add(button);
         }
         this.buildButton = new Button(Assets.buttonBackgroundTexture, new Rectangle(),
                 camera, "Build", "Build this addon on this tile");
@@ -62,6 +75,8 @@ public class BuildActionModalWindow extends ModalWindow {
         this.buildTweenRect = new Rectangle();
         this.selectedTileRect = null;
         this.isTweening = false;
+        this.lastSelectedBuilding = null;
+        this.lastSelectedBuildingTexture = null;
     }
 
     @Override
@@ -76,9 +91,14 @@ public class BuildActionModalWindow extends ModalWindow {
                     tile_size, tile_size);
         }
 
-        for (int i = 0; i < inventoryButtons.size; ++i) {
-            Button button = inventoryButtons.get(i);
-            button.update(dt);
+        if (isAddon) {
+            for (Button button : inventoryButtons) {
+                button.update(dt);
+            }
+        } else {
+            for (Button button : buildingButtons) {
+                button.update(dt);
+            }
         }
         cancelButton.update(dt);
         buildButton.update(dt);
@@ -98,34 +118,63 @@ public class BuildActionModalWindow extends ModalWindow {
         }
 
         if (buildButton.checkForTouchNoUnproject(x, y)) {
-            if (lastSelectedUpgrade != null) {
-                World.GetWorld().inventory.useUpgradeItem(lastSelectedUpgrade);
+            if (isAddon) {
+                if (lastSelectedUpgrade != null) {
+                    World.GetWorld().inventory.useUpgradeItem(lastSelectedUpgrade);
 
-                for (Button button : inventoryButtons) {
-                    if (button.meta == lastSelectedUpgrade) {
+                    for (Button button : inventoryButtons) {
+                        if (button.meta == lastSelectedUpgrade) {
+                            buildTweenRect.set(button.bounds);
+                            lastSelectedUpgradeTexture = button.region;
+                            isTweening = true;
+                            break;
+                        }
+                    }
+                    Timeline.createSequence()
+                            .push(Tween.to(buildTweenRect, RectangleAccessor.XYWH, 1f)
+                                    .target(selectedTileRect.x, selectedTileRect.y, selectedTileRect.width, selectedTileRect.height))
+                            .pushPause(0.2f)
+                            .push(Tween.to(buildTweenRect, RectangleAccessor.XYWH, 0.5f)
+                                    .target(selectedTileRect.x + selectedTileRect.width / 2f, selectedTileRect.y + selectedTileRect.height / 2f, 0f, 0f))
+                            .push(Tween.call(new TweenCallback() {
+                                @Override
+                                public void onEvent(int i, BaseTween<?> baseTween) {
+                                    building.applyUpgrade(lastSelectedUpgrade);
+                                }
+                            }))
+                            .pushPause(0.5f)
+                            .push(Tween.call(new TweenCallback() {
+                                @Override
+                                public void onEvent(int i, BaseTween<?> baseTween) {
+                                    lastSelectedUpgradeTexture = null;
+                                    selectedTileRect = null;
+                                    isTweening = false;
+                                    hide();
+                                }
+                            }))
+                            .start(Assets.tween);
+                }
+
+            } else { // isBuilding
+                World.GetWorld().inventory.useTileItem(lastSelectedBuilding);
+
+                for (Button button : buildingButtons) {
+                    if (button.meta == lastSelectedBuilding) {
                         buildTweenRect.set(button.bounds);
-                        lastSelectedUpgradeTexture = button.region;
+                        lastSelectedBuildingTexture = button.region;
                         isTweening = true;
                         break;
                     }
                 }
                 Timeline.createSequence()
                         .push(Tween.to(buildTweenRect, RectangleAccessor.XYWH, 1f)
-                                   .target(selectedTileRect.x, selectedTileRect.y, selectedTileRect.width, selectedTileRect.height))
-                        .pushPause(0.2f)
-                        .push(Tween.to(buildTweenRect, RectangleAccessor.XYWH, 0.5f)
-                                .target(selectedTileRect.x + selectedTileRect.width / 2f, selectedTileRect.y + selectedTileRect.height / 2f, 0f, 0f))
-                        .push(Tween.call(new TweenCallback() {
-                            @Override
-                            public void onEvent(int i, BaseTween<?> baseTween) {
-                                building.applyUpgrade(lastSelectedUpgrade);
-                            }
-                        }))
+                                .target(selectedTileRect.x, selectedTileRect.y, selectedTileRect.width, selectedTileRect.height))
                         .pushPause(0.5f)
                         .push(Tween.call(new TweenCallback() {
                             @Override
                             public void onEvent(int i, BaseTween<?> baseTween) {
-                                lastSelectedUpgradeTexture = null;
+                                World.GetWorld().replaceTile(building, lastSelectedBuilding.toBuildingType());
+                                lastSelectedBuildingTexture = null;
                                 selectedTileRect = null;
                                 isTweening = false;
                                 hide();
@@ -135,15 +184,24 @@ public class BuildActionModalWindow extends ModalWindow {
             }
         }
 
-        for (int i = 0; i < inventoryButtons.size; ++i) {
-            Button button = inventoryButtons.get(i);
-            if (button.checkForTouchNoUnproject(x, y))  {
-                lastSelectedUpgrade = (UpgradeType) inventoryButtons.get(i).meta;
-                if (building.allowsUpgrade(lastSelectedUpgrade)) {
+        // Check for addon / tile type inventory button click
+        if (isAddon) {
+            for (int i = 0; i < inventoryButtons.size; ++i) {
+                Button button = inventoryButtons.get(i);
+                if (button.checkForTouchNoUnproject(x, y)) {
+                    lastSelectedUpgrade = (UpgradeType) inventoryButtons.get(i).meta;
+                    if (building.allowsUpgrade(lastSelectedUpgrade)) {
+                        buildButton.enable(true);
+                    } else {
+                        lastSelectedUpgrade = null;
+                    }
+                }
+            }
+        } else {
+            for (Button button : buildingButtons) {
+                if (button.checkForTouchNoUnproject(x, y)) {
+                    lastSelectedBuilding = (TileType) button.meta;
                     buildButton.enable(true);
-                    // TODO: do anything else here?
-                } else {
-                    lastSelectedUpgrade = null;
                 }
             }
         }
@@ -175,17 +233,72 @@ public class BuildActionModalWindow extends ModalWindow {
         buildButton.setText("Build"); // re-layout text
         cancelButton.render(batch);
         buildButton.render(batch);
-        cancelButton.renderTooltip(batch, camera);
-        buildButton.renderTooltip(batch, camera);
         batch.setColor(Color.WHITE);
 
 
         final Building building = ((Building) buildAction.selectedObject);
-        if (building.type == Building.Type.EMPTY) {
+//        if (building.type == Building.Type.EMPTY) {
+        if (!isAddon) {
+            // TODO: sort available building options from inventory
 
-            // TODO: sort, layout, and show available building options from inventory
+            // Layout and Draw building tile buttons
+            int num_upgrades = TileType.values().length;
+            int num_rows = num_upgrades / 2;
 
-        } else {
+            float button_margin_left = 10f;
+            float button_margin_top = 10f;
+            float button_spacing_x = (inventoryRect.width - 2f * button_margin_left) / 4f;
+            float button_spacing_y = 20f;
+
+            float button_width  = (inventoryRect.width  - 2f * button_margin_left - button_spacing_x) / 2f;
+            float button_height = (inventoryRect.height - 2f * button_margin_top - (num_rows - 1) * button_spacing_y) / num_rows;
+            float button_size = Math.min(button_width, button_height);
+
+            for (int i = 0; i < buildingButtons.size; i += 2) {
+                // Layout and draw button 1 in this row
+                Button buildingButton1 = buildingButtons.get(i);
+                buildingButton1.bounds.set(
+                        inventoryRect.x + button_margin_left,
+                        inventoryRect.y + inventoryRect.height - margin_top - (((i / 2) + 1) * button_size) - ((i / 2) * button_spacing_y),
+                        button_size, button_size);
+                buildingButton1.textScale = 0.38f;
+                buildingButton1.setText(buildingButton1.text, button_size + 2f * margin_left); // re-layout text
+                buildingButton1.render(batch);
+
+                // Draw selected highlight
+                if (lastSelectedBuilding == buildingButton1.meta) {
+                    batch.setColor(235f / 255f, 208f / 255f, 0f, 1f);
+                    Assets.defaultNinePatch.draw(batch, buildingButton1.bounds.x, buildingButton1.bounds.y, buildingButton1.bounds.width, buildingButton1.bounds.height);
+                    batch.setColor(1f, 1f, 1f, 1f);
+                }
+
+                // Layout and draw button 2 in this row
+                Button buildingButton2 = buildingButtons.get(i+1);
+                buildingButton2.bounds.set(
+                        inventoryRect.x + inventoryRect.width / 2f + button_margin_left,
+                        inventoryRect.y + inventoryRect.height - margin_top - (((i / 2) + 1) * button_size) - ((i / 2) * button_spacing_y),
+                        button_size, button_size);
+                buildingButton2.textScale = 0.38f;
+                buildingButton2.setText(buildingButton2.text, button_size + 2f * margin_left); // re-layout text
+                buildingButton2.textColor = Color.WHITE;
+                buildingButton2.render(batch);
+
+                // Draw selected highlight
+                if (lastSelectedBuilding == buildingButton2.meta) {
+                    batch.setColor(235f / 255f, 208f / 255f, 0f, 1f);
+                    Assets.defaultNinePatch.draw(batch, buildingButton2.bounds.x, buildingButton2.bounds.y, buildingButton2.bounds.width, buildingButton2.bounds.height);
+                    batch.setColor(1f, 1f, 1f, 1f);
+                }
+            }
+
+            for (Button button : buildingButtons) {
+                button.renderTooltip(batch, camera);
+            }
+
+            if (lastSelectedBuildingTexture != null) {
+                batch.draw(lastSelectedBuildingTexture, buildTweenRect.x, buildTweenRect.y, buildTweenRect.width, buildTweenRect.height);
+            }
+        } else { // isAddon
             // Sort, layout, and show available building options from inventory
             inventoryButtons.sort(new Comparator<Button>() {
                 @Override
@@ -197,6 +310,7 @@ public class BuildActionModalWindow extends ModalWindow {
                         return 0;
                     } else if (building.allowsUpgrade(button1UpgradeType)
                            && !building.allowsUpgrade(button2UpgradeType)) {
+                        // TODO: take 'counts' into account
 //                           &&  World.GetWorld().inventory.getCurrentCountForUpgrade(button1UpgradeType) > 0) {
                         return -1;
                     } else return 1;
@@ -265,6 +379,9 @@ public class BuildActionModalWindow extends ModalWindow {
                 batch.draw(lastSelectedUpgradeTexture, buildTweenRect.x, buildTweenRect.y, buildTweenRect.width, buildTweenRect.height);
             }
         }
+
+        cancelButton.renderTooltip(batch, camera);
+        buildButton.renderTooltip(batch, camera);
 
         // NOTE: 0,0 is top left instead of bottom for text
         batch.setShader(Assets.fontShader);

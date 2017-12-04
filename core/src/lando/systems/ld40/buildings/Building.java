@@ -110,18 +110,17 @@ public class Building extends Tile {
     }
 
     public enum Type {
-        COMMERCIAL_HIGH,
         COMMERCIAL_LOW,
         COMMERCIAL_MEDIUM,
-        DUMP,
+        COMMERCIAL_HIGH,
         INDUSTRIAL_HIGH,
         INDUSTRIAL_LOW,
         INDUSTRIAL_MEDIUM,
-        RECYCLING_CENTER,
         RESIDENTIAL_HIGH,
         RESIDENTIAL_LOW,
         RESIDENTIAL_MEDIUM,
         GARBAGE_HQ,
+        DUMP,
         EMPTY
     }
 
@@ -132,20 +131,19 @@ public class Building extends Tile {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    private static HashMap<Type, String> buildingTypeTextureLookup = new HashMap<Type, String>();
+    public static HashMap<Type, String> buildingTypeTextureLookup = new HashMap<Type, String>();
     static {
-        buildingTypeTextureLookup.put(Type.COMMERCIAL_HIGH, "com-high");
+        buildingTypeTextureLookup.put(Type.DUMP, "dump");
         buildingTypeTextureLookup.put(Type.COMMERCIAL_LOW, "com-low");
         buildingTypeTextureLookup.put(Type.COMMERCIAL_MEDIUM, "com-med");
-        buildingTypeTextureLookup.put(Type.DUMP, "dump");
-        buildingTypeTextureLookup.put(Type.INDUSTRIAL_HIGH, "ind-high");
+        buildingTypeTextureLookup.put(Type.COMMERCIAL_HIGH, "com-high");
         buildingTypeTextureLookup.put(Type.INDUSTRIAL_LOW, "ind-low");
         buildingTypeTextureLookup.put(Type.INDUSTRIAL_MEDIUM, "ind-med");
+        buildingTypeTextureLookup.put(Type.INDUSTRIAL_HIGH, "ind-high");
         // TODO: TEXTURE
-        buildingTypeTextureLookup.put(Type.RECYCLING_CENTER, "white-pixel");
-        buildingTypeTextureLookup.put(Type.RESIDENTIAL_HIGH, "res-high");
         buildingTypeTextureLookup.put(Type.RESIDENTIAL_LOW, "res-low");
         buildingTypeTextureLookup.put(Type.RESIDENTIAL_MEDIUM, "res-med");
+        buildingTypeTextureLookup.put(Type.RESIDENTIAL_HIGH, "res-high");
         buildingTypeTextureLookup.put(Type.GARBAGE_HQ, "hq");
         buildingTypeTextureLookup.put(Type.EMPTY, "grass");
     }
@@ -304,11 +302,11 @@ public class Building extends Tile {
                 resource = Resource.MONEY;
                 break;
 
-            case RECYCLING_CENTER:
-                supportsTiers = true;
-                currentTier = Tier.ONE;
-                resource = Resource.MONEY;
-                break;
+//            case RECYCLING_CENTER:
+//                supportsTiers = true;
+//                currentTier = Tier.ONE;
+//                resource = Resource.MONEY;
+//                break;
 
             case RESIDENTIAL_LOW:
                 supportsDumpster = true;
