@@ -48,8 +48,9 @@ public class BuildActionModalWindow extends ModalWindow {
         this.buildAction = buildAction;
         this.isAddon = ((Building) buildAction.selectedObject).type != Building.Type.EMPTY;
         this.inventoryRect = new Rectangle();
-        this.inventoryButtons = new Array<Button>(UpgradeType.values().length);
+        this.inventoryButtons = new Array<Button>(UpgradeType.values().length - 1); // no truck
         for (UpgradeType upgradeType : UpgradeType.values()) {
+            if (upgradeType == UpgradeType.TRUCK) continue;
             Button button = new Button(upgradeType.texture, new Rectangle(),
                     camera, upgradeType.shortName, upgradeType.description);
             button.meta = upgradeType;
@@ -62,15 +63,17 @@ public class BuildActionModalWindow extends ModalWindow {
             button.meta = tileType;
             buildingButtons.add(button);
         }
-        this.buildButton = new Button(Assets.buttonBackgroundTexture, new Rectangle(),
+        this.buildButton = new Button(Assets.whiteNinePatch, new Rectangle(),
                 camera, "Build", "Build this addon on this tile");
-        this.cancelButton = new Button(Assets.buttonBackgroundTexture, new Rectangle(),
+        this.cancelButton = new Button(Assets.whiteNinePatch, new Rectangle(),
                 camera, "Cancel", "Cancel building on this tile");
         this.buildButton.textColor = Color.WHITE;
         this.buildButton.textScale = 0.4f;
         this.buildButton.enable(false);
+        this.buildButton.noHover = true;
         this.cancelButton.textColor = Color.WHITE;
         this.cancelButton.textScale = 0.4f;
+        this.cancelButton.noHover = true;
         this.lastSelectedUpgrade = null;
         this.buildTweenRect = new Rectangle();
         this.selectedTileRect = null;
@@ -139,7 +142,11 @@ public class BuildActionModalWindow extends ModalWindow {
                             .push(Tween.call(new TweenCallback() {
                                 @Override
                                 public void onEvent(int i, BaseTween<?> baseTween) {
-                                    building.applyUpgrade(lastSelectedUpgrade);
+                                    if (lastSelectedUpgrade == UpgradeType.DEMOLITION) {
+                                        World.GetWorld().replaceTile(building, Building.Type.EMPTY);
+                                    } else {
+                                        building.applyUpgrade(lastSelectedUpgrade);
+                                    }
                                 }
                             }))
                             .pushPause(0.5f)
@@ -349,6 +356,9 @@ public class BuildActionModalWindow extends ModalWindow {
                     Assets.defaultNinePatch.draw(batch, inventoryButton1.bounds.x, inventoryButton1.bounds.y, inventoryButton1.bounds.width, inventoryButton1.bounds.height);
                     batch.setColor(1f, 1f, 1f, 1f);
                 }
+
+                // no truck
+                if (i+1 >= inventoryButtons.size) continue;
 
                 // Layout and draw button 2 in this row
                 Button inventoryButton2 = inventoryButtons.get(i+1);

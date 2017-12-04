@@ -51,6 +51,7 @@ public class Button {
 
     public boolean selected;
     public boolean isHover;
+    public boolean noHover;
     public ButtonGroup buttonGroup;
 
     public GameObject gameObject;
@@ -133,7 +134,7 @@ public class Button {
         if (!enabled) {
             highlight(batch, Color.LIGHT_GRAY, 0.5f);
         } else {
-            if (isHover) {
+            if (isHover && !noHover) {
                 Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
             }
 

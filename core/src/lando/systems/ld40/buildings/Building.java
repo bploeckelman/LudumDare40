@@ -535,7 +535,7 @@ public class Building extends Tile {
             case INCINERATOR:  return supportsIncinerator && !hasIncinerator;
             case RECLAMATION:  return supportsRecycle     && !hasRecycle;
             case TIER_UPGRADE: return supportsTiers       && currentTier != Tier.THREE;
-            case TRUCK:        return false;
+//            case TRUCK:        return false;
             default:           return false;
         }
     }
