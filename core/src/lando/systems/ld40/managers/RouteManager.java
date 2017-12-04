@@ -1,10 +1,8 @@
 package lando.systems.ld40.managers;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -14,14 +12,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.DumpTruck;
-import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.gameobjects.Routes;
-import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
-import lando.systems.ld40.world.World;
 import lando.systems.ld40.utils.SoundManager;
+import lando.systems.ld40.world.World;
 
 /**
  * Created by Brian on 12/3/2017.
@@ -52,6 +48,11 @@ public class RouteManager extends ActionManager {
         routes = world.routes;
 
         init();
+    }
+
+    @Override
+    public boolean isTileHighlightState() {
+        return (state == RouteState.PICK_SOURCES || state == RouteState.PICK_DEST);
     }
 
     private void init() {

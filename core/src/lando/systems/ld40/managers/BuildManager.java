@@ -13,7 +13,7 @@ public class BuildManager extends ActionManager {
 
     public enum BuildState { NONE, START, PICK_TILE, PICK_ITEM, DONE }
 
-    private BuildState state =  BuildState.START;
+    public BuildState state =  BuildState.START;
     public GameObject selectedObject;
 
     public BuildManager(OrthographicCamera actionCamera, OrthographicCamera worldCamera) {
@@ -22,6 +22,11 @@ public class BuildManager extends ActionManager {
 
     public void activate() {
         state = BuildState.PICK_TILE;
+    }
+
+    @Override
+    public boolean isTileHighlightState() {
+        return state == BuildState.PICK_TILE;
     }
 
     @Override

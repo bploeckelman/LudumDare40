@@ -34,6 +34,7 @@ public class World {
     public static final float pixels_high = tiles_high * tile_pixels_high;
 
     private FilterType filter;
+    private GameObject highlightTile = null;
 
     public static World GetWorld(){
         if (world == null){
@@ -128,6 +129,9 @@ public class World {
     public void render(SpriteBatch batch) {
         for (GameObject tile : buildings){
             tile.render(batch);
+            if (tile == highlightTile) {
+                batch.draw(Assets.tileHighlightTexture, tile.bounds.x, tile.bounds.y, tile.bounds.width, tile.bounds.height);
+            }
         }
     }
 
@@ -204,12 +208,12 @@ public class World {
 
     public GameObject getSelectedObject(float x, float y) {
         int index = getSelectedObjectIndex(x, y);
-        System.out.println("tile: " + index);
+//        System.out.println("tile: " + index);
         return (index == -1) ? null : buildings.get(index);
     }
 
     public int getSelectedObjectIndex(float x, float y) {
-        System.out.println("x: " + x + " y: " + y);
+//        System.out.println("x: " + x + " y: " + y);
         if (x < 0 || y < 0 || x >= pixels_wide || y >= pixels_high) return -1;
 
         // Have to reverse these offsets because the buildings array is reversed for painters algorithm reasons
@@ -264,4 +268,13 @@ public class World {
             }
         }
     }
+
+    public void highlightTileAt(float x, float y) {
+        highlightTile = getSelectedObject(x, y);
+    }
+
+    public void disableHighlightTile() {
+        highlightTile = null;
+    }
+
 }

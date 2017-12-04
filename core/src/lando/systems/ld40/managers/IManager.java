@@ -14,5 +14,6 @@ public interface IManager {
     void update(float dt);
 
     boolean touchUp(float screenX, float screenY);
+    boolean isTileHighlightState();
     boolean isModal();
 }
