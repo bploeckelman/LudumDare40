@@ -5,6 +5,7 @@ public enum ValueAnimationIcon {
     GREEN_CERT,
     INCINERATOR,
     MONEY,
+    OVER_CAPACITY,
     RECYCLE,
     TIER, // todo: 1,2,3?
     TRASH,

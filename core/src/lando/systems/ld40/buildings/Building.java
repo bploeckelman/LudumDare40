@@ -527,17 +527,37 @@ public class Building extends Tile {
         return wasModified;
     }
 
-    public void generateValue() {
+    /**
+     *
+     * @param animate
+     * @return True if this building generates a reward
+     */
+    public boolean generateValue(boolean animate) {
         if (thisTurnValueHasBeenGenerated) { throw new RuntimeException("You've already run valueString generation this turn"); }
         if (!thisTurnUpkeepHasBeenRun) { throw new RuntimeException("Must run upkeep before generating valueString!"); }
+        thisTurnValueHasBeenGenerated = true;
+        if (valueGeneratedPerRound == 0) {
+            // Nothing to do here
+            return false;
+        }
+        ArrayList<ValueAnimationIcon> modifierIcons = new ArrayList<ValueAnimationIcon>();
         float newValue = valueGeneratedPerRound;
         float additonalValueFromTiers = getAdditionalValueByTiers(newValue);
         if (additonalValueFromTiers > 0) {
             thisTurnAdditionalValueGeneratedByTier += additonalValueFromTiers;
             newValue += additonalValueFromTiers;
+            modifierIcons.add(ValueAnimationIcon.TIER);
+        }
+        if (turnsOverCapacity > 0) {
+            newValue = 0;
+            modifierIcons.add(ValueAnimationIcon.OVER_CAPACITY);
+            // We'll still animate this so they see that they're missing out.
         }
         thisTurnValueGenerated += newValue;
-        thisTurnValueHasBeenGenerated = true;
+        if (animate) {
+            addValueAnimation(new ValueAnimation(newValue, ValueAnimationIcon.MONEY, modifierIcons));
+        }
+        return true;
     }
 
     /**
