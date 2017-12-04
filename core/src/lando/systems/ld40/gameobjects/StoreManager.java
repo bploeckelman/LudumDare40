@@ -1,6 +1,7 @@
 package lando.systems.ld40.gameobjects;
 
 import java.util.ArrayList;
+import lando.systems.ld40.utils.SoundManager;
 
 public class StoreManager {
     
@@ -44,6 +45,11 @@ public class StoreManager {
     public void completeResearch(ResearchType researchType) {
         if (!completedResearchTypes.contains(researchType)) {
             completedResearchTypes.add(researchType);
+            if (researchType == ResearchType.INCINERATION) {
+                SoundManager.playSound(SoundManager.SoundOptions.incinerator);
+            } else if (researchType == ResearchType.COMPACTION) {
+                SoundManager.playSound(SoundManager.SoundOptions.compactor);
+            }
             updateLocks();
         }
     }
