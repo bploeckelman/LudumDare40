@@ -706,36 +706,28 @@ public class Building extends Tile {
                     hScale * addonTexture.getRegionHeight());
         }
         if (supportsTiers) {
-            switch (currentTier) {
+            addonTexture = null;
 
+            switch (currentTier) {
                 case ONE:
                     addonTexture = Assets.tier1Texture;
-                    batch.draw(addonTexture,
-                            x + (w - wScale * addonTexture.getRegionWidth()) / 2,
-                            y + (h - hScale * addonTexture.getRegionHeight()) / 2,
-                            wScale  * addonTexture.getRegionWidth(),
-                            hScale * addonTexture.getRegionHeight());
                     break;
 
                 case TWO:
                     addonTexture = Assets.tier2Texture;
-                    batch.draw(addonTexture,
-                            x + (w - wScale * addonTexture.getRegionWidth()) / 2,
-                            y + (h - hScale * addonTexture.getRegionHeight()) / 2,
-                            wScale  * addonTexture.getRegionWidth(),
-                            hScale * addonTexture.getRegionHeight());
                     break;
 
                 case THREE:
                     addonTexture = Assets.tier3Texture;
-                    batch.draw(addonTexture,
-                            x + (w - wScale * addonTexture.getRegionWidth()) / 2,
-                            y + (h - hScale * addonTexture.getRegionHeight()) / 2,
-                            wScale  * addonTexture.getRegionWidth(),
-                            hScale * addonTexture.getRegionHeight());
                     break;
 
             }
+
+            batch.draw(addonTexture,
+                    x + (w - wScale * addonTexture.getRegionWidth()) / 2,
+                    y + (h - hScale * addonTexture.getRegionHeight()) / 2,
+                    wScale  * addonTexture.getRegionWidth(),
+                    hScale * addonTexture.getRegionHeight());
         }
 
 
