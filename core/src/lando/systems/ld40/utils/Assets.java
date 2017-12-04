@@ -155,7 +155,7 @@ public class Assets {
         pizelizeShader = loadShader("shaders/default.vert", "shaders/pixelize.frag");
         doorwayShader = loadShader("shaders/default.vert", "shaders/doorway.frag");
 
-        randomTransitions.add(blindsShader);
+//        randomTransitions.add(blindsShader);
         randomTransitions.add(fadeShader);
         randomTransitions.add(radialShader);
 //        randomTransitions.add(pizelizeShader);
