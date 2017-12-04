@@ -505,7 +505,7 @@ public class Building extends Tile {
      * @param baseValue
      * @return
      */
-    public float getAdditionalValueByTiers(float baseValue) {
+    private float getAdditionalValueByTiers(float baseValue) {
         if (supportsTiers) {
             float additionalValue;
             switch (currentTier) {
