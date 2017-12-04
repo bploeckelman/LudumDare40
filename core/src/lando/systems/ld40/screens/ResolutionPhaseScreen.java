@@ -87,27 +87,27 @@ public class ResolutionPhaseScreen extends BaseScreen {
         //Create top buttons
         rectHeadBut1 = new Rectangle(fScreenWidth / 30, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
         bBuildings = new Button(Assets.defaultNinePatch, rectHeadBut1, hudCamera, "Buildings", null);
-        bBuildings.textColor = Color.BLACK;
+        bBuildings.textColor = Config.COLOR_BLACK;
         rectHeadBut2 = new Rectangle((fScreenWidth * 2 / 30) + rectHeadBut1.width, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
         bAddons = new Button(Assets.defaultNinePatch, rectHeadBut2, hudCamera, "Add-Ons", null);
-        bAddons.textColor = Color.BLACK;
+        bAddons.textColor = Config.COLOR_BLACK;
         rectHeadBut3 = new Rectangle((fScreenWidth * 3 / 30) + rectHeadBut1.width * 2, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
         bResearch = new Button(Assets.defaultNinePatch, rectHeadBut3, hudCamera, "Research", null);
-        bResearch.textColor = Color.BLACK;
+        bResearch.textColor = Config.COLOR_BLACK;
         rectHeadBut4 = new Rectangle((fScreenWidth * 4 / 30) + rectHeadBut1.width * 3, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
         bTrucks = new Button(Assets.defaultNinePatch, rectHeadBut4, hudCamera, "Trucks", null);
-        bTrucks.textColor = Color.BLACK;
+        bTrucks.textColor = Config.COLOR_BLACK;
 
         rectButBox = new Rectangle(20, fScreenHeight * 0.15f, fScreenWidth * 0.55f, fScreenHeight * 0.55f);
         rectInfoBox = new Rectangle(rectButBox.x + rectButBox.width + fScreenWidth * 0.05f, fScreenHeight * 0.15f, fScreenWidth * 0.35f, 330);
 
         purchaseUpgradeButton = new Button(Assets.defaultNinePatch, new Rectangle(rectInfoBox.x + 10, rectInfoBox.y + 10, rectInfoBox.width - 20, 50),
                 hudCamera, "Purchase", null);
-        purchaseUpgradeButton.textColor = Color.BLACK;
+        purchaseUpgradeButton.textColor = Config.COLOR_BLACK;
 
         rectButContinueBox = new Rectangle(fScreenWidth * 0.75f, fScreenHeight / 30, fScreenWidth * 0.225f, fScreenHeight / 12);
         bContinue = new Button(Assets.defaultNinePatch, rectButContinueBox, hudCamera, "Next Day", null);
-        bContinue.textColor = Color.BLACK;
+        bContinue.textColor = Config.COLOR_BLACK;
 
         selectedGroup = ItemGroups.Building;
 
@@ -725,17 +725,17 @@ public class ResolutionPhaseScreen extends BaseScreen {
     private void renderSelectedInfo(SpriteBatch batch)
     {
         Assets.drawString(batch, currentUpgrade.name, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 20,
-                Color.BLACK, 0.5f, Assets.font, rectInfoBox.width, Align.center);
+                Config.COLOR_BLACK, 0.5f, Assets.font, rectInfoBox.width, Align.center);
         batch.draw(currentUpgrade.picture, rectInfoBox.x + 80, rectInfoBox.y + rectInfoBox.height - 180, 128, 128);
         if(currentUpgrade.group != ItemGroups.Research)
         {
             Assets.drawString(batch, "x" + currentUpgrade.quantity, rectInfoBox.x + 200, rectInfoBox.y + rectInfoBox.height - 105,
-                    Color.BLACK, 0.4f, Assets.font, 80, Align.center);
+                    Config.COLOR_BLACK, 0.4f, Assets.font, 80, Align.center);
         }
         Assets.drawString(batch, currentUpgrade.description, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 200,
-                Color.BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
+                Config.COLOR_BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
         Assets.drawString(batch, "Cost: " + currentUpgrade.cost, rectInfoBox.x, rectInfoBox.y + 80,
-                Color.BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
+                Config.COLOR_BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
 
         if(currentUpgrade.group == ItemGroups.Research)
         {

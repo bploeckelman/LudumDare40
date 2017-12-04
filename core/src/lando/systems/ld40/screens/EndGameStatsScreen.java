@@ -1,13 +1,10 @@
 package lando.systems.ld40.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
@@ -56,29 +53,29 @@ public class EndGameStatsScreen extends BaseScreen {
         batch.setColor(Color.WHITE);
         replayButton.render(batch);
 
-        batch.setColor(stats.showMoney? Statistics.COLOR_MONEY : Statistics.COLOR_BACKGROUND);
+        batch.setColor(stats.showMoney? Statistics.COLOR_MONEY : Config.COLOR_BACKGROUND);
         showMoneyButton.render(batch);
-        batch.setColor(stats.showBuildings? Statistics.COLOR_BUILDINGS : Statistics.COLOR_BACKGROUND);
+        batch.setColor(stats.showBuildings? Statistics.COLOR_BUILDINGS : Config.COLOR_BACKGROUND);
         showBuildingsButton.render(batch);
-        batch.setColor(stats.showAddons? Statistics.COLOR_ADDONS : Statistics.COLOR_BACKGROUND);
+        batch.setColor(stats.showAddons? Statistics.COLOR_ADDONS : Config.COLOR_BACKGROUND);
         showAddonsButton.render(batch);
-        batch.setColor(stats.showGarbageGenerated? Statistics.COLOR_GARBAGE_GENERATED : Statistics.COLOR_BACKGROUND);
+        batch.setColor(stats.showGarbageGenerated? Statistics.COLOR_GARBAGE_GENERATED : Config.COLOR_BACKGROUND);
         showGarbageGenerated.render(batch);
-        batch.setColor(stats.showGarbageHauled? Statistics.COLOR_GARBAGE_HAULED : Statistics.COLOR_BACKGROUND);
+        batch.setColor(stats.showGarbageHauled? Statistics.COLOR_GARBAGE_HAULED : Config.COLOR_BACKGROUND);
         showGarbageHauled.render(batch);
-        batch.setColor(stats.showGarbageInLandFills? Statistics.COLOR_GARBAGE_IN_LANDFILLS : Statistics.COLOR_BACKGROUND);
+        batch.setColor(stats.showGarbageInLandFills? Statistics.COLOR_GARBAGE_IN_LANDFILLS : Config.COLOR_BACKGROUND);
         showGarbageInLandfills.render(batch);
 
 
         batch.setColor(Color.WHITE);
-        Assets.drawString(batch, "Statistics", stats.modalBounds.x, stats.modalBounds.y + stats.modalBounds.height - 10, Statistics.COLOR_TEXT, 1f, Assets.font, stats.modalBounds.width, Align.center);
+        Assets.drawString(batch, "Statistics", stats.modalBounds.x, stats.modalBounds.y + stats.modalBounds.height - 10, Config.COLOR_TEXT, 1f, Assets.font, stats.modalBounds.width, Align.center);
 
-        Assets.drawString(batch, "Money", showMoneyButton.bounds.x + 25, showMoneyButton.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font);
-        Assets.drawString(batch, "Buildings", showBuildingsButton.bounds.x + 25, showBuildingsButton.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font);
-        Assets.drawString(batch, "Addons", showAddonsButton.bounds.x + 25, showAddonsButton.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font);
-        Assets.drawString(batch, "Garbage Generated", showGarbageGenerated.bounds.x + 25, showGarbageGenerated.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font, 240, Align.left);
-        Assets.drawString(batch, "Garbage Hauled", showGarbageHauled.bounds.x + 25, showGarbageHauled.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font, 240, Align.left);
-        Assets.drawString(batch, "Garbage in Landfills", showGarbageInLandfills.bounds.x + 25, showGarbageInLandfills.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font, 150, Align.left);
+        Assets.drawString(batch, "Money", showMoneyButton.bounds.x + 25, showMoneyButton.bounds.y + 17, Config.COLOR_TEXT, .3f, Assets.font);
+        Assets.drawString(batch, "Buildings", showBuildingsButton.bounds.x + 25, showBuildingsButton.bounds.y + 17, Config.COLOR_TEXT, .3f, Assets.font);
+        Assets.drawString(batch, "Addons", showAddonsButton.bounds.x + 25, showAddonsButton.bounds.y + 17, Config.COLOR_TEXT, .3f, Assets.font);
+        Assets.drawString(batch, "Garbage Generated", showGarbageGenerated.bounds.x + 25, showGarbageGenerated.bounds.y + 17, Config.COLOR_TEXT, .3f, Assets.font, 240, Align.left);
+        Assets.drawString(batch, "Garbage Hauled", showGarbageHauled.bounds.x + 25, showGarbageHauled.bounds.y + 17, Config.COLOR_TEXT, .3f, Assets.font, 240, Align.left);
+        Assets.drawString(batch, "Garbage in Landfills", showGarbageInLandfills.bounds.x + 25, showGarbageInLandfills.bounds.y + 17, Config.COLOR_TEXT, .3f, Assets.font, 150, Align.left);
 
 
 

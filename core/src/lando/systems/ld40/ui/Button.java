@@ -215,6 +215,10 @@ public class Button {
         return  bounds.contains(touchPosScreen.x, touchPosScreen.y);
     }
 
+    public boolean checkForTouchNoUnproject(int x, int y) {
+        return bounds.contains(x, y);
+    }
+
     public void setText(String text) {
         this.text = text;
         if (text != null) {

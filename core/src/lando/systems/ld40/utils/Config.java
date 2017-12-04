@@ -11,5 +11,9 @@ public class Config {
     public static boolean resizable = true;
     public static Color bgColor = new Color(188f/255f,139f /255f,87f /255f,1);
 
+    public static Color COLOR_BACKGROUND = new Color(71/255f, 71/255f, 87/255f, 1f);
+    public static Color COLOR_TEXT = new Color(235/255f, 255/255f, 218/255f, 1f);
+    public static Color COLOR_BLACK = new Color(23/255f, 13/255f, 32/255f, 1f);
+
     public static int gameTurns = 50;
 }

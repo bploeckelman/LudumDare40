@@ -49,7 +49,7 @@ public class PlanPhaseScreen extends BaseScreen {
     public static float ZOOM_LERP = .1f;
     public static float PAN_LERP = .2f;
     public boolean cancelTouchUp = false;
-    public MutableFloat targetZoom = new MutableFloat(1f);
+    public MutableFloat targetZoom = new MutableFloat(2.5f);
     public Vector3 cameraTargetPos;
 
     private Button nextButton;
@@ -78,10 +78,12 @@ public class PlanPhaseScreen extends BaseScreen {
 
     public PlanPhaseScreen() {
         this.game = LudumDare40.game;
+        world = World.GetWorld();
+
         cameraTouchStart = new Vector3();
         touchStart = new Vector3();
+        camera.position.set(World.pixels_wide /2f, World.pixels_high/2f, 0);
         cameraTargetPos = new Vector3(camera.position);
-        world = World.GetWorld();
 
         float margin = 10f;
         float size = 80f;
@@ -258,7 +260,7 @@ public class PlanPhaseScreen extends BaseScreen {
                 tooltip,
                 stringTX,
                 stringTY,
-                Statistics.COLOR_TEXT,
+                Config.COLOR_TEXT,
                 TOOLTIP_TEXT_SCALE,
                 Assets.font);
     }

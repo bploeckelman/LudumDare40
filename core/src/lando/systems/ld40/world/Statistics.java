@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.Config;
 
 public class Statistics {
 
@@ -31,8 +32,7 @@ public class Statistics {
     public static Color COLOR_GARBAGE_HAULED = new Color(169/255f, 68/255f, 0/255f, 1f);
     public static Color COLOR_GARBAGE_IN_LANDFILLS = new Color(23/255f, 13/255f, 32/255f, 1f);
 
-    public static Color COLOR_BACKGROUND = new Color(71/255f, 71/255f, 87/255f, 1f);
-    public static Color COLOR_TEXT = new Color(235/255f, 255/255f, 218/255f, 1f);
+
 
     private static Statistics STATS;
     public static Statistics getStatistics(){
@@ -122,7 +122,7 @@ public class Statistics {
         float dx = graphBounds.width / (turns.size - 1);
         ShapeRenderer sr = Assets.shapes;
         
-        sr.setColor(COLOR_TEXT);
+        sr.setColor(Config.COLOR_TEXT);
         sr.rect(graphBounds.x - 5, graphBounds.y - 5, graphBounds.width + 10, graphBounds.height+ 10);
 
         // Turn hashes
@@ -249,7 +249,7 @@ public class Statistics {
 
         if (graphBounds.contains(screenPos)){
             int turn = (int)(((screenPos.x - graphBounds.x) / dx) + .5f);
-            batch.setColor(Statistics.COLOR_TEXT);
+            batch.setColor(Config.COLOR_TEXT);
             batch.draw(Assets.whitePixel, graphBounds.x + (turn * dx) - 1, graphBounds.y -5,
                        2 , graphBounds.height + 10);
             float offset = 10;
@@ -266,36 +266,36 @@ public class Statistics {
             batch.setColor(1,1,1, .8f);
             Assets.tooltipNinePatch.draw(batch, tooltipBounds.x, tooltipBounds.y, tooltipBounds.width, tooltipBounds.height);
             Assets.drawString(batch, "Turn " + (turn+1), tooltipBounds.x, tooltipBounds.y + tooltipBounds.height - 4,
-                    Statistics.COLOR_TEXT, .5f, Assets.font, tooltipBounds.width, Align.center);
+                    Config.COLOR_TEXT, .5f, Assets.font, tooltipBounds.width, Align.center);
             float yOffset = 45;
             if (showMoney){
                 Assets.drawString(batch, "Money: " + turnStats.money, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
-                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                        Config.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
                 yOffset += 20;
             }
             if (showBuildings){
                 Assets.drawString(batch, "Buildings: " + turnStats.buildings, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
-                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                        Config.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
                 yOffset += 20;
             }
             if (showAddons){
                 Assets.drawString(batch, "Building Add-ons: " + turnStats.addons, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
-                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                        Config.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
                 yOffset += 20;
             }
             if (showGarbageGenerated){
                 Assets.drawString(batch, "Garbage Created: " + turnStats.garbageGenerated, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
-                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                        Config.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
                 yOffset += 20;
             }
             if (showGarbageHauled){
                 Assets.drawString(batch, "Garbage Hauled: " + turnStats.garbageHauled, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
-                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                        Config.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
                 yOffset += 20;
             }
             if (showGarbageInLandFills){
                 Assets.drawString(batch, "Garbage In Landfills: " + turnStats.garbageInLandFills, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
-                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                        Config.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
                 yOffset += 20;
             }
         }

@@ -65,8 +65,20 @@ public class Assets {
     public static TextureRegion recycleCutoutTexture;
     public static TextureRegion tileCover;
     public static TextureRegion buttonBackgroundTexture;
+    public static TextureRegion bird1;
+    public static TextureRegion bird2;
+    public static TextureRegion grass1;
+    public static TextureRegion grass2;
+    public static TextureRegion grass3;
+    public static TextureRegion grass4;
+    public static TextureRegion grass5;
+    public static TextureRegion grass6;
+    public static TextureRegion grass7;
 
-    public static Texture titleScreen;
+    public static Array<TextureRegion> grassTiles;
+
+    public static Texture titleScreenBackground;
+    public static Texture titleName;
 
     public static boolean initialized;
 
@@ -84,7 +96,8 @@ public class Assets {
         mgr = new AssetManager();
 
         mgr.load("sprites.atlas", TextureAtlas.class);
-        mgr.load("images/titlescreen.png", Texture.class);
+        mgr.load("images/titlebackground.png", Texture.class);
+        mgr.load("images/titlename.png", Texture.class);
 
         if (tween == null) {
             tween = new TweenManager();
@@ -106,7 +119,8 @@ public class Assets {
         if (initialized) return 1f;
         initialized = true;
 
-        titleScreen = mgr.get("images/titlescreen.png", Texture.class);
+        titleScreenBackground = mgr.get("images/titlebackground.png", Texture.class);
+        titleName = mgr.get("images/titlename.png", Texture.class);
 
         atlas = mgr.get("sprites.atlas", TextureAtlas.class);
         testTexture = atlas.findRegion("badlogic");
@@ -124,6 +138,23 @@ public class Assets {
         recycleCutoutTexture = atlas.findRegion("recycle-cutout");
         tileCover = atlas.findRegion("coverTile");
         buttonBackgroundTexture = atlas.findRegion("button-background");
+        bird1 = atlas.findRegion("bird1");
+        bird2 = atlas.findRegion("bird2");
+        grass1 = atlas.findRegion("grass1");
+        grass2 = atlas.findRegion("grass2");
+        grass3 = atlas.findRegion("grass3");
+        grass4 = atlas.findRegion("grass4");
+        grass5 = atlas.findRegion("grass5");
+        grass6 = atlas.findRegion("grass6");
+        grass7 = atlas.findRegion("grass7");
+        grassTiles = new Array<TextureRegion>();
+        grassTiles.add(grass1);
+        grassTiles.add(grass2);
+        grassTiles.add(grass3);
+        grassTiles.add(grass4);
+        grassTiles.add(grass5);
+        grassTiles.add(grass6);
+        grassTiles.add(grass7);
 
         final Texture distText = new Texture(Gdx.files.internal("fonts/ubuntu.png"), true);
         distText.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
@@ -148,7 +179,7 @@ public class Assets {
         pizelizeShader = loadShader("shaders/default.vert", "shaders/pixelize.frag");
         doorwayShader = loadShader("shaders/default.vert", "shaders/doorway.frag");
 
-        randomTransitions.add(blindsShader);
+//        randomTransitions.add(blindsShader);
         randomTransitions.add(fadeShader);
         randomTransitions.add(radialShader);
 //        randomTransitions.add(pizelizeShader);

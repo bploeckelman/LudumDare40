@@ -13,7 +13,7 @@ const float reflection = 0.4;
 const float perspective = 0.4;
 const float depth = 3.;
 
-const vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
+const vec4 black = vec4(23./255., 13./255., 32./255., 1.0);
 const vec2 boundMin = vec2(0.0, 0.0);
 const vec2 boundMax = vec2(1.0, 1.0);
 

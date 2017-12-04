@@ -2,6 +2,7 @@ package lando.systems.ld40.buildings;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import lando.systems.ld40.gameobjects.Tile;
 import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.utils.Assets;
@@ -167,14 +168,19 @@ public class Building extends Tile {
                     float currentTrashLevel,
                     Resource resource) {
 
-        super("grass");
+        super("grass1");
 
         this.type = type;
         String textureName = buildingTypeTextureLookup.get(type);
+
         if (textureName == null) {
             throw new RuntimeException();
         }
-        setTexture(Assets.atlas.findRegion(textureName));
+        if (type == Type.EMPTY){
+            setTexture(Assets.grassTiles.get(MathUtils.random(Assets.grassTiles.size-1)));
+        } else {
+            setTexture(Assets.atlas.findRegion(textureName));
+        }
 
         this.currentTier = currentTier;
         this.currentTrashLevel = currentTrashLevel;
@@ -630,12 +636,12 @@ public class Building extends Tile {
         if (!allowsUpgrade(upgradeType)) return;
 
         switch (upgradeType) {
-            case COMPACTOR:    if (supportsCompactor)   hasCompactor   = false; break;
-            case DUMPSTER:     if (supportsDumpster)    hasDumpster    = false; break;
-            case GREEN_TOKEN:  if (supportsGreenCert)   hasGreenCert   = false; break;
-            case INCINERATOR:  if (supportsIncinerator) hasIncinerator = false; break;
-            case RECLAMATION:  if (supportsRecycle)     hasRecycle     = false; break;
-            case TIER_UPGRADE: if (supportsTiers)       currentTier    = currentTier.prev(); break;
+            case COMPACTOR:    hasCompactor   = false; break;
+            case DUMPSTER:     hasDumpster    = false; break;
+            case GREEN_TOKEN:  hasGreenCert   = false; break;
+            case INCINERATOR:  hasIncinerator = false; break;
+            case RECLAMATION:  hasRecycle     = false; break;
+            case TIER_UPGRADE: currentTier    = currentTier.prev(); break;
         }
     }
 
