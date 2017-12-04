@@ -297,7 +297,7 @@ public class BuildActionModalWindow extends ModalWindow {
                 if (building1Count > 0) isNothingToBuild = false;
                 buildingButton1.enable(building1Count != 0);
                 buildingButton1.textScale = text_scale;
-                buildingButton1.setText(((TileType) buildingButton1.meta).shortName + "\n  x" + building1Count, button_size + margin_left + 2f); // re-layout text
+                buildingButton1.setText(((TileType) buildingButton1.meta).shortName + "\n  x" + building1Count, button_size + 3f * margin_left + 2f); // re-layout text
                 buildingButton1.render(batch);
 
                 // Draw selected highlight
@@ -317,7 +317,7 @@ public class BuildActionModalWindow extends ModalWindow {
                 if (building2Count > 0) isNothingToBuild = false;
                 buildingButton2.enable(building2Count != 0);
                 buildingButton2.textScale = text_scale;
-                buildingButton2.setText(((TileType) buildingButton2.meta).shortName + "\n  x" + building2Count, button_size + margin_left + 2f); // re-layout text
+                buildingButton2.setText(((TileType) buildingButton2.meta).shortName + "\n  x" + building2Count, button_size + 3f * margin_left + 2f); // re-layout text
                 buildingButton2.textColor = Color.WHITE;
                 buildingButton2.render(batch);
 
