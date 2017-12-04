@@ -4,9 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.gameobjects.Tile;
 import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,6 +87,7 @@ public class Building extends Tile {
      */
     private int turnsOverCapacity = 0;
     private boolean isMarkedForRemoval = false;
+    private Color trashColor = new Color();
 
     // if this gets grayed out in world
     public boolean filtered = false;
@@ -594,6 +597,13 @@ public class Building extends Tile {
         if (supportsGreenCert){
             TextureRegion greenCert = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
             batch.draw(greenCert, bounds.x + bounds.width - (greenCert.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y +  bounds.height - (greenCert.getRegionHeight() + CUTOUT_Y_OFFSET));
+        }
+
+        if (currentTrashLevel > 0){
+            batch.draw(Assets.trashBag, bounds.x, bounds.y + bounds.height - Assets.trashBag.getRegionHeight());
+            float n = 1.0f - MathUtils.clamp(currentTrashLevel / (float) baseTrashCapacity, 0, 1f);
+            trashColor = Utils.hsvToRgb(((n * 120f) - 20) / 365f, 1.0f, 1.0f, trashColor);
+            Assets.drawString(batch, (int)currentTrashLevel + "", bounds.x, bounds.y + bounds.height - 24 , trashColor, .45f, Assets.font, Assets.trashBag.getRegionWidth(), Align.center);
         }
 
         if (filtered) {

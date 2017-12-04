@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.primitives.MutableFloat;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -87,6 +88,7 @@ public class LudumDare40 extends ApplicationAdapter {
             transitionShader.setUniformi("u_texture1", 1);
             transitionTexture.bind(0);
             transitionShader.setUniformf("u_percent", transitionPercent.floatValue());
+            Assets.batch.setColor(Color.WHITE);
             Assets.batch.draw(transitionTexture, 0, 0, Config.gameWidth, Config.gameHeight);
             Assets.batch.end();
             Assets.batch.setShader(null);
