@@ -14,10 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
 import lando.systems.ld40.LudumDare40;
-import lando.systems.ld40.gameobjects.ResearchType;
-import lando.systems.ld40.gameobjects.StoreManager;
-import lando.systems.ld40.gameobjects.TileType;
-import lando.systems.ld40.gameobjects.UpgradeType;
+import lando.systems.ld40.gameobjects.*;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
@@ -71,6 +68,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     ObjectMap<String, ResearchType>  researchMap;
     ObjectMap<String, TileType> tileMap;
     ObjectMap<String, UpgradeType> upgradeMap;
+    ObjectMap<String, TruckType> truckMap;
 
     UpgradeButton currentUpgrade;
 
@@ -122,6 +120,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         upgradeMap = new ObjectMap<String, UpgradeType>();
         researchMap = new ObjectMap<String, ResearchType>();
         tileMap = new ObjectMap<String, TileType>();
+        truckMap = new ObjectMap<String, TruckType>();
 
         initBuildingsUpgrades();
         initAddOnButtons();
@@ -203,6 +202,16 @@ public class ResolutionPhaseScreen extends BaseScreen {
         truckButtons.add(tUpgrade7);
         truckButtons.add(tUpgrade8);
         truckButtons.add(tUpgrade9);
+
+        truckMap.put(tUpgrade1.name, TruckType.ONE);
+        truckMap.put(tUpgrade2.name, TruckType.FOUR);
+        truckMap.put(tUpgrade3.name, TruckType.SEVEN);
+        truckMap.put(tUpgrade4.name, TruckType.TWO);
+        truckMap.put(tUpgrade5.name, TruckType.FIVE);
+        truckMap.put(tUpgrade6.name, TruckType.EIGHT);
+        truckMap.put(tUpgrade7.name, TruckType.THREE);
+        truckMap.put(tUpgrade8.name, TruckType.SIX);
+        truckMap.put(tUpgrade9.name, TruckType.NINE);
 
         createButtons(ItemGroups.Trucks);
     }
@@ -501,6 +510,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
             for(UpgradeButton button : buildingsButtons)
             {
                 button.button.update(dt);
+                button.quantity = world.inventory.getCurrentCountForTile(tileMap.get(button.name));
             }
         }
         else if(selectedGroup == ItemGroups.Addon)
@@ -508,6 +518,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
             for(UpgradeButton button : addOnButtons)
             {
                 button.button.update(dt);
+                button.quantity = world.inventory.getCurrentCountForUpgrade(upgradeMap.get(button.name));
             }
         }
         else if(selectedGroup == ItemGroups.Research)
@@ -522,6 +533,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
             for(UpgradeButton button : truckButtons)
             {
                 button.button.update(dt);
+                button.quantity = world.inventory.getCurrentCountForTruck(truckMap.get(button.name));
             }
         }
 
@@ -554,12 +566,24 @@ public class ResolutionPhaseScreen extends BaseScreen {
             }
             else if(purchaseUpgradeButton.checkForTouch(touchX, touchY))
             {
-                if(money >= currentUpgrade.cost)
+                if(money >= currentUpgrade.cost && !purchaseUpgradeButton.text.contentEquals("Researched"))
                 {
                     money -= currentUpgrade.cost;
                     if(currentUpgrade.group == ItemGroups.Research)
                     {
                         storeManager.completeResearch(researchMap.get(currentUpgrade.name));
+                    }
+                    else if(currentUpgrade.group == ItemGroups.Building)
+                    {
+                        world.inventory.addTileItem(tileMap.get(currentUpgrade.name));
+                    }
+                    else if(currentUpgrade.group == ItemGroups.Trucks)
+                    {
+                        world.inventory.addTruckItem(truckMap.get(currentUpgrade.name));
+                    }
+                    else if(currentUpgrade.group == ItemGroups.Addon)
+                    {
+                        world.inventory.addUpgradeItem(upgradeMap.get(currentUpgrade.name));
                     }
                     currentUpgrade.quantity++;
                 }
@@ -696,7 +720,14 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
         if(currentUpgrade.group == ItemGroups.Research)
         {
-            purchaseUpgradeButton.text = "Research";
+            if(storeManager.getResearchStatus(researchMap.get(currentUpgrade.name)) == StoreManager.ResearchStatus.RESEARCHED)
+            {
+                purchaseUpgradeButton.text = "Researched";
+            }
+            else
+            {
+                purchaseUpgradeButton.text = "Research";
+            }
         }
         else
         {
