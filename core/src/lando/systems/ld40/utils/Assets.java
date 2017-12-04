@@ -94,6 +94,7 @@ public class Assets {
     public static TextureRegion tier2Texture;
     public static TextureRegion tier3Texture;
     public static TextureRegion tileHighlightTexture;
+    public static TextureRegion moneyTexture;
 
     public static Array<TextureAtlas.AtlasRegion> truck1AtlasRegions;
     public static Array<TextureAtlas.AtlasRegion> truck2AtlasRegions;
@@ -241,6 +242,8 @@ public class Assets {
         truck1AtlasRegions = atlas.findRegions("truck1");
         truck2AtlasRegions = atlas.findRegions("truck2");
         truck3AtlasRegions = atlas.findRegions("truck3");
+
+        moneyTexture = atlas.findRegion("money");
 
 
         return 1f;
