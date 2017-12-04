@@ -218,9 +218,9 @@ public class ResolutionPhaseScreen extends BaseScreen {
     void initAddOnButtons()
     {
         UpgradeButton aUpgrade1 = new UpgradeButton();
-        aUpgrade1.name = "Tier Token";
-        aUpgrade1.description = "Token used to make buildings go up a tier";
-        aUpgrade1.picture = Assets.atlas.findRegion("tile-128");
+        aUpgrade1.name = "Upgrade Token";
+        aUpgrade1.description = "Token used to upgrade a building";
+        aUpgrade1.picture = Assets.atlas.findRegion("upgrade");
         aUpgrade1.cost = 100;
         aUpgrade1.group = ItemGroups.Addon;
 
@@ -798,7 +798,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
-        Assets.drawString(batch, "Money: " + Statistics.getStatistics().getCurrentTurnStatistics().money, Config.gameWidth / 2 - 90, Config.gameHeight - 20, Config.COLOR_GOLD, 0.5f, Assets.font);
+        Assets.drawString(batch, "$" + Statistics.getStatistics().getCurrentTurnStatistics().money, Config.gameWidth / 2 - 90, Config.gameHeight - 20, Config.COLOR_GOLD, 0.5f, Assets.font);
     }
 
     @Override
