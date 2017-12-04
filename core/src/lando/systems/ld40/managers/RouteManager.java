@@ -18,17 +18,10 @@ public class RouteManager extends ActionManager {
     }
 
     @Override
-    public void activate() {
-        state = RouteState.START;
-    }
-
-    @Override
     public void renderManager(SpriteBatch batch) {
         switch (state) {
             case START:
                 drawText(batch, "Select Route...");
-                window = new RouteActionModalWindow(hudCamera, this);
-                state = RouteState.PICK_ROUTE;
                 break;
             case PICK_ROUTE:
                 drawText(batch, "Select Route...");
@@ -48,6 +41,12 @@ public class RouteManager extends ActionManager {
 
     @Override
     public void updateManager(float dt) {
-
+        switch (state) {
+            case START:
+                state = RouteState.PICK_ROUTE;
+                window = new RouteActionModalWindow(hudCamera, this);
+                window.show();
+                break;
+        }
     }
 }

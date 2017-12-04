@@ -247,6 +247,7 @@ public class Button {
 
     public void select() {
         if (buttonGroup != null) {
+            showTooltip = false;
             buttonGroup.select(this);
         }
     }

@@ -546,7 +546,11 @@ public class ResolutionPhaseScreen extends BaseScreen {
             }
             else if (bContinue.checkForTouch(touchX, touchY)){
                 world.nextTurn();
-                LudumDare40.game.setScreen(new PlanPhaseScreen());
+                if (world.turnNumber >= Config.gameTurns){
+                    LudumDare40.game.setScreen(new EndGameStatsScreen());
+                } else {
+                    LudumDare40.game.setScreen(new PlanPhaseScreen());
+                }
             }
             else if(purchaseUpgradeButton.checkForTouch(touchX, touchY))
             {
@@ -725,6 +729,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         }
         batch.setColor(Color.WHITE);
     }
+
 
     private void renderAddOnButtons(SpriteBatch batch)
     {

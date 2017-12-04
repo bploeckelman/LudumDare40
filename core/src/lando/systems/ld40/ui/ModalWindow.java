@@ -30,7 +30,6 @@ public abstract class ModalWindow {
     protected float touchDelay;
 //    protected Button exitButton;
 
-    protected Vector3 touchPos = new Vector3();
 
     public ModalWindow(OrthographicCamera camera) {
         this.font = Assets.font;
@@ -85,30 +84,19 @@ public abstract class ModalWindow {
                 .setCallback(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
+                        onHide();
                         isActive = false;
                     }
                 })
                 .start(Assets.tween);
     }
 
+    public void onHide() {
+
+    }
+
     public void update(float dt) {
-        float screenX = 0f;
-        float screenY = 0f;
-        if (Gdx.input.justTouched()) {
-            screenX = Gdx.input.getX();
-            screenY = Gdx.input.getY();
-        }
-        touchPos.set(screenX, screenY, 0f);
-        camera.unproject(touchPos);
-
-        // NOTE: If clicks inside the modal need to be handled, do it here...
-        // if (foo.contains(touchPos.x, touchPos.y)) {}
-
-        accum += dt;
-        touchDelay -= dt;
-        if (Gdx.input.justTouched() && touchDelay <= 0) {
-            hide();
-        }
+        // touch is handled in handleTouch
     }
 
     public void render(SpriteBatch batch) {
@@ -125,7 +113,7 @@ public abstract class ModalWindow {
 
     protected abstract void renderWindowContents(SpriteBatch batch);
 
-    public void touchUp(float windowX, float windowY) {
+    public void handleTouch(float windowX, float windowY) {
 
     }
 

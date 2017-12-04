@@ -1,6 +1,5 @@
 package lando.systems.ld40.buildings;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lando.systems.ld40.gameobjects.Tile;
@@ -534,10 +533,10 @@ public class Building extends Tile {
             batch.draw(greenCert, bounds.x + bounds.width - (greenCert.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y +  bounds.height - (greenCert.getRegionHeight() + CUTOUT_Y_OFFSET));
         }
 
-        Color c = batch.getColor();
-        batch.setColor(Color.RED);
-        Assets.drawString(batch, "BUILDING", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
-        batch.setColor(c);
+//        Color c = batch.getColor();
+//        batch.setColor(Color.RED);
+//        Assets.drawString(batch, "BUILDING", bounds.x, bounds.y, Color.GOLD, 0.5f, Assets.font);
+//        batch.setColor(c);
     }
 
     @Override

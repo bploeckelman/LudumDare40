@@ -25,19 +25,6 @@ public class BuildManager extends ActionManager {
         state = BuildState.PICK_TILE;
     }
 
-
-    @Override
-    public void updateManager(float dt) {
-        switch(state) {
-            case PICK_ITEM:
-                if (Gdx.input.justTouched()) {
-                    hide();
-                }
-                break;
-        }
-
-    }
-
     @Override
     public void renderManager(SpriteBatch batch) {
         switch (state) {
@@ -50,8 +37,16 @@ public class BuildManager extends ActionManager {
             case PICK_ITEM:
                 break;
         }
-
     }
+
+    @Override
+    public void onModalClose() {
+        if (state == BuildState.PICK_ITEM) {
+            // transition back to pick tile
+            state = BuildState.PICK_TILE;
+        }
+    }
+
 
     @Override
     public boolean handleTouch(float screenX, float screenY) {
@@ -67,9 +62,6 @@ public class BuildManager extends ActionManager {
                     state = BuildState.PICK_ITEM;
                     handled = true;
                 }
-                break;
-            case PICK_ITEM:
-                // check inventory
                 break;
         }
 

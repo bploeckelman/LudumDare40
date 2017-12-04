@@ -38,11 +38,16 @@ public class Assets {
     public static ShaderProgram fadeShader;
     public static ShaderProgram radialShader;
     public static ShaderProgram doomShader;
+    public static ShaderProgram pizelizeShader;
 
     public static TextureAtlas atlas;
 
     public static NinePatch defaultNinePatch;
     public static NinePatch speechNinePatch;
+    public static NinePatch tooltipNinePatch;
+    public static NinePatch statsNinePatch;
+    public static NinePatch whiteNinePatch;
+    public static NinePatch transparentNinePatch;
 
     public static TextureRegion testTexture;
     public static TextureRegion whitePixel;
@@ -111,12 +116,17 @@ public class Assets {
         recycleCutoutTexture = atlas.findRegion("recycle-cutout");
 
         final Texture distText = new Texture(Gdx.files.internal("fonts/ubuntu.png"), true);
-        distText.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Linear);
+        distText.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         font = new BitmapFont(Gdx.files.internal("fonts/ubuntu.fnt"), new TextureRegion(distText), false);
         font.getData().setScale(.3f);
+        font.setUseIntegerPositions(false);
         
         defaultNinePatch = new NinePatch(atlas.findRegion("ninepatch"), 6,6,6,6);
         speechNinePatch = new NinePatch(atlas.findRegion("speech"), 12, 12, 12, 12);
+        tooltipNinePatch = new NinePatch(atlas.findRegion("tooltip-ninepatch"), 10, 10, 10, 10);
+        statsNinePatch = new NinePatch(atlas.findRegion("stats-ninepatch"), 10, 10, 10, 10);
+        whiteNinePatch = new NinePatch(atlas.findRegion("white-ninepatch"), 10, 10, 10, 10);
+        transparentNinePatch = new NinePatch(atlas.findRegion("transparent-ninepatch"), 10, 10, 10, 10);
 
         fontShader = loadShader("shaders/dist.vert", "shaders/dist.frag");
 
@@ -125,10 +135,12 @@ public class Assets {
         fadeShader = loadShader("shaders/default.vert", "shaders/dissolve.frag");
         radialShader = loadShader("shaders/default.vert", "shaders/radial.frag");
         doomShader = loadShader("shaders/default.vert", "shaders/doomdrip.frag");
+        pizelizeShader = loadShader("shaders/default.vert", "shaders/pixelize.frag");
 
         randomTransitions.add(blindsShader);
         randomTransitions.add(fadeShader);
         randomTransitions.add(radialShader);
+//        randomTransitions.add(pizelizeShader);
 
         return 1f;
     }
