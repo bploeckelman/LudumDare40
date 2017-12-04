@@ -184,8 +184,6 @@ public class Button {
         stringTY = backgroundY + tooltipTextOffsetY;
 
         // DRAW
-//        batch.setColor(Color.DARK_GRAY);
-//        Assets.tooltipNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         batch.setColor(Color.WHITE);
         Assets.tooltipNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         Assets.drawString(batch,

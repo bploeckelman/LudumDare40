@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.gameobjects.Bird;
+import lando.systems.ld40.gameobjects.Cloud;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector2Accessor;
@@ -28,6 +29,7 @@ public class TitleScreen extends BaseScreen {
 
     private Vector2 titlePos;
     Array<Bird> birds;
+    Array<Cloud> clouds;
 
     public TitleScreen() {
         this.game = LudumDare40.game;
@@ -36,6 +38,11 @@ public class TitleScreen extends BaseScreen {
         birds = new Array<Bird>();
         for (int i = 0; i < 25; i++){
             birds.add(new Bird());
+        }
+
+        clouds =  new Array<Cloud>();
+        for (int i = 0; i < 5; i ++){
+            clouds.add(new Cloud(true));
         }
 
         Tween.to(titlePos, Vector2Accessor.Y, 3f)
@@ -54,6 +61,13 @@ public class TitleScreen extends BaseScreen {
     public void update(float dt) {
         for (Bird bird : birds){
             bird.update(dt);
+        }
+        for (int i = clouds.size -1; i >= 0; i--){
+            clouds.get(i).update(dt);
+            if (clouds.get(i).offScreen){
+                clouds.removeIndex(i);
+                clouds.add(new Cloud(false));
+            }
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
@@ -79,6 +93,10 @@ public class TitleScreen extends BaseScreen {
             batch.draw(Assets.titleName, titlePos.x, titlePos.y, hudCamera.viewportWidth, hudCamera.viewportHeight);
             for (Bird bird : birds){
                 bird.render(batch);
+            }
+
+            for (Cloud cloud: clouds){
+                cloud.render(batch);
             }
 //            batch.setColor(Color.DARK_GRAY);
 //            batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
