@@ -36,12 +36,14 @@ public class ResolutionPhaseScreen extends BaseScreen {
     Button bBuildings;
     Button bAddons;
     Button bResearch;
+    Button bTrucks;
     Button bContinue;
     Button purchaseUpgradeButton;
 
     Rectangle rectHeadBut1;
     Rectangle rectHeadBut2;
     Rectangle rectHeadBut3;
+    Rectangle rectHeadBut4;
 
     Rectangle rectButBox;
     Rectangle rectInfoBox;
@@ -50,12 +52,13 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
     Vector3 touchPos;
 
-    public static int money = 5000;
+    public static int money = 500000000;
 
     public enum ItemGroups {
         Building,
         Addon,
-        Research
+        Research,
+        Trucks
     }
 
     public ItemGroups selectedGroup;
@@ -63,6 +66,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     Array<UpgradeButton> buildingsButtons;
     Array<UpgradeButton> addOnButtons;
     Array<UpgradeButton> researchButtons;
+    Array<UpgradeButton> truckButtons;
 
     ObjectMap<String, ResearchType>  researchMap;
     ObjectMap<String, TileType> tileMap;
@@ -82,15 +86,19 @@ public class ResolutionPhaseScreen extends BaseScreen {
         float fScreenWidth = hudCamera.viewportWidth;
         float fScreenHeight = hudCamera.viewportHeight;
 
-        rectHeadBut1 = new Rectangle(fScreenWidth / 40, fScreenHeight * 0.75f, fScreenWidth * 0.3f, fScreenHeight / 12);
+        //Create top buttons
+        rectHeadBut1 = new Rectangle(fScreenWidth / 30, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
         bBuildings = new Button(Assets.defaultNinePatch, rectHeadBut1, hudCamera, "Buildings", null);
         bBuildings.textColor = Color.BLACK;
-        rectHeadBut2 = new Rectangle((fScreenWidth * 2 / 40) + rectHeadBut1.width, fScreenHeight * 0.75f, fScreenWidth * 0.3f, fScreenHeight / 12);
+        rectHeadBut2 = new Rectangle((fScreenWidth * 2 / 30) + rectHeadBut1.width, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
         bAddons = new Button(Assets.defaultNinePatch, rectHeadBut2, hudCamera, "Add-Ons", null);
         bAddons.textColor = Color.BLACK;
-        rectHeadBut3 = new Rectangle((fScreenWidth * 3 / 40) + rectHeadBut1.width * 2, fScreenHeight * 0.75f, fScreenWidth * 0.3f, fScreenHeight / 12);
+        rectHeadBut3 = new Rectangle((fScreenWidth * 3 / 30) + rectHeadBut1.width * 2, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
         bResearch = new Button(Assets.defaultNinePatch, rectHeadBut3, hudCamera, "Research", null);
         bResearch.textColor = Color.BLACK;
+        rectHeadBut4 = new Rectangle((fScreenWidth * 4 / 30) + rectHeadBut1.width * 3, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
+        bTrucks = new Button(Assets.defaultNinePatch, rectHeadBut4, hudCamera, "Trucks", null);
+        bTrucks.textColor = Color.BLACK;
 
         rectButBox = new Rectangle(20, fScreenHeight * 0.15f, fScreenWidth * 0.55f, fScreenHeight * 0.55f);
         rectInfoBox = new Rectangle(rectButBox.x + rectButBox.width + fScreenWidth * 0.05f, fScreenHeight * 0.15f, fScreenWidth * 0.35f, 330);
@@ -109,6 +117,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         researchButtons = new Array<UpgradeButton>();
         addOnButtons = new Array<UpgradeButton>();
         buildingsButtons = new Array<UpgradeButton>();
+        truckButtons = new Array<UpgradeButton>();
 
         upgradeMap = new ObjectMap<String, UpgradeType>();
         researchMap = new ObjectMap<String, ResearchType>();
@@ -117,6 +126,85 @@ public class ResolutionPhaseScreen extends BaseScreen {
         initBuildingsUpgrades();
         initAddOnButtons();
         initResearchUpgrades();
+        initTruckButtons();
+    }
+
+    void initTruckButtons()
+    {
+        UpgradeButton tUpgrade1 = new UpgradeButton();
+        tUpgrade1.name = "Truck, S2 C50";
+        tUpgrade1.description = "Truck with \nSpeed = 2, \nCapacity = 50";
+        tUpgrade1.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade1.group = ItemGroups.Trucks;
+        tUpgrade1.cost = 100;
+
+        UpgradeButton tUpgrade2 = new UpgradeButton();
+        tUpgrade2.name = "Truck, S3 C50";
+        tUpgrade2.description = "Truck with \nSpeed = 3, \nCapacity = 50";
+        tUpgrade2.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade2.group = ItemGroups.Trucks;
+        tUpgrade2.cost = 200;
+
+        UpgradeButton tUpgrade3 = new UpgradeButton();
+        tUpgrade3.name = "Truck, S4 C50";
+        tUpgrade3.description = "Truck with \nSpeed = 4, \nCapacity = 50";
+        tUpgrade3.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade3.group = ItemGroups.Trucks;
+        tUpgrade3.cost = 300;
+
+        UpgradeButton tUpgrade4 = new UpgradeButton();
+        tUpgrade4.name = "Truck, S2 C100";
+        tUpgrade4.description = "Truck with \nSpeed = 2, \nCapacity = 100";
+        tUpgrade4.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade4.group = ItemGroups.Trucks;
+        tUpgrade4.cost = 150;
+
+        UpgradeButton tUpgrade5 = new UpgradeButton();
+        tUpgrade5.name = "Truck, S3 C100";
+        tUpgrade5.description = "Truck with \nSpeed = 3, \nCapacity = 100";
+        tUpgrade5.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade5.group = ItemGroups.Trucks;
+        tUpgrade5.cost = 250;
+
+        UpgradeButton tUpgrade6 = new UpgradeButton();
+        tUpgrade6.name = "Truck, S4 C100";
+        tUpgrade6.description = "Truck with \nSpeed = 4, \nCapacity = 100";
+        tUpgrade6.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade6.group = ItemGroups.Trucks;
+        tUpgrade6.cost = 350;
+
+        UpgradeButton tUpgrade7 = new UpgradeButton();
+        tUpgrade7.name = "Truck, S2 C200";
+        tUpgrade7.description = "Truck with \nSpeed = 2, \nCapacity = 200";
+        tUpgrade7.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade7.group = ItemGroups.Trucks;
+        tUpgrade7.cost = 400;
+
+        UpgradeButton tUpgrade8 = new UpgradeButton();
+        tUpgrade8.name = "Truck, S3 C200";
+        tUpgrade8.description = "Truck with \nSpeed = 3, \nCapacity = 200";
+        tUpgrade8.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade8.group = ItemGroups.Trucks;
+        tUpgrade8.cost = 500;
+
+        UpgradeButton tUpgrade9 = new UpgradeButton();
+        tUpgrade9.name = "Truck, S4 C200";
+        tUpgrade9.description = "Truck with \nSpeed = 4, \nCapacity = 200";
+        tUpgrade9.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade9.group = ItemGroups.Trucks;
+        tUpgrade9.cost = 600;
+
+        truckButtons.add(tUpgrade1);
+        truckButtons.add(tUpgrade2);
+        truckButtons.add(tUpgrade3);
+        truckButtons.add(tUpgrade4);
+        truckButtons.add(tUpgrade5);
+        truckButtons.add(tUpgrade6);
+        truckButtons.add(tUpgrade7);
+        truckButtons.add(tUpgrade8);
+        truckButtons.add(tUpgrade9);
+
+        createButtons(ItemGroups.Trucks);
     }
 
     void initAddOnButtons()
@@ -204,30 +292,66 @@ public class ResolutionPhaseScreen extends BaseScreen {
         rUpgrade3.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade4 = new UpgradeButton();
-        rUpgrade4.name = "Truck Speed";
-        rUpgrade4.description = "Get a faster truck (vroom, vroom)";
+        rUpgrade4.name = "Truck Speed 1";
+        rUpgrade4.description = "Unlock truck stack with speed = 2";
         rUpgrade4.picture = Assets.atlas.findRegion("tile-128");
         rUpgrade4.cost = 100;
         rUpgrade4.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade5 = new UpgradeButton();
-        rUpgrade5.name = "Truck Capacity";
-        rUpgrade5.description = "Get a truck that can pick more shit up";
+        rUpgrade5.name = "Truck Speed 2";
+        rUpgrade5.description = "Get a faster truck (vroom, vroom). Unlock truck stack with speed = 3";
         rUpgrade5.picture = Assets.atlas.findRegion("tile-128");
-        rUpgrade5.cost = 500;
+        rUpgrade5.cost = 100;
         rUpgrade5.group = ItemGroups.Research;
+
+        UpgradeButton rUpgrade6 = new UpgradeButton();
+        rUpgrade6.name = "Truck Speed 3";
+        rUpgrade6.description = "Get an even faster truck. Unlock truck stack with speed = 4";
+        rUpgrade6.picture = Assets.atlas.findRegion("tile-128");
+        rUpgrade6.cost = 100;
+        rUpgrade6.group = ItemGroups.Research;
+
+        UpgradeButton rUpgrade7 = new UpgradeButton();
+        rUpgrade7.name = "Truck Capacity 1";
+        rUpgrade7.description = "Get a truck that can pick more shit up. Unlock truck stack with capacity = 50";
+        rUpgrade7.picture = Assets.atlas.findRegion("tile-128");
+        rUpgrade7.cost = 500;
+        rUpgrade7.group = ItemGroups.Research;
+
+        UpgradeButton rUpgrade8 = new UpgradeButton();
+        rUpgrade8.name = "Truck Capacity 2";
+        rUpgrade8.description = "Get a truck that can pick more shit up. Unlock truck stack with capacity = 100";
+        rUpgrade8.picture = Assets.atlas.findRegion("tile-128");
+        rUpgrade8.cost = 800;
+        rUpgrade8.group = ItemGroups.Research;
+
+        UpgradeButton rUpgrade9 = new UpgradeButton();
+        rUpgrade9.name = "Truck Capacity 3";
+        rUpgrade9.description = "Get a truck that can pick more shit up. Unlock truck stack with capacity = 200";
+        rUpgrade9.picture = Assets.atlas.findRegion("tile-128");
+        rUpgrade9.cost = 500;
+        rUpgrade9.group = ItemGroups.Research;
 
         researchButtons.add(rUpgrade1);
         researchButtons.add(rUpgrade2);
         researchButtons.add(rUpgrade3);
         researchButtons.add(rUpgrade4);
         researchButtons.add(rUpgrade5);
+        researchButtons.add(rUpgrade6);
+        researchButtons.add(rUpgrade7);
+        researchButtons.add(rUpgrade8);
+        researchButtons.add(rUpgrade9);
 
         researchMap.put(rUpgrade1.name, ResearchType.INCINERATION);
         researchMap.put(rUpgrade2.name, ResearchType.COMPACTION);
         researchMap.put(rUpgrade3.name, ResearchType.RECYCLING);
         researchMap.put(rUpgrade4.name, ResearchType.TRUCK_STOPS_1);
-        researchMap.put(rUpgrade5.name, ResearchType.TRUCK_CAPACITY_1);
+        researchMap.put(rUpgrade5.name, ResearchType.TRUCK_STOPS_2);
+        researchMap.put(rUpgrade6.name, ResearchType.TRUCK_STOPS_3);
+        researchMap.put(rUpgrade7.name, ResearchType.TRUCK_CAPACITY_1);
+        researchMap.put(rUpgrade8.name, ResearchType.TRUCK_CAPACITY_2);
+        researchMap.put(rUpgrade9.name, ResearchType.TRUCK_CAPACITY_3);
 
         createButtons(ItemGroups.Research);
     }
@@ -331,9 +455,13 @@ public class ResolutionPhaseScreen extends BaseScreen {
         {
             currArr = addOnButtons;
         }
-        else
+        else if (group == ItemGroups.Research)
         {
             currArr = researchButtons;
+        }
+        else
+        {
+            currArr = truckButtons;
         }
 
         final float margLeft = 20f;
@@ -389,6 +517,13 @@ public class ResolutionPhaseScreen extends BaseScreen {
                 button.button.update(dt);
             }
         }
+        else if(selectedGroup == ItemGroups.Trucks)
+        {
+            for(UpgradeButton button : truckButtons)
+            {
+                button.button.update(dt);
+            }
+        }
 
         if (Gdx.input.justTouched() && allowInput) {
             hudCamera.unproject(touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0f));
@@ -405,6 +540,10 @@ public class ResolutionPhaseScreen extends BaseScreen {
             else if (bResearch.checkForTouch(touchX, touchY)) {
                 selectedGroup = ItemGroups.Research;
             }
+            else if (bTrucks.checkForTouch(touchX, touchY))
+            {
+                selectedGroup = ItemGroups.Trucks;
+            }
             else if (bContinue.checkForTouch(touchX, touchY)){
                 world.nextTurn();
                 LudumDare40.game.setScreen(new PlanPhaseScreen());
@@ -414,39 +553,57 @@ public class ResolutionPhaseScreen extends BaseScreen {
                 if(money >= currentUpgrade.cost)
                 {
                     money -= currentUpgrade.cost;
+                    if(currentUpgrade.group == ItemGroups.Research)
+                    {
+                        storeManager.completeResearch(researchMap.get(currentUpgrade.name));
+                    }
                     currentUpgrade.quantity++;
                 }
             }
+            checkSubButtonTouch(touchX, touchY);
+        }
+    }
 
-            //Loop through the array pertaining to the selected item group
-            if(selectedGroup == ItemGroups.Building)
+    private void checkSubButtonTouch(int x, int y)
+    {
+        //Loop through the array pertaining to the selected item group
+        if(selectedGroup == ItemGroups.Building)
+        {
+            for(UpgradeButton button : buildingsButtons)
             {
-                for(UpgradeButton button : buildingsButtons)
+                if(button.button.checkForTouch(x, y) && button.button.enabled)
                 {
-                    if(button.button.checkForTouch(touchX, touchY))
-                    {
-                        currentUpgrade = button;
-                    }
+                    currentUpgrade = button;
                 }
             }
-            else if(selectedGroup == ItemGroups.Addon)
+        }
+        else if(selectedGroup == ItemGroups.Addon)
+        {
+            for(UpgradeButton button : addOnButtons)
             {
-                for(UpgradeButton button : addOnButtons)
+                if(button.button.checkForTouch(x, y) && button.button.enabled)
                 {
-                    if(button.button.checkForTouch(touchX, touchY))
-                    {
-                        currentUpgrade = button;
-                    }
+                    currentUpgrade = button;
                 }
             }
-            else if(selectedGroup == ItemGroups.Research)
+        }
+        else if(selectedGroup == ItemGroups.Research)
+        {
+            for(UpgradeButton button : researchButtons)
             {
-                for(UpgradeButton button : researchButtons)
+                if(button.button.checkForTouch(x, y) && button.button.enabled)
                 {
-                    if(button.button.checkForTouch(touchX, touchY))
-                    {
-                        currentUpgrade = button;
-                    }
+                    currentUpgrade = button;
+                }
+            }
+        }
+        else if(selectedGroup == ItemGroups.Trucks)
+        {
+            for(UpgradeButton button : truckButtons)
+            {
+                if (button.button.checkForTouch(x, y) && button.button.enabled)
+                {
+                    currentUpgrade = button;
                 }
             }
         }
@@ -476,6 +633,9 @@ public class ResolutionPhaseScreen extends BaseScreen {
             batch.setColor(selectedGroup == ItemGroups.Research ? Color.WHITE : Color.LIGHT_GRAY);
             batch.draw(Assets.whitePixel, rectHeadBut3.x, rectHeadBut3.y, rectHeadBut3.width, rectHeadBut3.height);
             bResearch.render(batch);
+            batch.setColor(selectedGroup == ItemGroups.Trucks ? Color.WHITE : Color.LIGHT_GRAY);
+            batch.draw(Assets.whitePixel, rectHeadBut4.x, rectHeadBut4.y, rectHeadBut4.width, rectHeadBut4.height);
+            bTrucks.render(batch);
             batch.setColor(Color.WHITE);
 
             // Render blank inserts
@@ -496,6 +656,10 @@ public class ResolutionPhaseScreen extends BaseScreen {
             else if(selectedGroup == ItemGroups.Research)
             {
                 renderResearchButtons(batch);
+            }
+            else if(selectedGroup == ItemGroups.Trucks)
+            {
+                renderTruckButtons(batch);
             }
 
             // Draw continue button
@@ -547,20 +711,12 @@ public class ResolutionPhaseScreen extends BaseScreen {
             if(storeManager.getTileStatus(tileMap.get(button.name)) == StoreManager.Status.UNLOCKED)
             {
                 button.button.enable(true);
+                batch.setColor(Color.WHITE);
             }
             else if(storeManager.getTileStatus(tileMap.get(button.name)) == StoreManager.Status.LOCKED)
             {
                 button.button.enable(false);
-                button.button.setTooltip("Hello, friend!");
-            }
-
-            if(!button.button.enabled)
-            {
                 batch.setColor(1f, 1f, 1f, 0.5f);
-            }
-            else
-            {
-                batch.setColor(Color.WHITE);
             }
             batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
                     button.button.bounds.width - 6, button.button.bounds.height - 6);
@@ -574,20 +730,96 @@ public class ResolutionPhaseScreen extends BaseScreen {
     {
         for(UpgradeButton button : addOnButtons)
         {
+            if(storeManager.getUpgradeStatus(upgradeMap.get(button.name)) == StoreManager.Status.LOCKED)
+            {
+                button.button.enable(false);
+                batch.setColor(1f, 1f, 1f, 0.5f);
+            }
+            else
+            {
+                button.button.enable(true);
+                batch.setColor(Color.WHITE);
+            }
             batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
                     button.button.bounds.width - 6, button.button.bounds.height - 6);
             button.button.render(batch);
         }
+        batch.setColor(Color.WHITE);
     }
 
     private void renderResearchButtons(SpriteBatch batch)
     {
         for(UpgradeButton button : researchButtons)
         {
+            if(storeManager.getResearchStatus(researchMap.get(button.name)) == StoreManager.ResearchStatus.LOCKED)
+            {
+                button.button.enable(false);
+                batch.setColor(1f, 1f, 1f, 0.5f);
+            }
+            else
+            {
+                button.button.enable(true);
+                batch.setColor(Color.WHITE);
+            }
             batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
                     button.button.bounds.width - 6, button.button.bounds.height - 6);
             button.button.render(batch);
         }
+        batch.setColor(Color.WHITE);
+    }
+
+    private void renderTruckButtons(SpriteBatch batch)
+    {
+        for(UpgradeButton button : truckButtons)
+        {
+            if(checkTruckEnabled(button))
+            {
+                button.button.enable(true);
+                batch.setColor(Color.WHITE);
+            }
+            else
+            {
+                button.button.enable(false);
+                batch.setColor(1f, 1f, 1f, 0.5f);
+            }
+            batch.draw(button.picture, button.button.bounds.x + 3, button.button.bounds.y + 3,
+                    button.button.bounds.width - 6, button.button.bounds.height - 6);
+            button.button.render(batch);
+        }
+        batch.setColor(Color.WHITE);
+    }
+
+    private boolean checkTruckEnabled(UpgradeButton button)
+    {
+        boolean hasCap = false;
+        boolean hasSpeed = false;
+        if(button.name.contains("S2"))
+        {
+            hasSpeed = storeManager.getResearchStatus(ResearchType.TRUCK_STOPS_1) == StoreManager.ResearchStatus.RESEARCHED;
+        }
+        else if(button.name.contains("S3"))
+        {
+            hasSpeed = storeManager.getResearchStatus(ResearchType.TRUCK_STOPS_2) == StoreManager.ResearchStatus.RESEARCHED;
+        }
+        else if(button.name.contains("S4"))
+        {
+            hasSpeed = storeManager.getResearchStatus(ResearchType.TRUCK_STOPS_3) == StoreManager.ResearchStatus.RESEARCHED;
+        }
+
+        if(button.name.contains("C50"))
+        {
+            hasCap = storeManager.getResearchStatus(ResearchType.TRUCK_CAPACITY_1) == StoreManager.ResearchStatus.RESEARCHED;
+        }
+        else if(button.name.contains("C100"))
+        {
+            hasCap = storeManager.getResearchStatus(ResearchType.TRUCK_CAPACITY_2) == StoreManager.ResearchStatus.RESEARCHED;
+        }
+        else if(button.name.contains("C200"))
+        {
+            hasCap = storeManager.getResearchStatus(ResearchType.TRUCK_CAPACITY_3) == StoreManager.ResearchStatus.RESEARCHED;
+        }
+
+        return hasCap && hasSpeed;
     }
 
     private void renderWorld(SpriteBatch batch) {
@@ -600,7 +832,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
-        Assets.drawString(batch, "Money: " + money, Config.gameWidth / 2 - 10, Config.gameHeight - 20, Color.GOLD, 0.5f, Assets.font);
+        Assets.drawString(batch, "Money: " + money, Config.gameWidth / 2 - 90, Config.gameHeight - 20, Color.GOLD, 0.5f, Assets.font);
 
         batch.setColor(Color.LIGHT_GRAY);
         batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);

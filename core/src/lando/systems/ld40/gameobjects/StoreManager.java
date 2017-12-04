@@ -35,7 +35,7 @@ public class StoreManager {
         unlockUpgrade(UpgradeType.DEMOLITION);
         unlockUpgrade(UpgradeType.DUMPSTER);
         unlockUpgrade(UpgradeType.GREEN_TOKEN);
-        unlockUpgrade(UpgradeType.RECLAMATION);
+        //unlockUpgrade(UpgradeType.RECLAMATION);
         unlockUpgrade(UpgradeType.TIER_UPGRADE);
         unlockUpgrade(UpgradeType.TRUCK);
 
@@ -123,7 +123,7 @@ public class StoreManager {
 
         // Recycling Center
         if (getResearchStatus(ResearchType.RECYCLING) == ResearchStatus.RESEARCHED) {
-            unlockTile(TileType.RECYCLING_CENTER);
+            unlockUpgrade(UpgradeType.RECLAMATION);
         }
 
         // UPGRADES ----------------------------------------------------------------------------------------------------
