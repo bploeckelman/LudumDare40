@@ -596,14 +596,14 @@ public class Building extends Tile {
         }
         if (supportsGreenCert){
             TextureRegion greenCert = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
-            batch.draw(greenCert, bounds.x + bounds.width - (greenCert.getRegionWidth() + CUTOUT_X_OFFSET), bounds.y +  bounds.height - (greenCert.getRegionHeight() + CUTOUT_Y_OFFSET));
+            batch.draw(greenCert, bounds.x + 4, bounds.y +  bounds.height - (greenCert.getRegionHeight() + 4));
         }
 
         if (currentTrashLevel > 0){
-            batch.draw(Assets.trashBag, bounds.x, bounds.y + bounds.height - Assets.trashBag.getRegionHeight());
+            batch.draw(Assets.trashButton, bounds.x + bounds.width - 44, bounds.y + bounds.height - 44);
             float n = 1.0f - MathUtils.clamp(currentTrashLevel / (float) baseTrashCapacity, 0, 1f);
             trashColor = Utils.hsvToRgb(((n * 120f) - 20) / 365f, 1.0f, 1.0f, trashColor);
-            Assets.drawString(batch, (int)currentTrashLevel + "", bounds.x, bounds.y + bounds.height - 24 , trashColor, .45f, Assets.font, Assets.trashBag.getRegionWidth(), Align.center);
+            Assets.drawString(batch, (int)currentTrashLevel + "", bounds.x + bounds.width - 44, bounds.y + bounds.height , trashColor, .5f, Assets.font, Assets.trashButton.getRegionWidth(), Align.center);
         }
 
         if (filtered) {

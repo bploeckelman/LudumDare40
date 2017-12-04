@@ -88,6 +88,7 @@ public class Assets {
     public static TextureRegion residentialMediumTexture;
     public static TextureRegion residentialHighTexture;
     public static TextureRegion trashBag;
+    public static TextureRegion trashButton;
 
     public static Array<TextureRegion> grassTiles;
     public static Array<TextureRegion> cloudTextures;
@@ -183,6 +184,7 @@ public class Assets {
         residentialMediumTexture = atlas.findRegion("res-med");
         residentialHighTexture   = atlas.findRegion("res-high");
         trashBag = atlas.findRegion("bag_o_trash");
+        trashButton = atlas.findRegion("trash_button");
 
         cloudTextures = new Array<TextureRegion>();
         cloudTextures.add(atlas.findRegion("cloud1"));
