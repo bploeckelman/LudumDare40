@@ -157,5 +157,38 @@ public class StoreManager {
         }
 
     }
+
+    public DumpTruck.TruckType getMaxTruck(){
+        int speed = 0;
+        int capacity = 0;
+        if (getResearchStatus(ResearchType.TRUCK_STOPS_2) == ResearchStatus.RESEARCHED){
+            speed = 2;
+        } else if (getResearchStatus(ResearchType.TRUCK_STOPS_1) == ResearchStatus.RESEARCHED){
+            speed = 1;
+        }
+        if (getResearchStatus(ResearchType.TRUCK_CAPACITY_2) == ResearchStatus.RESEARCHED){
+            capacity = 2;
+        } else if (getResearchStatus(ResearchType.TRUCK_CAPACITY_1) == ResearchStatus.RESEARCHED){
+            capacity = 1;
+        }
+
+        if (speed == 0 && capacity == 0) return DumpTruck.One;
+        if (speed == 0 && capacity == 1) return DumpTruck.Two;
+        if (speed == 0 && capacity == 2) return DumpTruck.Three;
+
+        if (speed == 1 && capacity == 0) return DumpTruck.Four;
+        if (speed == 1 && capacity == 1) return DumpTruck.Five;
+        if (speed == 1 && capacity == 2) return DumpTruck.Six;
+
+        if (speed == 2 && capacity == 0) return DumpTruck.Seven;
+        if (speed == 2 && capacity == 1) return DumpTruck.Eight;
+        if (speed == 2 && capacity == 2) return DumpTruck.Nine;
+
+        return DumpTruck.One;
+    }
+
+    public int getTruckCost(DumpTruck.TruckType type){
+        return (type.speed * 50 + type.capacity / 5);
+    }
     
 }

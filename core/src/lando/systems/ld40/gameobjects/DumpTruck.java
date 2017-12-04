@@ -18,10 +18,10 @@ public class DumpTruck extends GameObject {
 
     public static class TruckType {
         public int speed = 2;
-        public float capacity = 50;
+        public int capacity = 50;
         public Array<TextureAtlas.AtlasRegion> truckTextures;
 
-        public TruckType(int speed, float capacity, Array<TextureAtlas.AtlasRegion> truckTextures) {
+        public TruckType(int speed, int capacity, Array<TextureAtlas.AtlasRegion> truckTextures) {
             this.speed = speed;
             this.capacity = capacity;
             this.truckTextures = truckTextures;
@@ -48,7 +48,8 @@ public class DumpTruck extends GameObject {
 
     public int speed;
     public Array<TextureAtlas.AtlasRegion> truckTextures;
-    public float capacity;
+    public int capacity;
+    public TruckType truckType;
     public float currentTrash;
     private World world;
 
@@ -57,11 +58,13 @@ public class DumpTruck extends GameObject {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+
     public DumpTruck(TruckType type) {
         truckTextures = type.truckTextures;
         setTexture(truckTextures.get(0));
         speed = type.speed;
         capacity = type.capacity;
+        truckType = type;
         currentTrash = 0;
 
         computedTileOffsetX = (World.tile_pixels_wide * 0.5f) - (texture.getRegionWidth() / 2);
@@ -196,6 +199,14 @@ public class DumpTruck extends GameObject {
      */
     public void clearAnimations() {
         // TODO:
+    }
+
+    public void setType(TruckType type){
+        truckTextures = type.truckTextures;
+        setTexture(truckTextures.get(0));
+        speed = type.speed;
+        capacity = type.capacity;
+        truckType = type;
     }
 
 

@@ -67,7 +67,6 @@ public class ResolutionPhaseScreen extends BaseScreen {
     ObjectMap<String, ResearchType>  researchMap;
     ObjectMap<String, TileType> tileMap;
     ObjectMap<String, UpgradeType> upgradeMap;
-    ObjectMap<String, TruckType> truckMap;
 
     UpgradeButton currentUpgrade;
 
@@ -119,7 +118,6 @@ public class ResolutionPhaseScreen extends BaseScreen {
         upgradeMap = new ObjectMap<String, UpgradeType>();
         researchMap = new ObjectMap<String, ResearchType>();
         tileMap = new ObjectMap<String, TileType>();
-        truckMap = new ObjectMap<String, TruckType>();
 
         initBuildingsUpgrades();
         initAddOnButtons();
@@ -129,68 +127,73 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
     void initTruckButtons()
     {
+        DumpTruck truck2 = null;
+        DumpTruck truck3 = null;
+        DumpTruck truck4 = null;
+        DumpTruck truck5 = null;
+        DumpTruck truck6 = null;
+        DumpTruck truck1 = world.routes.trucks.get(0);
+        if (world.routes.trucks.size > 1) truck2 = world.routes.trucks.get(1);
+        if (world.routes.trucks.size > 2) truck3 = world.routes.trucks.get(2);
+        if (world.routes.trucks.size > 3) truck4 = world.routes.trucks.get(3);
+        if (world.routes.trucks.size > 4) truck5 = world.routes.trucks.get(4);
+        if (world.routes.trucks.size > 5) truck6 = world.routes.trucks.get(5);
+
         UpgradeButton tUpgrade1 = new UpgradeButton();
-        tUpgrade1.name = "Truck, S2 C50";
-        tUpgrade1.description = "Truck with \nSpeed = 2, \nCapacity = 50";
-        tUpgrade1.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade1.name = "Truck";
+        tUpgrade1.description = "Your First Truck";
+        tUpgrade1.picture = truck1.texture;
         tUpgrade1.group = ItemGroups.Trucks;
         tUpgrade1.cost = 100;
+        tUpgrade1.truck = truck1;
+        tUpgrade1.truckIndex = 0;
 
         UpgradeButton tUpgrade2 = new UpgradeButton();
-        tUpgrade2.name = "Truck, S3 C50";
-        tUpgrade2.description = "Truck with \nSpeed = 3, \nCapacity = 50";
-        tUpgrade2.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade2.name = "Truck";
+        tUpgrade2.description = "Add another route";
+        tUpgrade2.picture = (truck2 != null) ? truck2.texture : Assets.atlas.findRegion("tile-128");
         tUpgrade2.group = ItemGroups.Trucks;
         tUpgrade2.cost = 200;
+        tUpgrade2.truck = truck2;
+        tUpgrade2.truckIndex = 1;
 
         UpgradeButton tUpgrade3 = new UpgradeButton();
-        tUpgrade3.name = "Truck, S4 C50";
-        tUpgrade3.description = "Truck with \nSpeed = 4, \nCapacity = 50";
-        tUpgrade3.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade3.name = "Truck";
+        tUpgrade3.description = "A third truck for your fleet";
+        tUpgrade3.picture = (truck3 != null) ? truck3.texture : Assets.atlas.findRegion("tile-128");
         tUpgrade3.group = ItemGroups.Trucks;
         tUpgrade3.cost = 300;
+        tUpgrade3.truck = truck3;
+        tUpgrade3.truckIndex = 2;
 
         UpgradeButton tUpgrade4 = new UpgradeButton();
-        tUpgrade4.name = "Truck, S2 C100";
-        tUpgrade4.description = "Truck with \nSpeed = 2, \nCapacity = 100";
-        tUpgrade4.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade4.name = "Truck";
+        tUpgrade4.description = "These are getting expensive";
+        tUpgrade4.picture = (truck4 != null) ? truck4.texture : Assets.atlas.findRegion("tile-128");
         tUpgrade4.group = ItemGroups.Trucks;
         tUpgrade4.cost = 150;
+        tUpgrade4.truck = truck4;
+        tUpgrade4.truckIndex = 3;
 
         UpgradeButton tUpgrade5 = new UpgradeButton();
-        tUpgrade5.name = "Truck, S3 C100";
-        tUpgrade5.description = "Truck with \nSpeed = 3, \nCapacity = 100";
-        tUpgrade5.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade5.name = "Truck";
+        tUpgrade5.description = "Five Routes!";
+        tUpgrade5.picture = (truck5 != null) ? truck5.texture : Assets.atlas.findRegion("tile-128");
         tUpgrade5.group = ItemGroups.Trucks;
         tUpgrade5.cost = 250;
+        tUpgrade5.truck = truck5;
+        tUpgrade5.truckIndex = 4;
+
 
         UpgradeButton tUpgrade6 = new UpgradeButton();
-        tUpgrade6.name = "Truck, S4 C100";
-        tUpgrade6.description = "Truck with \nSpeed = 4, \nCapacity = 100";
-        tUpgrade6.picture = Assets.atlas.findRegion("tile-128");
+        tUpgrade6.name = "Truck";
+        tUpgrade6.description = "This will fill up your garage.";
+        tUpgrade6.picture = (truck6 != null) ? truck6.texture : Assets.atlas.findRegion("tile-128");
         tUpgrade6.group = ItemGroups.Trucks;
         tUpgrade6.cost = 350;
+        tUpgrade6.truck = truck6;
+        tUpgrade6.truckIndex = 5;
 
-        UpgradeButton tUpgrade7 = new UpgradeButton();
-        tUpgrade7.name = "Truck, S2 C200";
-        tUpgrade7.description = "Truck with \nSpeed = 2, \nCapacity = 200";
-        tUpgrade7.picture = Assets.atlas.findRegion("tile-128");
-        tUpgrade7.group = ItemGroups.Trucks;
-        tUpgrade7.cost = 400;
-
-        UpgradeButton tUpgrade8 = new UpgradeButton();
-        tUpgrade8.name = "Truck, S3 C200";
-        tUpgrade8.description = "Truck with \nSpeed = 3, \nCapacity = 200";
-        tUpgrade8.picture = Assets.atlas.findRegion("tile-128");
-        tUpgrade8.group = ItemGroups.Trucks;
-        tUpgrade8.cost = 500;
-
-        UpgradeButton tUpgrade9 = new UpgradeButton();
-        tUpgrade9.name = "Truck, S4 C200";
-        tUpgrade9.description = "Truck with \nSpeed = 4, \nCapacity = 200";
-        tUpgrade9.picture = Assets.atlas.findRegion("tile-128");
-        tUpgrade9.group = ItemGroups.Trucks;
-        tUpgrade9.cost = 600;
 
         truckButtons.add(tUpgrade1);
         truckButtons.add(tUpgrade2);
@@ -198,19 +201,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         truckButtons.add(tUpgrade4);
         truckButtons.add(tUpgrade5);
         truckButtons.add(tUpgrade6);
-        truckButtons.add(tUpgrade7);
-        truckButtons.add(tUpgrade8);
-        truckButtons.add(tUpgrade9);
 
-        truckMap.put(tUpgrade1.name, TruckType.ONE);
-        truckMap.put(tUpgrade2.name, TruckType.FOUR);
-        truckMap.put(tUpgrade3.name, TruckType.SEVEN);
-        truckMap.put(tUpgrade4.name, TruckType.TWO);
-        truckMap.put(tUpgrade5.name, TruckType.FIVE);
-        truckMap.put(tUpgrade6.name, TruckType.EIGHT);
-        truckMap.put(tUpgrade7.name, TruckType.THREE);
-        truckMap.put(tUpgrade8.name, TruckType.SIX);
-        truckMap.put(tUpgrade9.name, TruckType.NINE);
 
         createButtons(ItemGroups.Trucks);
     }
@@ -226,7 +217,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
         UpgradeButton aUpgrade2 = new UpgradeButton();
         aUpgrade2.name = "Dumpster";
-        aUpgrade2.description = "Where trash goes. Place on any I, C, R";
+        aUpgrade2.description = "Placed on a building so it can hold more trash";
         aUpgrade2.picture = Assets.atlas.findRegion("newdumpster");
         aUpgrade2.cost = 500;
         aUpgrade2.group = ItemGroups.Addon;
@@ -240,13 +231,13 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
         UpgradeButton aUpgrade4 = new UpgradeButton();
         aUpgrade4.name = "Green Token";
-        aUpgrade4.description = "Green certified! Reduces trash output. Place on any I, C, R";
+        aUpgrade4.description = "Green certified! Reduces trash output";
         aUpgrade4.picture = Assets.atlas.findRegion("leaf-green");
-        aUpgrade4.cost = 200;
+        aUpgrade4.cost = 1000;
         aUpgrade4.group = ItemGroups.Addon;
 
         UpgradeButton aUpgrade5 = new UpgradeButton();
-        aUpgrade5.name = "Recycling Plant";
+        aUpgrade5.name = "Recycler";
         aUpgrade5.description = "Recycle your trash. Place on any landfill";
         aUpgrade5.picture = Assets.atlas.findRegion("recycle");
         aUpgrade5.cost = 5000;
@@ -280,86 +271,70 @@ public class ResolutionPhaseScreen extends BaseScreen {
     {
         UpgradeButton rUpgrade1 = new UpgradeButton();
         rUpgrade1.name = "Incineration";
-        rUpgrade1.description = "This research allows for purchase of incinerator";
+        rUpgrade1.description = "This research allows for purchase of incinerators";
         rUpgrade1.picture = Assets.atlas.findRegion("incinerator");
-        rUpgrade1.cost = 20000000;
+        rUpgrade1.cost = 200;
         rUpgrade1.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade2 = new UpgradeButton();
         rUpgrade2.name = "Compaction";
-        rUpgrade2.description = "This research allows for purchase of compactor";
+        rUpgrade2.description = "This research allows for purchase of compactors";
         rUpgrade2.picture = Assets.atlas.findRegion("compactor");
-        rUpgrade2.cost = 50000000;
+        rUpgrade2.cost = 500;
         rUpgrade2.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade3 = new UpgradeButton();
         rUpgrade3.name = "Recyclation";
-        rUpgrade3.description = "This research allows for purchase of recycling plate";
+        rUpgrade3.description = "This research allows for purchase of recyclers";
         rUpgrade3.picture = Assets.atlas.findRegion("recycle");
-        rUpgrade3.cost = 100000000;
+        rUpgrade3.cost = 1000;
         rUpgrade3.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade4 = new UpgradeButton();
         rUpgrade4.name = "Truck Speed 1";
-        rUpgrade4.description = "Unlock truck stack with speed = 2";
+        rUpgrade4.description = "Allows your trucks to make more than one stop";
         rUpgrade4.picture = Assets.atlas.findRegion("tile-128");
         rUpgrade4.cost = 100;
         rUpgrade4.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade5 = new UpgradeButton();
         rUpgrade5.name = "Truck Speed 2";
-        rUpgrade5.description = "Get a faster truck (vroom, vroom). Unlock truck stack with speed = 3";
+        rUpgrade5.description = "Get a faster truck (vroom, vroom). Trucks can make 3 stops";
         rUpgrade5.picture = Assets.atlas.findRegion("tile-128");
-        rUpgrade5.cost = 100;
+        rUpgrade5.cost = 600;
         rUpgrade5.group = ItemGroups.Research;
-
-        UpgradeButton rUpgrade6 = new UpgradeButton();
-        rUpgrade6.name = "Truck Speed 3";
-        rUpgrade6.description = "Get an even faster truck. Unlock truck stack with speed = 4";
-        rUpgrade6.picture = Assets.atlas.findRegion("tile-128");
-        rUpgrade6.cost = 100;
-        rUpgrade6.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade7 = new UpgradeButton();
         rUpgrade7.name = "Truck Capacity 1";
-        rUpgrade7.description = "Get a truck that can pick more shit up. Unlock truck stack with capacity = 50";
+        rUpgrade7.description = "Bigger trucks can carry more garbage before filling up";
         rUpgrade7.picture = Assets.atlas.findRegion("tile-128");
         rUpgrade7.cost = 500;
         rUpgrade7.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade8 = new UpgradeButton();
         rUpgrade8.name = "Truck Capacity 2";
-        rUpgrade8.description = "Get a truck that can pick more shit up. Unlock truck stack with capacity = 100";
+        rUpgrade8.description = "Even bigger trucks!!";
         rUpgrade8.picture = Assets.atlas.findRegion("tile-128");
         rUpgrade8.cost = 800;
         rUpgrade8.group = ItemGroups.Research;
-
-        UpgradeButton rUpgrade9 = new UpgradeButton();
-        rUpgrade9.name = "Truck Capacity 3";
-        rUpgrade9.description = "Get a truck that can pick more shit up. Unlock truck stack with capacity = 200";
-        rUpgrade9.picture = Assets.atlas.findRegion("tile-128");
-        rUpgrade9.cost = 500;
-        rUpgrade9.group = ItemGroups.Research;
 
         researchButtons.add(rUpgrade1);
         researchButtons.add(rUpgrade2);
         researchButtons.add(rUpgrade3);
         researchButtons.add(rUpgrade4);
         researchButtons.add(rUpgrade5);
-        researchButtons.add(rUpgrade6);
+
         researchButtons.add(rUpgrade7);
         researchButtons.add(rUpgrade8);
-        researchButtons.add(rUpgrade9);
+
 
         researchMap.put(rUpgrade1.name, ResearchType.INCINERATION);
         researchMap.put(rUpgrade2.name, ResearchType.COMPACTION);
         researchMap.put(rUpgrade3.name, ResearchType.RECYCLING);
         researchMap.put(rUpgrade4.name, ResearchType.TRUCK_STOPS_1);
         researchMap.put(rUpgrade5.name, ResearchType.TRUCK_STOPS_2);
-        researchMap.put(rUpgrade6.name, ResearchType.TRUCK_STOPS_3);
         researchMap.put(rUpgrade7.name, ResearchType.TRUCK_CAPACITY_1);
         researchMap.put(rUpgrade8.name, ResearchType.TRUCK_CAPACITY_2);
-        researchMap.put(rUpgrade9.name, ResearchType.TRUCK_CAPACITY_3);
 
         createButtons(ItemGroups.Research);
     }
@@ -368,65 +343,65 @@ public class ResolutionPhaseScreen extends BaseScreen {
     {
         UpgradeButton bUpgrade1 = new UpgradeButton();
         bUpgrade1.name = "Low Residential";
-        bUpgrade1.description = "LOW RESIDENTIAL STATS";
+        bUpgrade1.description = "Small taxes collected and little garbage";
         bUpgrade1.picture = Assets.atlas.findRegion("res-low");
-        bUpgrade1.cost = 10;
+        bUpgrade1.cost = 50;
         bUpgrade1.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade2 = new UpgradeButton();
         bUpgrade2.name = "Low Commercial";
-        bUpgrade2.description = "LOW COMMERCIAL STATS";
+        bUpgrade2.description = "Moderate taxes and garbage created";
         bUpgrade2.picture = Assets.atlas.findRegion("com-low");
-        bUpgrade2.cost = 10;
+        bUpgrade2.cost = 70;
         bUpgrade2.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade3 = new UpgradeButton();
         bUpgrade3.name = "Low Industrial";
-        bUpgrade3.description = "LOW INDUSTRIAL STATS";
+        bUpgrade3.description = "Large taxes and a lot of garbage";
         bUpgrade3.picture = Assets.atlas.findRegion("ind-low");
-        bUpgrade3.cost = 10;
+        bUpgrade3.cost = 100;
         bUpgrade3.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade4 = new UpgradeButton();
         bUpgrade4.name = "Medium Residential";
-        bUpgrade4.description = "MEDIUM RESIDENTIAL STATS";
+        bUpgrade4.description = "Larger houses create more taxes and garbage";
         bUpgrade4.picture = Assets.atlas.findRegion("res-med");
-        bUpgrade4.cost = 20;
+        bUpgrade4.cost = 100;
         bUpgrade4.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade5 = new UpgradeButton();
         bUpgrade5.name = "Medium Commercial";
-        bUpgrade5.description = "MEDIUM COMMERCIAL STATS";
+        bUpgrade5.description = "More shopping means more consumers";
         bUpgrade5.picture = Assets.atlas.findRegion("com-med");
-        bUpgrade5.cost = 20;
+        bUpgrade5.cost = 200;
         bUpgrade5.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade6 = new UpgradeButton();
         bUpgrade6.name = "Medium Industrial";
-        bUpgrade6.description = "MEDIUM INDUSTRIAL STATS";
+        bUpgrade6.description = "Need to make the things that sell";
         bUpgrade6.picture = Assets.atlas.findRegion("ind-med");
-        bUpgrade6.cost = 20;
+        bUpgrade6.cost = 300;
         bUpgrade6.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade7 = new UpgradeButton();
         bUpgrade7.name = "High Residential";
-        bUpgrade7.description = "HIGH RESIDENTIAL STATS";
+        bUpgrade7.description = "Moving up to the penthouse";
         bUpgrade7.picture = Assets.atlas.findRegion("res-high");
-        bUpgrade7.cost = 30;
+        bUpgrade7.cost = 150;
         bUpgrade7.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade8 = new UpgradeButton();
         bUpgrade8.name = "High Commercial";
-        bUpgrade8.description = "HIGH COMMERCIAL STATS";
+        bUpgrade8.description = "The most important executives work here";
         bUpgrade8.picture = Assets.atlas.findRegion("com-high");
-        bUpgrade8.cost = 30;
+        bUpgrade8.cost = 300;
         bUpgrade8.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade9 = new UpgradeButton();
         bUpgrade9.name = "High Industrial";
-        bUpgrade9.description = "HIGH INDUSTRIAL STATS";
+        bUpgrade9.description = "Peak efficiency";
         bUpgrade9.picture = Assets.atlas.findRegion("ind-high");
-        bUpgrade9.cost = 30;
+        bUpgrade9.cost = 600;
         bUpgrade9.group = ItemGroups.Building;
 
         buildingsButtons.add(bUpgrade1);
@@ -533,7 +508,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
             for(UpgradeButton button : truckButtons)
             {
                 button.button.update(dt);
-                button.quantity = world.inventory.getCurrentCountForTruck(truckMap.get(button.name));
+//                button.quantity = world.inventory.getCurrentCountForTruck(truckMap.get(button.name));
             }
         }
 
@@ -545,16 +520,20 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
             if (bBuildings.checkForTouch(touchX, touchY)) {
                 selectedGroup = ItemGroups.Building;
+                currentUpgrade = null;
             }
             else if (bAddons.checkForTouch(touchX, touchY)) {
                 selectedGroup = ItemGroups.Addon;
+                currentUpgrade = null;
             }
             else if (bResearch.checkForTouch(touchX, touchY)) {
                 selectedGroup = ItemGroups.Research;
+                currentUpgrade = null;
             }
             else if (bTrucks.checkForTouch(touchX, touchY))
             {
                 selectedGroup = ItemGroups.Trucks;
+                currentUpgrade = null;
             }
             else if (bContinue.checkForTouch(touchX, touchY)){
                 world.nextTurn();
@@ -579,7 +558,14 @@ public class ResolutionPhaseScreen extends BaseScreen {
                     }
                     else if(currentUpgrade.group == ItemGroups.Trucks)
                     {
-                        world.inventory.addTruckItem(truckMap.get(currentUpgrade.name));
+//                        world.inventory.addTruckItem(truckMap.get(currentUpgrade.name));
+                        if (currentUpgrade.truck == null){
+                            world.routes.addRoute(storeManager.getMaxTruck());
+                        }  else {
+                            currentUpgrade.truck.setType(storeManager.getMaxTruck());
+                        }
+                        currentUpgrade.truck = world.routes.trucks.get(currentUpgrade.truckIndex);
+                        currentUpgrade.picture = currentUpgrade.truck.texture;
                     }
                     else if(currentUpgrade.group == ItemGroups.Addon)
                     {
@@ -722,70 +708,65 @@ public class ResolutionPhaseScreen extends BaseScreen {
     private void renderSelectedInfo(SpriteBatch batch)
     {
         Assets.drawString(batch, currentUpgrade.name, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 20,
-                Config.COLOR_BLACK, 0.5f, Assets.font, rectInfoBox.width, Align.center);
+                Config.COLOR_GOLD, 0.5f, Assets.font, rectInfoBox.width, Align.center);
         batch.draw(currentUpgrade.picture, rectInfoBox.x + 80, rectInfoBox.y + rectInfoBox.height - 180, 128, 128);
-        if(currentUpgrade.group != ItemGroups.Research)
+        if(currentUpgrade.group != ItemGroups.Research && currentUpgrade.group != ItemGroups.Trucks)
         {
             Assets.drawString(batch, "x" + currentUpgrade.quantity, rectInfoBox.x + 200, rectInfoBox.y + rectInfoBox.height - 105,
-                    Config.COLOR_BLACK, 0.4f, Assets.font, 80, Align.center);
+                    Config.COLOR_TEXT, 0.4f, Assets.font, 80, Align.center);
         }
-        Assets.drawString(batch, currentUpgrade.description, rectInfoBox.x, rectInfoBox.y + rectInfoBox.height - 200,
-                Config.COLOR_BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
+        Assets.drawString(batch, currentUpgrade.description, rectInfoBox.x + 5, rectInfoBox.y + rectInfoBox.height - 200,
+                Config.COLOR_TEXT, 0.30f, Assets.font, rectInfoBox.width - 10, Align.center);
         Assets.drawString(batch, "Cost: " + currentUpgrade.cost, rectInfoBox.x, rectInfoBox.y + 80,
-                Config.COLOR_BLACK, 0.25f, Assets.font, rectInfoBox.width, Align.center);
+                Config.COLOR_TEXT, 0.25f, Assets.font, rectInfoBox.width, Align.center);
 
-        if(currentUpgrade.group == ItemGroups.Research)
-        {
-            if(storeManager.getResearchStatus(researchMap.get(currentUpgrade.name)) == StoreManager.ResearchStatus.RESEARCHED)
-            {
+        purchaseUpgradeButton.enabled = true;
+        if (currentUpgrade.cost > Statistics.getStatistics().getCurrentTurnStatistics().money) purchaseUpgradeButton.enabled = false;
+        if(currentUpgrade.group == ItemGroups.Research) {
+
+            if(storeManager.getResearchStatus(researchMap.get(currentUpgrade.name)) == StoreManager.ResearchStatus.RESEARCHED) {
                 purchaseUpgradeButton.text = "Researched";
-            }
-            else
-            {
+                purchaseUpgradeButton.enabled = false;
+            } else {
                 purchaseUpgradeButton.text = "Research";
             }
-        }
-        else
+
+        } else if (currentUpgrade.group == ItemGroups.Trucks){
+            if (currentUpgrade.truck != null && storeManager.getMaxTruck() == currentUpgrade.truck.truckType){
+                purchaseUpgradeButton.text = "Upgraded";
+                purchaseUpgradeButton.enable(false);
+            } else if (currentUpgrade.truck == null) {
+                purchaseUpgradeButton.text = "Purchase";
+            } else {
+                purchaseUpgradeButton.text = "Upgrade";
+            }
+
+        } else
         {
             purchaseUpgradeButton.text = "Purchase";
         }
-        batch.setColor(Config.COLOR_TEXT);
-//        batch.draw(Assets.whitePixel, purchaseUpgradeButton.bounds.x, purchaseUpgradeButton.bounds.y,
-//                purchaseUpgradeButton.bounds.width, purchaseUpgradeButton.bounds.height);
+        if (purchaseUpgradeButton.enabled) {
+            batch.setColor(Config.COLOR_TEXT);
+        } else {
+            batch.setColor(Config.COLOR_TEXT.r, Config.COLOR_TEXT.g, Config.COLOR_TEXT.b, .7f);
+        }
         purchaseUpgradeButton.render(batch);
     }
 
     private boolean checkTruckEnabled(UpgradeButton button)
     {
-        boolean hasCap = false;
-        boolean hasSpeed = false;
-        if(button.name.contains("S2"))
-        {
-            hasSpeed = storeManager.getResearchStatus(ResearchType.TRUCK_STOPS_1) == StoreManager.ResearchStatus.RESEARCHED;
-        }
-        else if(button.name.contains("S3"))
-        {
-            hasSpeed = storeManager.getResearchStatus(ResearchType.TRUCK_STOPS_2) == StoreManager.ResearchStatus.RESEARCHED;
-        }
-        else if(button.name.contains("S4"))
-        {
-            hasSpeed = storeManager.getResearchStatus(ResearchType.TRUCK_STOPS_3) == StoreManager.ResearchStatus.RESEARCHED;
+        DumpTruck.TruckType maxType = storeManager.getMaxTruck();
+        int maxCost = storeManager.getTruckCost(maxType);
+        if (button.truck == null) {
+            button.cost = (button.truckIndex + 1) * (button.truckIndex + 1) * maxCost;
+        } else {
+            button.cost = maxCost - storeManager.getTruckCost(button.truck.truckType);
         }
 
-        if(button.name.contains("C50"))
-        {
-            hasCap = storeManager.getResearchStatus(ResearchType.TRUCK_CAPACITY_1) == StoreManager.ResearchStatus.RESEARCHED;
-        }
-        else if(button.name.contains("C100"))
-        {
-            hasCap = storeManager.getResearchStatus(ResearchType.TRUCK_CAPACITY_2) == StoreManager.ResearchStatus.RESEARCHED;
-        }
-        else if(button.name.contains("C200"))
-        {
-            hasCap = storeManager.getResearchStatus(ResearchType.TRUCK_CAPACITY_3) == StoreManager.ResearchStatus.RESEARCHED;
-        }
-
-        return hasCap && hasSpeed;
+        
+        if (button.truck != null) return true;
+        if (button.truckIndex == world.routes.trucks.size) return true;
+        return false;
     }
 
     private void renderWorld(SpriteBatch batch) {
@@ -798,7 +779,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
-        Assets.drawString(batch, "$" + Statistics.getStatistics().getCurrentTurnStatistics().money, Config.gameWidth / 2 - 90, Config.gameHeight - 20, Config.COLOR_GOLD, 0.5f, Assets.font);
+        Assets.drawString(batch, "$" + Statistics.getStatistics().getCurrentTurnStatistics().money, 0, Config.gameHeight - 20, Config.COLOR_GOLD, 0.5f, Assets.font, hudCamera.viewportWidth, Align.center);
     }
 
     @Override
@@ -816,5 +797,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         public int cost;
         public int quantity = 0;
         public ItemGroups group;
+        public DumpTruck truck;
+        public int truckIndex;
     }
 }

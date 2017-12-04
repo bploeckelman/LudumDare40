@@ -22,11 +22,9 @@ public class Routes {
         setColors();
         addRoute(DumpTruck.One);
         // temp
-        addRoute(DumpTruck.Five);
-        addRoute(DumpTruck.Nine);
-        addRoute(DumpTruck.Two);
-        addRoute(DumpTruck.Three);
-        addRoute(DumpTruck.Four);
+        addRoute(DumpTruck.One);
+        addRoute(DumpTruck.One);
+
     }
 
     private void setColors() {
