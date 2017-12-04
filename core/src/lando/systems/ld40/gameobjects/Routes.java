@@ -21,9 +21,6 @@ public class Routes {
     public Routes() {
         setColors();
         addRoute(DumpTruck.One);
-        // temp
-        addRoute(DumpTruck.One);
-        addRoute(DumpTruck.One);
 
     }
 
