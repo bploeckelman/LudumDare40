@@ -86,27 +86,27 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
         //Create top buttons
         rectHeadBut1 = new Rectangle(fScreenWidth / 30, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
-        bBuildings = new Button(Assets.defaultNinePatch, rectHeadBut1, hudCamera, "Buildings", null);
+        bBuildings = new Button(Assets.whiteNinePatch, rectHeadBut1, hudCamera, "Buildings", null);
         bBuildings.textColor = Config.COLOR_BLACK;
         rectHeadBut2 = new Rectangle((fScreenWidth * 2 / 30) + rectHeadBut1.width, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
-        bAddons = new Button(Assets.defaultNinePatch, rectHeadBut2, hudCamera, "Add-Ons", null);
+        bAddons = new Button(Assets.whiteNinePatch, rectHeadBut2, hudCamera, "Add-Ons", null);
         bAddons.textColor = Config.COLOR_BLACK;
         rectHeadBut3 = new Rectangle((fScreenWidth * 3 / 30) + rectHeadBut1.width * 2, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
-        bResearch = new Button(Assets.defaultNinePatch, rectHeadBut3, hudCamera, "Research", null);
+        bResearch = new Button(Assets.whiteNinePatch, rectHeadBut3, hudCamera, "Research", null);
         bResearch.textColor = Config.COLOR_BLACK;
         rectHeadBut4 = new Rectangle((fScreenWidth * 4 / 30) + rectHeadBut1.width * 3, fScreenHeight * 0.75f, fScreenWidth * 0.2125f, fScreenHeight / 12);
-        bTrucks = new Button(Assets.defaultNinePatch, rectHeadBut4, hudCamera, "Trucks", null);
+        bTrucks = new Button(Assets.whiteNinePatch, rectHeadBut4, hudCamera, "Trucks", null);
         bTrucks.textColor = Config.COLOR_BLACK;
 
         rectButBox = new Rectangle(20, fScreenHeight * 0.15f, fScreenWidth * 0.55f, fScreenHeight * 0.55f);
         rectInfoBox = new Rectangle(rectButBox.x + rectButBox.width + fScreenWidth * 0.05f, fScreenHeight * 0.15f, fScreenWidth * 0.35f, 330);
 
-        purchaseUpgradeButton = new Button(Assets.defaultNinePatch, new Rectangle(rectInfoBox.x + 10, rectInfoBox.y + 10, rectInfoBox.width - 20, 50),
+        purchaseUpgradeButton = new Button(Assets.whiteNinePatch, new Rectangle(rectInfoBox.x + 10, rectInfoBox.y + 10, rectInfoBox.width - 20, 50),
                 hudCamera, "Purchase", null);
         purchaseUpgradeButton.textColor = Config.COLOR_BLACK;
 
         rectButContinueBox = new Rectangle(fScreenWidth * 0.75f, fScreenHeight / 30, fScreenWidth * 0.225f, fScreenHeight / 12);
-        bContinue = new Button(Assets.defaultNinePatch, rectButContinueBox, hudCamera, "Next Day", null);
+        bContinue = new Button(Assets.whiteNinePatch, rectButContinueBox, hudCamera, "Next Day", null);
         bContinue.textColor = Config.COLOR_BLACK;
 
         selectedGroup = ItemGroups.Building;
@@ -440,15 +440,15 @@ public class ResolutionPhaseScreen extends BaseScreen {
         buildingsButtons.add(bUpgrade8);
         buildingsButtons.add(bUpgrade9);
 
-        tileMap.put(bUpgrade1.name, TileType.RESIDENTIAL_LOW_DENSITY);
-        tileMap.put(bUpgrade2.name, TileType.COMMERCIAL_LOW_DENSITY);
-        tileMap.put(bUpgrade3.name, TileType.INDUSTRIAL_LOW_DENSITY);
-        tileMap.put(bUpgrade4.name, TileType.RESIDENTIAL_MEDIUM_DENSITY);
-        tileMap.put(bUpgrade5.name, TileType.COMMERCIAL_MEDIUM_DENSITY);
-        tileMap.put(bUpgrade6.name, TileType.INDUSTRIAL_MEDIUM_DENSITY);
-        tileMap.put(bUpgrade7.name, TileType.RESIDENTIAL_HIGH_DENSITY);
-        tileMap.put(bUpgrade8.name, TileType.COMMERCIAL_HIGH_DENSITY);
-        tileMap.put(bUpgrade9.name, TileType.INDUSTRIAL_HIGH_DENSITY);
+        tileMap.put(bUpgrade1.name, TileType.RESIDENTIAL_LOW);
+        tileMap.put(bUpgrade2.name, TileType.COMMERCIAL_LOW);
+        tileMap.put(bUpgrade3.name, TileType.INDUSTRIAL_LOW);
+        tileMap.put(bUpgrade4.name, TileType.RESIDENTIAL_MEDIUM);
+        tileMap.put(bUpgrade5.name, TileType.COMMERCIAL_MEDIUM);
+        tileMap.put(bUpgrade6.name, TileType.INDUSTRIAL_MEDIUM);
+        tileMap.put(bUpgrade7.name, TileType.RESIDENTIAL_HIGH);
+        tileMap.put(bUpgrade8.name, TileType.COMMERCIAL_HIGH);
+        tileMap.put(bUpgrade9.name, TileType.INDUSTRIAL_HIGH);
 
         //create buttons
         createButtons(ItemGroups.Building);
@@ -621,7 +621,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
     @Override
     public void render(SpriteBatch batch) {
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+        Gdx.gl.glClearColor(Config.bgColor.r, Config.bgColor.g, Config.bgColor.b, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(hudCamera.combined);
@@ -630,37 +630,34 @@ public class ResolutionPhaseScreen extends BaseScreen {
             renderHud(batch);
 
             // Draw header buttons
-            batch.setColor(selectedGroup == ItemGroups.Building ? Color.WHITE : Color.LIGHT_GRAY);
-            batch.draw(Assets.whitePixel, rectHeadBut1.x, rectHeadBut1.y, rectHeadBut1.width, rectHeadBut1.height);
+            batch.setColor(selectedGroup == ItemGroups.Building ? Config.COLOR_TEXT : Config.COLOR_SHADED);
             bBuildings.render(batch);
-            batch.setColor(selectedGroup == ItemGroups.Addon ? Color.WHITE : Color.LIGHT_GRAY);
-            batch.draw(Assets.whitePixel, rectHeadBut2.x, rectHeadBut2.y, rectHeadBut2.width, rectHeadBut2.height);
+            batch.setColor(selectedGroup == ItemGroups.Addon ? Config.COLOR_TEXT : Config.COLOR_SHADED);
             bAddons.render(batch);
-            batch.setColor(selectedGroup == ItemGroups.Research ? Color.WHITE : Color.LIGHT_GRAY);
-            batch.draw(Assets.whitePixel, rectHeadBut3.x, rectHeadBut3.y, rectHeadBut3.width, rectHeadBut3.height);
+            batch.setColor(selectedGroup == ItemGroups.Research ? Config.COLOR_TEXT : Config.COLOR_SHADED);
             bResearch.render(batch);
-            batch.setColor(selectedGroup == ItemGroups.Trucks ? Color.WHITE : Color.LIGHT_GRAY);
-            batch.draw(Assets.whitePixel, rectHeadBut4.x, rectHeadBut4.y, rectHeadBut4.width, rectHeadBut4.height);
+            batch.setColor(selectedGroup == ItemGroups.Trucks ? Config.COLOR_TEXT : Config.COLOR_SHADED);
             bTrucks.render(batch);
             batch.setColor(Color.WHITE);
 
             // Render blank inserts
-            batch.setColor(Color.CORAL);
-            batch.draw(Assets.whitePixel, rectButBox.x, rectButBox.y, rectButBox.width, rectButBox.height);
-            batch.draw(Assets.whitePixel, rectInfoBox.x, rectInfoBox.y, rectInfoBox.width, rectInfoBox.height);
+            batch.setColor(Config.COLOR_SHADED);
+            Assets.whiteNinePatch.draw(batch, rectButBox.x, rectButBox.y, rectButBox.width, rectButBox.height);
+            Assets.whiteNinePatch.draw(batch, rectInfoBox.x, rectInfoBox.y, rectInfoBox.width, rectInfoBox.height);
             batch.setColor(Color.WHITE);
 
             //Render sub-buttons
             renderSubButtons(batch);
 
             // Draw continue button
-            batch.draw(Assets.whitePixel, rectButContinueBox.x, rectButContinueBox.y, rectButContinueBox.width, rectButContinueBox.height);
+//            batch.draw(Assets.whitePixel, rectButContinueBox.x, rectButContinueBox.y, rectButContinueBox.width, rectButContinueBox.height);
 
             //Render upgrade information
             if(currentUpgrade != null)
             {
                 renderSelectedInfo(batch);
             }
+            batch.setColor(Config.COLOR_TEXT);
             bContinue.render(batch);
         }
         batch.end();
@@ -752,9 +749,9 @@ public class ResolutionPhaseScreen extends BaseScreen {
         {
             purchaseUpgradeButton.text = "Purchase";
         }
-        batch.setColor(Color.LIGHT_GRAY);
-        batch.draw(Assets.whitePixel, purchaseUpgradeButton.bounds.x, purchaseUpgradeButton.bounds.y,
-                purchaseUpgradeButton.bounds.width, purchaseUpgradeButton.bounds.height);
+        batch.setColor(Config.COLOR_TEXT);
+//        batch.draw(Assets.whitePixel, purchaseUpgradeButton.bounds.x, purchaseUpgradeButton.bounds.y,
+//                purchaseUpgradeButton.bounds.width, purchaseUpgradeButton.bounds.height);
         purchaseUpgradeButton.render(batch);
     }
 
@@ -801,12 +798,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
-        Assets.drawString(batch, "Money: " + money, Config.gameWidth / 2 - 90, Config.gameHeight - 20, Color.GOLD, 0.5f, Assets.font);
-
-        batch.setColor(Color.LIGHT_GRAY);
-        batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
-        batch.setColor(Color.WHITE);
-        Assets.drawString(batch, "Resolution Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+        Assets.drawString(batch, "Money: " + money, Config.gameWidth / 2 - 90, Config.gameHeight - 20, Config.COLOR_GOLD, 0.5f, Assets.font);
     }
 
     @Override

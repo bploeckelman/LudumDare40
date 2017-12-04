@@ -94,6 +94,11 @@ public class World {
         buildings.set(index, newBuilding);
     }
 
+    public void replaceTile(Building originalTile, Building.Type newBuildingType) {
+        int index = buildings.indexOf(originalTile, true);
+        setTile(index, newBuildingType);
+    }
+
     public void update(float dt){
         time += dt;
         if (time > 500) {

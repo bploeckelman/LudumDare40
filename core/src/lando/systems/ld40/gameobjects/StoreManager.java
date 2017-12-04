@@ -29,9 +29,9 @@ public class StoreManager {
         unlockResearch(ResearchType.RECYCLING);
         unlockResearch(ResearchType.TRUCK_CAPACITY_1);
         unlockResearch(ResearchType.TRUCK_STOPS_1);
-        unlockTile(TileType.COMMERCIAL_LOW_DENSITY);
-        unlockTile(TileType.INDUSTRIAL_LOW_DENSITY);
-        unlockTile(TileType.RESIDENTIAL_LOW_DENSITY);
+        unlockTile(TileType.COMMERCIAL_LOW);
+        unlockTile(TileType.INDUSTRIAL_LOW);
+        unlockTile(TileType.RESIDENTIAL_LOW);
         unlockUpgrade(UpgradeType.DEMOLITION);
         unlockUpgrade(UpgradeType.DUMPSTER);
         unlockUpgrade(UpgradeType.GREEN_TOKEN);
@@ -92,33 +92,33 @@ public class StoreManager {
         // TILES -------------------------------------------------------------------------------------------------------
 
         // Residential
-        if (getTileStatus(TileType.RESIDENTIAL_LOW_DENSITY) == Status.UNLOCKED &&
+        if (getTileStatus(TileType.RESIDENTIAL_LOW) == Status.UNLOCKED &&
                 getResearchStatus(ResearchType.COMPACTION) == ResearchStatus.RESEARCHED) {
-            unlockTile(TileType.RESIDENTIAL_MEDIUM_DENSITY);
+            unlockTile(TileType.RESIDENTIAL_MEDIUM);
         }
-        if (getTileStatus(TileType.RESIDENTIAL_MEDIUM_DENSITY) == Status.UNLOCKED &&
+        if (getTileStatus(TileType.RESIDENTIAL_MEDIUM) == Status.UNLOCKED &&
                 getResearchStatus(ResearchType.RECYCLING) == ResearchStatus.RESEARCHED) {
-            unlockTile(TileType.RESIDENTIAL_HIGH_DENSITY);
+            unlockTile(TileType.RESIDENTIAL_HIGH);
         }
 
         // Commercial
-        if (getTileStatus(TileType.COMMERCIAL_LOW_DENSITY) == Status.UNLOCKED &&
+        if (getTileStatus(TileType.COMMERCIAL_LOW) == Status.UNLOCKED &&
                 getResearchStatus(ResearchType.RECYCLING) == ResearchStatus.RESEARCHED) {
-            unlockTile(TileType.COMMERCIAL_MEDIUM_DENSITY);
+            unlockTile(TileType.COMMERCIAL_MEDIUM);
         }
-        if (getTileStatus(TileType.COMMERCIAL_MEDIUM_DENSITY) == Status.UNLOCKED &&
+        if (getTileStatus(TileType.COMMERCIAL_MEDIUM) == Status.UNLOCKED &&
                 getResearchStatus(ResearchType.INCINERATION) == ResearchStatus.RESEARCHED) {
-            unlockTile(TileType.COMMERCIAL_HIGH_DENSITY);
+            unlockTile(TileType.COMMERCIAL_HIGH);
         }
 
         // Industrial
-        if (getTileStatus(TileType.INDUSTRIAL_LOW_DENSITY) == Status.UNLOCKED &&
+        if (getTileStatus(TileType.INDUSTRIAL_LOW) == Status.UNLOCKED &&
                 getResearchStatus(ResearchType.INCINERATION) == ResearchStatus.RESEARCHED) {
-            unlockTile(TileType.INDUSTRIAL_MEDIUM_DENSITY);
+            unlockTile(TileType.INDUSTRIAL_MEDIUM);
         }
-        if (getTileStatus(TileType.INDUSTRIAL_MEDIUM_DENSITY) == Status.UNLOCKED &&
+        if (getTileStatus(TileType.INDUSTRIAL_MEDIUM) == Status.UNLOCKED &&
                 getResearchStatus(ResearchType.COMPACTION) == ResearchStatus.RESEARCHED) {
-            unlockTile(TileType.INDUSTRIAL_HIGH_DENSITY);
+            unlockTile(TileType.INDUSTRIAL_HIGH);
         }
 
         // Recycling Center

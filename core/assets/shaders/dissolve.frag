@@ -13,5 +13,5 @@ void main() {
     vec2 flippedCoord = vec2(v_texCoord.x, 1. - v_texCoord.y);
     vec4 color = texture2D(u_texture, flippedCoord);
     vec4 color1 = texture2D(u_texture1, flippedCoord);
-    gl_FragColor = vec4(color.rgb, u_percent);
+    gl_FragColor = vec4(mix(color1.rgb, color.rgb, u_percent), u_percent);
 }

@@ -14,14 +14,28 @@ public class SoundManager {
     public static final float MUSIC_VOLUME = 0.25f;
 
     public enum SoundOptions {
+        compactor, garbageTruck, incinerator, startRoute
+    }
+
+    public enum MusicOptions {
+        titleScreen, mainGame, musicGame
     }
 
     public static HashMap<SoundOptions, Sound> soundMap = new HashMap<SoundOptions, Sound>();
+    public static HashMap<MusicOptions, Music> musicMap = new HashMap<MusicOptions, Music>();
 
     public static Music music;
     public static MutableFloat musicVolume;
 
     public static void load(boolean playMusic) {
+        soundMap.put(SoundOptions.compactor, Gdx.audio.newSound(Gdx.files.internal("sounds/compactor.mp3")));
+        soundMap.put(SoundOptions.garbageTruck, Gdx.audio.newSound(Gdx.files.internal("sounds/garbage-truck.mp3")));
+        soundMap.put(SoundOptions.incinerator, Gdx.audio.newSound(Gdx.files.internal("sounds/incinerator.mp3")));
+        soundMap.put(SoundOptions.startRoute, Gdx.audio.newSound(Gdx.files.internal("sounds/start-route.mp3")));
+
+        musicMap.put(MusicOptions.titleScreen, Gdx.audio.newMusic(Gdx.files.internal("sounds/title-screen-music.mp3")));
+        musicMap.put(MusicOptions.mainGame, Gdx.audio.newMusic(Gdx.files.internal("sounds/main-game-music.mp3")));
+        musicMap.put(MusicOptions.musicGame, Gdx.audio.newMusic(Gdx.files.internal("sounds/music-game.mp3")));
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music-game.mp3"));//musicMap.get(MusicOptions.game);
         music.setLooping(true);
 
@@ -48,12 +62,12 @@ public class SoundManager {
         return soundMap.get(soundOption).play(1f);
     }
 
-    public static void playMusic(){//MusicOptions musicOption){
+    public static void playMusic(MusicOptions musicOption){
         // Stop currently running music
         if (music != null) music.stop();
 
         // Set specified music track as current and play it
-        //music = musicMap.get(musicOption);
+        music = musicMap.get(musicOption);
         music.setLooping(true);
         music.play();
     }

@@ -40,6 +40,7 @@ public class Assets {
     public static ShaderProgram doomShader;
     public static ShaderProgram pizelizeShader;
     public static ShaderProgram doorwayShader;
+    public static ShaderProgram crosshatchShader;
 
     public static TextureAtlas atlas;
 
@@ -75,6 +76,16 @@ public class Assets {
     public static TextureRegion grass6;
     public static TextureRegion grass7;
     public static TextureRegion replayButton;
+    public static TextureRegion dumpTexture;
+    public static TextureRegion commercialLowTexture;
+    public static TextureRegion commercialMediumTexture;
+    public static TextureRegion commercialHighTexture;
+    public static TextureRegion industrialLowTexture;
+    public static TextureRegion industrialMediumTexture;
+    public static TextureRegion industrialHighTexture;
+    public static TextureRegion residentialLowTexture;
+    public static TextureRegion residentialMediumTexture;
+    public static TextureRegion residentialHighTexture;
 
     public static Array<TextureRegion> grassTiles;
     public static Array<TextureRegion> cloudTextures;
@@ -158,6 +169,16 @@ public class Assets {
         grassTiles.add(grass6);
         grassTiles.add(grass7);
         replayButton = atlas.findRegion("replay_button");
+        dumpTexture              = atlas.findRegion("dump");
+        commercialLowTexture     = atlas.findRegion("com-low");
+        commercialMediumTexture  = atlas.findRegion("com-med");
+        commercialHighTexture    = atlas.findRegion("com-high");
+        industrialLowTexture     = atlas.findRegion("ind-low");
+        industrialMediumTexture  = atlas.findRegion("ind-med");
+        industrialHighTexture    = atlas.findRegion("ind-high");
+        residentialLowTexture    = atlas.findRegion("res-low");
+        residentialMediumTexture = atlas.findRegion("res-med");
+        residentialHighTexture   = atlas.findRegion("res-high");
 
         cloudTextures = new Array<TextureRegion>();
         cloudTextures.add(atlas.findRegion("cloud1"));
@@ -188,6 +209,8 @@ public class Assets {
         doomShader = loadShader("shaders/default.vert", "shaders/doomdrip.frag");
         pizelizeShader = loadShader("shaders/default.vert", "shaders/pixelize.frag");
         doorwayShader = loadShader("shaders/default.vert", "shaders/doorway.frag");
+        crosshatchShader = loadShader("shaders/default.vert", "shaders/crosshatch.frag");
+
 
 //        randomTransitions.add(blindsShader);
         randomTransitions.add(fadeShader);

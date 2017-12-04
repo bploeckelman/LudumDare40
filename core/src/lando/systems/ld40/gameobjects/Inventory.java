@@ -35,14 +35,6 @@ public class Inventory {
         upgradeTypeCount.getAndIncrement(type, 0, 1);
     }
 
-    public void addTileItem(TileType type) { tileTypeCount.getAndIncrement(type, 0, 1); }
-
-    public int getCurrentCountForTile(TileType type) { return tileTypeCount.get(type, 0); }
-
-    public void addTruckItem(TruckType type) { truckTypeCount.getAndIncrement(type, 0, 1); }
-
-    public int getCurrentCountForTruck(TruckType type) { return truckTypeCount.get(type, 0); }
-
     public void addUpgradeItems(UpgradeType type, int numItems) {
         upgradeTypeCount.getAndIncrement(type, 0, numItems);
     }
@@ -50,6 +42,29 @@ public class Inventory {
     public void useUpgradeItem(UpgradeType type) {
         upgradeTypeCount.getAndIncrement(type, 0, -1);
     }
+
+
+    public int getCurrentCountForTile(TileType type) {
+        return tileTypeCount.get(type, 0);
+    }
+
+    public void addTileItem(TileType type) {
+        tileTypeCount.getAndIncrement(type, 0, 1);
+    }
+
+    public void useTileItem(TileType type) {
+        tileTypeCount.getAndIncrement(type, 0, -1);
+    }
+
+
+    public void addTruckItem(TruckType type) {
+        truckTypeCount.getAndIncrement(type, 0, 1);
+    }
+
+    public int getCurrentCountForTruck(TruckType type) {
+        return truckTypeCount.get(type, 0);
+    }
+
 
     public ObjectIntMap<UpgradeType> getUpgradeTypeCount() {
         return upgradeTypeCount;

@@ -9,6 +9,7 @@ import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.world.World;
+import lando.systems.ld40.utils.SoundManager;
 
 /**
  * Created by Brian on 12/2/2017.
@@ -30,6 +31,7 @@ class ActionPhaseScreen extends BaseScreen {
 
     public ActionPhaseScreen() {
         world = World.GetWorld();
+        SoundManager.playSound(SoundManager.SoundOptions.garbageTruck);
 //        Gdx.input.setInputProcessor(this);
         camera.zoom = 2.5f;
         camera.position.x = 500;
@@ -49,7 +51,7 @@ class ActionPhaseScreen extends BaseScreen {
                 setPhase(Phase.REWARDS_FINAL);
                 break;
             case REWARDS_FINAL:
-                LudumDare40.game.setScreen(new ResolutionPhaseScreen());
+                LudumDare40.game.setScreen(new ResolutionPhaseScreen(), Assets.crosshatchShader);
                 break;
         }
     }
