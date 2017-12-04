@@ -23,6 +23,7 @@ class ActionPhaseScreen extends BaseScreen {
         READY,  // Waiting
         ANIMATING_ACTIONS_GENERATE_TRASH,
         ANIMATING_ACTIONS_RUN_TRUCKS,
+        ANIMATING_ACTIONS_BUILDING_UPKEEP,
         ANIMATING_REWARDS, // Pop up the UI and count up the points
         REWARDS_FINAL; // Show all the points counted up
 
@@ -30,7 +31,8 @@ class ActionPhaseScreen extends BaseScreen {
             switch (phase) {
                 case READY:                             return Phase.ANIMATING_ACTIONS_GENERATE_TRASH;
                 case ANIMATING_ACTIONS_GENERATE_TRASH:  return Phase.ANIMATING_ACTIONS_RUN_TRUCKS;
-                case ANIMATING_ACTIONS_RUN_TRUCKS:      return Phase.ANIMATING_REWARDS;
+                case ANIMATING_ACTIONS_RUN_TRUCKS:      return Phase.ANIMATING_ACTIONS_BUILDING_UPKEEP;
+                case ANIMATING_ACTIONS_BUILDING_UPKEEP: return Phase.ANIMATING_REWARDS;
                 case ANIMATING_REWARDS:                 return Phase.REWARDS_FINAL;
                 case REWARDS_FINAL:                     return Phase.REWARDS_FINAL;
                 default:
@@ -80,7 +82,6 @@ class ActionPhaseScreen extends BaseScreen {
         }
     }
 
-
     private void setPhase(Phase phase) {
         currentPhase = phase;
         currentPhaseDT = 0;
@@ -126,10 +127,16 @@ class ActionPhaseScreen extends BaseScreen {
     private Building            aaGenerateTrashLastBuilding;
     private boolean             aaGenerateTrashBuildingsAreProcessed = false;
 
-
     private Building            aaRunTrucksLastBuildingModified; // use this to track animations
     private boolean             aaRunTrucksTrucksAreRunning = false;
     private boolean             aaRunTrucksAllTrucksAreDone = false;
+
+
+    private static final float  AA_BUILDING_UPKEEP_BUILDING_DELAY = 0.1f;
+    private int                 aaBuildingUpkeepBuildingsComplete = 0;
+    private int                 aaBuildingUpkeepLastBuildingIndex;
+    private Building            aaBuildingUpkeepLastBuilding;
+    private boolean             aaBuildingUpkeepBuildingsAreProcessed = false;
 
     private void updateObjects(float dt) {
 
@@ -199,6 +206,43 @@ class ActionPhaseScreen extends BaseScreen {
             if (trucksAreDone) {
                 setPhase(Phase.getNextPhase(currentPhase));
             }
+        }
+        if (currentPhase == Phase.ANIMATING_ACTIONS_BUILDING_UPKEEP) {
+            debugPhaseLabel = "upkeep";
+
+            if (!aaBuildingUpkeepBuildingsAreProcessed) {
+                // We need to do work, generate trash and the like
+                int buildingsToCompleteTarget = 1 + (int) Math.floor(currentPhaseDT / AA_BUILDING_UPKEEP_BUILDING_DELAY);
+                if (aaBuildingUpkeepBuildingsComplete < buildingsToCompleteTarget) {
+                    int startingIndex = aaBuildingUpkeepBuildingsComplete == 0 ? 0 : aaBuildingUpkeepLastBuildingIndex + 1;
+                    for (int i = startingIndex; i < World.buildings.size; i++) {
+                        if (World.buildings.get(i).runUpkeep(!currentPhaseSkipAnimation)) {
+                            aaBuildingUpkeepLastBuilding = World.buildings.get(i);
+                            aaBuildingUpkeepLastBuildingIndex = i;
+                            aaBuildingUpkeepBuildingsComplete++;
+                            // Check to see if we should stop
+                            if (!currentPhaseSkipAnimation &&
+                                    aaBuildingUpkeepBuildingsComplete >= buildingsToCompleteTarget) {
+                                break;
+                            }
+                        }
+                        // Was this the last one?
+                        if (i >= World.buildings.size - 1) {
+                            aaBuildingUpkeepBuildingsAreProcessed = true;
+                        }
+                    }
+                }
+            }
+            if (aaBuildingUpkeepBuildingsAreProcessed) {
+                // Is it time to move on to the next phase?
+                if (currentPhaseSkipAnimation ||
+                        aaBuildingUpkeepLastBuilding == null ||
+                        !aaBuildingUpkeepLastBuilding.isAnimating()) {
+                    // Time to go to the next step!
+                    setPhase(Phase.getNextPhase(currentPhase));
+                }
+            }
+
         }
 
         if (currentPhase == Phase.ANIMATING_REWARDS) {

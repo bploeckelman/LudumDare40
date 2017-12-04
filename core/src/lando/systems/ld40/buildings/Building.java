@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import lando.systems.ld40.gameobjects.Tile;
 import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.gameobjects.ValueAnimation;
@@ -490,22 +488,43 @@ public class Building extends Tile {
         return true;
     }
 
-    public void runUpkeep() {
+    /**
+     *
+     * @param animate
+     * @return True if the building was modified in an animate-able/updatable fashion
+     */
+    public boolean runUpkeep(boolean animate) {
         if (thisTurnUpkeepHasBeenRun) { throw new RuntimeException("You've already run upkeep this turn"); }
         if (!thisTurnTrashHasBeenGenerated) { throw new RuntimeException("Must generate your trash before running upkeep!"); }
+        boolean wasModified = false;
+        ArrayList<ValueAnimationIcon> trashModifierIcons = new ArrayList<ValueAnimationIcon>();
         // Incinerate!
         if (hasIncinerator) {
             float garbageIncinerated = Math.min(currentTrashLevel, INCINERATION_VALUE);
-            thisTurnGarbageIncinerated += garbageIncinerated;
-            currentTrashLevel -= garbageIncinerated;
+            if (garbageIncinerated > 0) {
+                wasModified = true;
+                thisTurnGarbageIncinerated += garbageIncinerated;
+                currentTrashLevel -= garbageIncinerated;
+                trashModifierIcons.add(ValueAnimationIcon.INCINERATOR);
+            }
         }
         // Capacity check!
         if (currentTrashLevel > getCurrentTrashCapacity()) {
             turnsOverCapacity += 1;
+            wasModified = true; // over cap (again)
         } else {
+            if (turnsOverCapacity > 0) {
+                wasModified = true; // no longer over cap.
+            }
             turnsOverCapacity = 0;
         }
         thisTurnUpkeepHasBeenRun = true;
+        if (animate) {
+            if (thisTurnGarbageIncinerated > 0) {
+                addValueAnimation(new ValueAnimation(-thisTurnGarbageIncinerated, ValueAnimationIcon.TRASH, trashModifierIcons));
+            }
+        }
+        return wasModified;
     }
 
     public void generateValue() {
