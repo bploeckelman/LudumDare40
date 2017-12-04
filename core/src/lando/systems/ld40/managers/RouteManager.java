@@ -134,11 +134,20 @@ public class RouteManager extends ActionManager {
     }
 
     private void drawHudText(SpriteBatch batch, String text) {
+        drawHudText(batch, text, 0.5f);
+    }
+
+    private void drawHudText(SpriteBatch batch, String text, float scale) {
         batch.setShader(Assets.fontShader);
+        Assets.font.getData().setScale(scale);
+        Assets.fontShader.setUniformf("u_scale", scale);
         Assets.layout.setText(Assets.font, text);
         Assets.font.draw(batch, text,
                 0, hudBounds.y + 50, hudBounds.width,
                 Align.center, true);
+        Assets.font.setColor(Color.WHITE);
+        Assets.font.getData().setScale(1f);
+        Assets.fontShader.setUniformf("u_scale", 1f);
         batch.setShader(null);
     }
 

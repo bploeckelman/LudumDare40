@@ -1,5 +1,6 @@
 package lando.systems.ld40.managers;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
@@ -26,12 +27,21 @@ public abstract class ActionManager implements IManager {
     }
 
     protected void drawText(SpriteBatch batch, String text) {
+        drawText(batch, text, 0.5f);
+    }
+
+    protected void drawText(SpriteBatch batch, String text, float scale) {
         batch.setShader(Assets.fontShader);
+        Assets.font.getData().setScale(scale);
+        Assets.fontShader.setUniformf("u_scale", scale);
         Assets.layout.setText(Assets.font, text);
         Assets.font.draw(batch, text,
                 0, hudCamera.viewportHeight - Assets.layout.height,
                 hudCamera.viewportWidth,
                 Align.center, true);
+        Assets.font.setColor(Color.WHITE);
+        Assets.font.getData().setScale(1f);
+        Assets.fontShader.setUniformf("u_scale", 1f);
         batch.setShader(null);
     }
 
