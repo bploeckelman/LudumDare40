@@ -1,5 +1,6 @@
 package lando.systems.ld40.buildings;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -7,6 +8,7 @@ import lando.systems.ld40.gameobjects.Tile;
 import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.utils.Assets;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Building extends Tile {
@@ -33,7 +35,7 @@ public class Building extends Tile {
      */
     private static final float GREEN_CERT_TRASH_GENERATION_REDUCTION_PERCENT = 0.2f;
     /**
-     * If the building supports tiers, each level will increase both value and garbage generation by a fixed percent.
+     * If the building supports tiers, each level will increase both valueString and garbage generation by a fixed percent.
      */
     private static final float TIER_LEVEL_GENERATION_BOOST_PERCENT = 0.25f;
 
@@ -152,19 +154,16 @@ public class Building extends Tile {
     // -----------------------------------------------------------------------------------------------------------------
 
     private Building(Type type,
-                    boolean supportsCompactor, boolean hasCompactor,
-                    boolean supportsDumpster, boolean hasDumpster,
-                    boolean supportsRecycle, boolean hasRecycle,
-                    boolean supportsGreenCert, boolean hasGreenCert,
-                    boolean supportsIncinerator, boolean hasIncinerator,
-                    boolean supportsTiers, boolean canBuild,
-                    boolean canRaze,
-                    Tier currentTier,
-                    float trashGeneratedPerRound,
-                    float valueGeneratedPerRound,
-                    float baseTrashCapacity,
-                    float currentTrashLevel,
-                    Resource resource) {
+                     boolean supportsCompactor, boolean hasCompactor,
+                     boolean supportsDumpster, boolean hasDumpster,
+                     boolean supportsRecycle, boolean hasRecycle,
+                     boolean supportsGreenCert, boolean hasGreenCert,
+                     boolean supportsIncinerator, boolean hasIncinerator,
+                     boolean supportsTiers, Tier currentTier,
+                     boolean canBuild, boolean canRaze,
+                     float trashGeneratedPerRound, float valueGeneratedPerRound,
+                     float baseTrashCapacity, float currentTrashLevel,
+                     Resource resource) {
 
         super("grass1");
 
@@ -199,6 +198,8 @@ public class Building extends Tile {
         this.trashGeneratedPerRound = trashGeneratedPerRound;
         this.valueGeneratedPerRound = valueGeneratedPerRound;
         this.resource = resource;
+
+        this.valueAnimations = new ArrayList<ValueAnimation>();
     }
 
     public static Building getBuilding(Type buildingType) {
@@ -350,12 +351,14 @@ public class Building extends Tile {
                 break;
         }
 
+
         return new Building(buildingType,
                 supportsCompactor, hasCompactor,
                 supportsDumpster, hasDumpster,
                 supportsRecycle, hasRecycle,
                 supportsGreenCert, hasGreenCert,
                 supportsIncinerator, hasIncinerator,
+<<<<<<< Updated upstream
                 supportsTiers,
                 canBuild, canRaze,
                 currentTier,
@@ -363,6 +366,12 @@ public class Building extends Tile {
                 valueGeneratedPerRound,
                 baseTrashCapacity,
                 currentTrashLevel,
+=======
+                supportsTiers, currentTier,
+                canBuild, canRaze,
+                trashGeneratedPerRound, valueGeneratedPerRound,
+                baseTrashCapacity, currentTrashLevel,
+>>>>>>> Stashed changes
                 resource);
     }
 
@@ -383,6 +392,8 @@ public class Building extends Tile {
         thisTurnTrashHasBeenGenerated = false;
         thisTurnValueHasBeenGenerated = false;
         thisTurnUpkeepHasBeenRun = false;
+
+        valueAnimations.clear();
     }
 
     /**
@@ -428,27 +439,38 @@ public class Building extends Tile {
      * Track it in the thisTurn variables
      * Add the trash to the building.
      */
-    private void generateTrash() {
+    public void generateTrash() {
         if (thisTurnTrashHasBeenGenerated) { throw new RuntimeException("You've already generated trash this turn"); }
+        // Flag
+        thisTurnTrashHasBeenGenerated = true;
+        // Does this tile generate trash?
+        if (trashGeneratedPerRound == 0) {
+            // Nothing to do here...
+            return;
+        }
+        ArrayList<ValueAnimationIcon> modifierIcons = new ArrayList<ValueAnimationIcon>();
         float newTrash = trashGeneratedPerRound;
         float additonalTrashFromTiers = getAdditionalValueByTiers(newTrash);
         if (additonalTrashFromTiers > 0) {
             thisTurnAdditionalTrashGeneratedByTier += additonalTrashFromTiers;
             newTrash += additonalTrashFromTiers;
+            modifierIcons.add(ValueAnimationIcon.TIER);
         }
         // Green cert reduction?
         if (hasGreenCert) {
             float greenCertTrashReduction = newTrash * GREEN_CERT_TRASH_GENERATION_REDUCTION_PERCENT;
             thisTurnGreenCertTrashReduction += greenCertTrashReduction;
             newTrash -= greenCertTrashReduction;
+            modifierIcons.add(ValueAnimationIcon.GREEN_CERT);
         }
         thisTurnGarbageGenerated += newTrash;
         // Add the trash to the building.
         currentTrashLevel += newTrash;
-        thisTurnTrashHasBeenGenerated = true;
+        // Animate
+        addValueAnimation(new ValueAnimation(newTrash, ValueAnimationIcon.TRASH, modifierIcons));
     }
 
-    private void runUpkeep() {
+    public void runUpkeep() {
         if (thisTurnUpkeepHasBeenRun) { throw new RuntimeException("You've already run upkeep this turn"); }
         if (!thisTurnTrashHasBeenGenerated) { throw new RuntimeException("Must generate your trash before running upkeep!"); }
         // Incinerate!
@@ -466,9 +488,9 @@ public class Building extends Tile {
         thisTurnUpkeepHasBeenRun = true;
     }
 
-    private void generateValue() {
-        if (thisTurnValueHasBeenGenerated) { throw new RuntimeException("You've already run value generation this turn"); }
-        if (!thisTurnUpkeepHasBeenRun) { throw new RuntimeException("Must run upkeep before generating value!"); }
+    public void generateValue() {
+        if (thisTurnValueHasBeenGenerated) { throw new RuntimeException("You've already run valueString generation this turn"); }
+        if (!thisTurnUpkeepHasBeenRun) { throw new RuntimeException("Must run upkeep before generating valueString!"); }
         float newValue = valueGeneratedPerRound;
         float additonalValueFromTiers = getAdditionalValueByTiers(newValue);
         if (additonalValueFromTiers > 0) {
@@ -528,6 +550,36 @@ public class Building extends Tile {
         }
     }
 
+    public void applyUpgrade(UpgradeType upgradeType) {
+        if (!allowsUpgrade(upgradeType)) return;
+
+        switch (upgradeType) {
+            case COMPACTOR:    if (supportsCompactor)   hasCompactor   = true; break;
+            case DUMPSTER:     if (supportsDumpster)    hasDumpster    = true; break;
+            case GREEN_TOKEN:  if (supportsGreenCert)   hasGreenCert   = true; break;
+            case INCINERATOR:  if (supportsIncinerator) hasIncinerator = true; break;
+            case RECLAMATION:  if (supportsRecycle)     hasRecycle     = true; break;
+            case TIER_UPGRADE: if (supportsTiers)       currentTier    = currentTier.next(); break;
+        }
+    }
+
+    public void removeUpgrade(UpgradeType upgradeType) {
+        if (!allowsUpgrade(upgradeType)) return;
+
+        switch (upgradeType) {
+            case COMPACTOR:    hasCompactor   = false; break;
+            case DUMPSTER:     hasDumpster    = false; break;
+            case GREEN_TOKEN:  hasGreenCert   = false; break;
+            case INCINERATOR:  hasIncinerator = false; break;
+            case RECLAMATION:  hasRecycle     = false; break;
+            case TIER_UPGRADE: currentTier    = currentTier.prev(); break;
+        }
+    }
+
+    public void demolish() {
+        type = Type.EMPTY;
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     @Override
@@ -557,11 +609,7 @@ public class Building extends Tile {
         if (filtered) {
             batch.draw(Assets.tileCover, bounds.x, bounds.y, bounds.width, bounds.height);
         }
-
-//        Color c = batch.getColor();
-//        batch.setColor(Color.RED);
-//        Assets.drawString(batch, "BUILDING", bounds.x, bounds.y, Color.GOLD, 0.5f, Assets.font);
-//        batch.setColor(c);
+        renderValueAnimations(batch);
     }
 
     @Override
@@ -611,41 +659,152 @@ public class Building extends Tile {
                     hScale * addonTexture.getRegionHeight());
 
         }
+
+
     }
 
     @Override
     public void update(float dt) {
         super.update(dt);
+        updateValueAnimations(dt);
     }
 
-    public void applyUpgrade(UpgradeType upgradeType) {
-        if (!allowsUpgrade(upgradeType)) return;
+    // -----------------------------------------------------------------------------------------------------------------
 
-        switch (upgradeType) {
-            case COMPACTOR:    if (supportsCompactor)   hasCompactor   = true; break;
-            case DUMPSTER:     if (supportsDumpster)    hasDumpster    = true; break;
-            case GREEN_TOKEN:  if (supportsGreenCert)   hasGreenCert   = true; break;
-            case INCINERATOR:  if (supportsIncinerator) hasIncinerator = true; break;
-            case RECLAMATION:  if (supportsRecycle)     hasRecycle     = true; break;
-            case TIER_UPGRADE: if (supportsTiers)       currentTier    = currentTier.next(); break;
+    private ArrayList<ValueAnimation> valueAnimations;
+    private void addValueAnimation(ValueAnimation valueAnimation) {
+        valueAnimations.add(valueAnimation);
+    }
+    private void renderValueAnimations(SpriteBatch batch) {
+        for (ValueAnimation valueAnimation : valueAnimations) {
+            valueAnimation.render(batch, bounds.x + 20, bounds.y + bounds.height * 0.9f);
         }
     }
-
-    public void removeUpgrade(UpgradeType upgradeType) {
-        if (!allowsUpgrade(upgradeType)) return;
-
-        switch (upgradeType) {
-            case COMPACTOR:    hasCompactor   = false; break;
-            case DUMPSTER:     hasDumpster    = false; break;
-            case GREEN_TOKEN:  hasGreenCert   = false; break;
-            case INCINERATOR:  hasIncinerator = false; break;
-            case RECLAMATION:  hasRecycle     = false; break;
-            case TIER_UPGRADE: currentTier    = currentTier.prev(); break;
+    private void updateValueAnimations(float dt) {
+        ArrayList<ValueAnimation> valueAnimationsToRemove = new ArrayList<ValueAnimation>();
+        for (ValueAnimation valueAnimation : valueAnimations) {
+            valueAnimation.update(dt);
+            // Prune?
+            if (valueAnimation.isComplete) {
+                valueAnimationsToRemove.add(valueAnimation);
+            }
         }
+        if (valueAnimationsToRemove.size() > 0) {
+            valueAnimations.removeAll(valueAnimationsToRemove);
+        }
+
     }
 
-    public void demolish() {
-        type = Type.EMPTY;
+    // things I want to animate:
+    // add/remove trash
+    //      compress added trash
+    //      recycle added trash
+    // incinerate trash
+    // add valueString
+    // ADD TRASH (+/- NUMBER ICON (ICONS))
+    // REMOVE TRASH (+/- NUMBER ICON (ICONS))
+
+    private class ValueAnimation {
+        private static final int BACKGROUND_COLOR = 0xebffdaff;
+        private static final float BACKGROUND_PADDING = 10f;
+        private static final float ANIMATION_END_DY = 100; // pixels
+        private static final float TEXT_SCALE = 0.7f;
+        private static final float DURATION = 1.6f; // seconds
+        private static final int SIG_DIGITS = 2;
+
+        private String valueString;
+        private ValueAnimationIcon icon;
+        private ArrayList<ValueAnimationIcon> modifierIcons;
+        private Color textColor;
+        private Color backgroundColor;
+
+        public boolean isComplete;
+        float currentTime;
+        float currentY;
+
+        private final float computedBackgroundWidth;
+        private final float computedBackgroundHeight;
+        private final float textOffsetX; // offset from the bottom left corner of the background
+        private final float textOffsetY; // offset from the bottom left corner of the background
+
+        public ValueAnimation(float value, ValueAnimationIcon icon, ArrayList<ValueAnimationIcon> modifierIcons) {
+            this.valueString = String.valueOf(value);
+            if (this.valueString.contains(".")) {
+                int index = this.valueString.indexOf(".");
+                int substringEnd = SIG_DIGITS == 0 ? index : Math.min(index + 1 + SIG_DIGITS, valueString.length());
+                this.valueString = this.valueString.substring(0, substringEnd);
+                if (value >= 0) {
+                    this.valueString = "+" + this.valueString;
+                }
+            }
+            System.out.println(valueString);
+            this.icon = icon;
+            this.modifierIcons = modifierIcons;
+
+            this.isComplete = false;
+            this.currentTime = 0;
+            this.currentY = 0;
+
+            this.textColor = new Color(0x170d20ff);   // todo: change this color based on icon type?
+            this.backgroundColor = new Color(BACKGROUND_COLOR);
+
+            // Compute measurements for layout once here
+            Assets.font.getData().setScale(TEXT_SCALE);
+            Assets.fontShader.setUniformf("u_scale", TEXT_SCALE);
+            Assets.layout.setText(Assets.font, valueString);
+            this.computedBackgroundWidth = Assets.layout.width + BACKGROUND_PADDING * 2; // TODO add icon(s)
+            this.computedBackgroundHeight = Assets.layout.height + BACKGROUND_PADDING * 2;
+            textOffsetX = BACKGROUND_PADDING;
+            textOffsetY = BACKGROUND_PADDING + Assets.layout.height; // Text is *top* left corner
+
+            System.out.println("ValueAnimation Created | valueString='" + valueString + "'");
+        }
+
+        public void update(float dt) {
+            this.currentTime += dt;
+            if (currentTime > DURATION) {
+                System.out.println("ValueAnimation | complete");
+                this.isComplete = true;
+            }
+        }
+
+        /**
+         * Render.  Provide origin x/y to allow this to move with anything it is 'attached' to
+         * X/Y will be the bottom left corner of the animation
+         * @param batch The SpriteBatch
+         * @param x The x origin of this animation
+         * @param y The y origin of this animation
+         */
+        public void render(SpriteBatch batch, float x, float y) {
+            if (isComplete) {
+                return;
+            }
+            float percent = Math.min(currentTime / DURATION, 1);
+            float dy = ANIMATION_END_DY * percent;
+            float alpha = 1 - percent;
+            // Background
+            Color c = batch.getColor();
+            backgroundColor.a = alpha;
+            batch.setColor(backgroundColor);
+            batch.draw(Assets.whitePixel, x, y + dy, computedBackgroundWidth, computedBackgroundHeight);
+            batch.setColor(c);
+            // Text
+            textColor.a = alpha;
+            Assets.drawString(batch, valueString, x + textOffsetX, y + textOffsetY + dy , textColor, TEXT_SCALE, Assets.font);
+            // TODO: draw icons.
+        }
+
     }
+
+    private enum ValueAnimationIcon {
+        COMPRESSOR,
+        GREEN_CERT,
+        INCINERATOR,
+        MONEY,
+        RECYCLE,
+        TIER, // todo: 1,2,3?
+        TRASH,
+    }
+
 
 }
