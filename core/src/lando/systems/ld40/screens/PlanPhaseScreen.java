@@ -341,10 +341,6 @@ public class PlanPhaseScreen extends BaseScreen {
             return false;
         }
 
-        if (actionManager != null && actionManager.touchUp(screenX, screenY)) {
-            return false;
-        }
-
         // if one of the buttons, disable button presses, zoom out and create correct action maanger
 
         if (nextButton.checkForTouch(screenX, screenY)) {
@@ -367,6 +363,11 @@ public class PlanPhaseScreen extends BaseScreen {
             zoomOut(manager, World.pixels_wide / 2f, World.pixels_high * .2f, camTargetZoom);
             return true;
         }
+
+        if (actionManager != null && actionManager.touchUp(screenX, screenY)) {
+            return false;
+        }
+
         return true;
     }
 

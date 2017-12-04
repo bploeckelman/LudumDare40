@@ -19,6 +19,7 @@ import lando.systems.ld40.gameobjects.Routes;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.world.World;
 import lando.systems.ld40.utils.SoundManager;
 
@@ -139,6 +140,7 @@ public class RouteManager extends ActionManager {
 
     private void drawHudText(SpriteBatch batch, String text, float scale) {
         batch.setShader(Assets.fontShader);
+        Assets.font.setColor(Config.COLOR_GOLD);
         Assets.font.getData().setScale(scale);
         Assets.fontShader.setUniformf("u_scale", scale);
         Assets.layout.setText(Assets.font, text);

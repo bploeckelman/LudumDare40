@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.Config;
 
 /**
  * Created by Brian on 12/3/2017.
@@ -32,6 +33,7 @@ public abstract class ActionManager implements IManager {
 
     protected void drawText(SpriteBatch batch, String text, float scale) {
         batch.setShader(Assets.fontShader);
+        Assets.font.setColor(Config.COLOR_GOLD);
         Assets.font.getData().setScale(scale);
         Assets.fontShader.setUniformf("u_scale", scale);
         Assets.layout.setText(Assets.font, text);
