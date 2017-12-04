@@ -40,6 +40,7 @@ public class Assets {
     public static ShaderProgram doomShader;
     public static ShaderProgram pizelizeShader;
     public static ShaderProgram doorwayShader;
+    public static ShaderProgram crosshatchShader;
 
     public static TextureAtlas atlas;
 
@@ -188,6 +189,8 @@ public class Assets {
         doomShader = loadShader("shaders/default.vert", "shaders/doomdrip.frag");
         pizelizeShader = loadShader("shaders/default.vert", "shaders/pixelize.frag");
         doorwayShader = loadShader("shaders/default.vert", "shaders/doorway.frag");
+        crosshatchShader = loadShader("shaders/default.vert", "shaders/crosshatch.frag");
+
 
 //        randomTransitions.add(blindsShader);
         randomTransitions.add(fadeShader);

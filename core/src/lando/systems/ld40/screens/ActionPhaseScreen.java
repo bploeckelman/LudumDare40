@@ -49,7 +49,7 @@ class ActionPhaseScreen extends BaseScreen {
                 setPhase(Phase.REWARDS_FINAL);
                 break;
             case REWARDS_FINAL:
-                LudumDare40.game.setScreen(new ResolutionPhaseScreen());
+                LudumDare40.game.setScreen(new ResolutionPhaseScreen(), Assets.crosshatchShader);
                 break;
         }
     }

@@ -9,7 +9,7 @@ uniform float u_percent;
 varying vec4 v_color;
 varying vec2 v_texCoord;
 
-const ivec2 squaresMin = ivec2(50);
+const ivec2 squaresMin = ivec2(20);
 const int steps = 50;
 
 vec4 getFromColor(vec2 p){
