@@ -3,6 +3,7 @@ package lando.systems.ld40.gameobjects;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import lando.systems.ld40.utils.Assets;
 
 import java.util.ArrayList;
@@ -29,6 +30,9 @@ public class ValueAnimation {
     private String valueString;
     private ValueAnimationIcon icon;
     private ArrayList<ValueAnimationIcon> modifierIcons;
+    private ArrayList<TextureRegion> modifierIconTextures = new ArrayList<TextureRegion>();
+    private ArrayList<Vector2> modifierIconOffsets = new ArrayList<Vector2>();
+    private ArrayList<Vector2> modifierIconDimensions = new ArrayList<Vector2>();
     private Color textColor;
     private Color backgroundColor;
 
@@ -85,7 +89,32 @@ public class ValueAnimation {
         textOffsetX = iconOffsetX + computedIconWidth + ELEMENT_PADDING;
         textOffsetY = BACKGROUND_PADDING + textHeight; // Text is *top* left corner
 
-        this.computedBackgroundWidth = textOffsetX + textWidth + BACKGROUND_PADDING;
+        // Modifier icons!
+        float thisWidth;
+        TextureRegion thisTexture;
+        float thisOffsetX;
+        ValueAnimationIcon thisIcon;
+        for (int i = 0; i < modifierIcons.size(); i++) {
+            thisIcon = modifierIcons.get(i);
+            // Texture
+            thisTexture = getIconTexture(thisIcon);
+            modifierIconTextures.add(i, thisTexture);
+            // dimension
+            thisWidth = (computedIconHeight / thisTexture.getRegionHeight()) * thisTexture.getRegionWidth();
+            modifierIconDimensions.add(new Vector2(thisWidth, computedIconHeight));
+            // offset
+            if (i == 0) {
+                thisOffsetX = textOffsetX + textWidth + ELEMENT_PADDING;
+            } else {
+                thisOffsetX = modifierIconOffsets.get(i-1).x + modifierIconDimensions.get(i-1).x + ELEMENT_PADDING;
+            }
+            modifierIconOffsets.add(new Vector2(thisOffsetX, iconOffsetY));
+        }
+        if (modifierIcons.size() == 0) {
+            this.computedBackgroundWidth = textOffsetX + textWidth + BACKGROUND_PADDING;
+        } else {
+            this.computedBackgroundWidth = modifierIconOffsets.get(modifierIconOffsets.size()-1).x + modifierIconDimensions.get(modifierIconDimensions.size()-1).x + BACKGROUND_PADDING;
+        }
     }
 
     public TextureRegion getIconTexture(ValueAnimationIcon icon) {
@@ -142,7 +171,15 @@ public class ValueAnimation {
         // Icon(s)
         batch.setColor(1,1,1,alpha);
         batch.draw(iconTexture, x + iconOffsetX, y + iconOffsetY + dy, computedIconWidth, computedIconHeight);
+        // modifiers!
+        for (int i = 0; i < modifierIcons.size(); i++) {
+            batch.draw(
+                    modifierIconTextures.get(i),
+                    x + modifierIconOffsets.get(i).x, y + modifierIconOffsets.get(i).y + dy,
+                    modifierIconDimensions.get(i).x, modifierIconDimensions.get(i).y);
+        }
         batch.setColor(c);
+
     }
 
 }
