@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import lando.systems.ld40.gameobjects.Tile;
 import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.utils.Assets;
@@ -617,6 +619,32 @@ public class Building extends Tile {
             TextureRegion greenCert = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
             batch.draw(greenCert, bounds.x + (CUTOUT_Y_OFFSET / 2f), bounds.y +  bounds.height - (greenCert.getRegionHeight() + (CUTOUT_Y_OFFSET / 2f)));
         }
+        if (supportsTiers) {
+            switch (currentTier) {
+
+                case ONE:
+                    TextureRegion tier1 = Assets.tier1Texture;
+                    float tier1TextureWidth = tier1.getRegionWidth() * 2;
+                    float tier1TextureHeight = tier1.getRegionHeight() * 2;
+                    batch.draw(tier1, bounds.x + (bounds.width - tier1TextureWidth)/2, bounds.y + (bounds.height - tier1TextureHeight)/2, tier1TextureWidth, tier1TextureHeight);
+                    break;
+
+                case TWO:
+                    TextureRegion tier2 = Assets.tier2Texture;
+                    float tier2TextureWidth = tier2.getRegionWidth() * 2;
+                    float tier2TextureHeight = tier2.getRegionHeight() * 2;
+                    batch.draw(tier2, bounds.x + (bounds.width - tier2TextureWidth)/2, bounds.y + (bounds.height - tier2TextureHeight)/2, tier2TextureWidth, tier2TextureHeight);
+                    break;
+
+                case THREE:
+                    TextureRegion tier3 = Assets.tier3Texture;
+                    float tier3TextureWidth = tier3.getRegionWidth() * 2;
+                    float tier3TextureHeight = tier3.getRegionHeight() * 2;
+                    batch.draw(tier3, bounds.x + (bounds.width - tier3TextureWidth)/2, bounds.y + (bounds.height - tier3TextureHeight)/2, tier3TextureWidth, tier3TextureHeight);
+                    break;
+
+            }
+        }
 
         if (currentTrashLevel > 0){
             batch.draw(Assets.trashButton, bounds.x + bounds.width - 44, bounds.y + bounds.height - 44);
@@ -676,6 +704,38 @@ public class Building extends Tile {
                     y + h - hScale * (addonTexture.getRegionWidth() + (CUTOUT_Y_OFFSET / 2f)),
                     wScale  * addonTexture.getRegionWidth(),
                     hScale * addonTexture.getRegionHeight());
+        }
+        if (supportsTiers) {
+            switch (currentTier) {
+
+                case ONE:
+                    addonTexture = Assets.tier1Texture;
+                    batch.draw(addonTexture,
+                            x + (w - wScale * addonTexture.getRegionWidth()) / 2,
+                            y + (h - hScale * addonTexture.getRegionHeight()) / 2,
+                            wScale  * addonTexture.getRegionWidth(),
+                            hScale * addonTexture.getRegionHeight());
+                    break;
+
+                case TWO:
+                    addonTexture = Assets.tier2Texture;
+                    batch.draw(addonTexture,
+                            x + (w - wScale * addonTexture.getRegionWidth()) / 2,
+                            y + (h - hScale * addonTexture.getRegionHeight()) / 2,
+                            wScale  * addonTexture.getRegionWidth(),
+                            hScale * addonTexture.getRegionHeight());
+                    break;
+
+                case THREE:
+                    addonTexture = Assets.tier3Texture;
+                    batch.draw(addonTexture,
+                            x + (w - wScale * addonTexture.getRegionWidth()) / 2,
+                            y + (h - hScale * addonTexture.getRegionHeight()) / 2,
+                            wScale  * addonTexture.getRegionWidth(),
+                            hScale * addonTexture.getRegionHeight());
+                    break;
+
+            }
         }
 
 

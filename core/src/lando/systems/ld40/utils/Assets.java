@@ -91,6 +91,9 @@ public class Assets {
     public static TextureRegion trashBag;
     public static TextureRegion trashButton;
     public static TextureRegion whiteCircle;
+    public static TextureRegion tier1Texture;
+    public static TextureRegion tier2Texture;
+    public static TextureRegion tier3Texture;
 
     public static Array<TextureRegion> grassTiles;
     public static Array<TextureRegion> cloudTextures;
@@ -189,6 +192,9 @@ public class Assets {
         trashBag = atlas.findRegion("bag_o_trash");
         trashButton = atlas.findRegion("trash_button");
         whiteCircle = atlas.findRegion("white-circle");
+        tier1Texture = atlas.findRegion("tier1");
+        tier2Texture = atlas.findRegion("tier2");
+        tier3Texture = atlas.findRegion("tier3");
 
         cloudTextures = new Array<TextureRegion>();
         cloudTextures.add(atlas.findRegion("cloud1"));
