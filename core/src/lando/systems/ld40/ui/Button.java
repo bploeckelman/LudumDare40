@@ -37,7 +37,7 @@ public class Button {
     public String tooltip = null;
     public Object meta = null;
 
-    private OrthographicCamera camera;
+    protected OrthographicCamera camera;
     private Vector2 touchPosScreen = new Vector2();
     public float textScale = 0.3f;
     private float textOffsetY = 3f;

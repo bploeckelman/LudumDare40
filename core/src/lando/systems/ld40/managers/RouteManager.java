@@ -108,7 +108,7 @@ public class RouteManager extends ActionManager {
 
         batch.setColor(Color.WHITE);
         for (TruckButton button : truckButtons) {
-            button.render(batch);
+            button.render(batch, routes);
         }
 
         switch (state) {

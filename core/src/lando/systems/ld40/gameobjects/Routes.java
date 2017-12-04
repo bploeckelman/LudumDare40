@@ -35,6 +35,11 @@ public class Routes {
         return routeColors.get(index % routeColors.size);
     }
 
+    public Color getColor(DumpTruck truck) {
+        int index = trucks.indexOf(truck, true);
+        return getColor(index);
+    }
+
     private void addColor(int r, int g, int b) {
         routeColors.add(new Color(r/255f, g/255f, b/255f, 0.8f));
     }
