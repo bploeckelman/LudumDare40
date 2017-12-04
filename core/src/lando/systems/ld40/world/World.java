@@ -202,6 +202,7 @@ public class World {
     }
 
     public void nextTurn(){
+        Statistics.getStatistics().getCurrentTurnStatistics().buildings = totalBuildings();
         Statistics.getStatistics().onTurnComplete(turnNumber);
         turnNumber++;
         // Reset all buildings!

@@ -49,7 +49,6 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
     Vector3 touchPos;
 
-    public static int money = 500000000;
 
     public enum ItemGroups {
         Building,
@@ -505,6 +504,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void updateObjects(float dt) {
+
         if(selectedGroup == ItemGroups.Building)
         {
             for(UpgradeButton button : buildingsButtons)
@@ -566,9 +566,9 @@ public class ResolutionPhaseScreen extends BaseScreen {
             }
             else if(purchaseUpgradeButton.checkForTouch(touchX, touchY))
             {
-                if(money >= currentUpgrade.cost && !purchaseUpgradeButton.text.contentEquals("Researched"))
+                if(Statistics.getStatistics().getCurrentTurnStatistics().money >= currentUpgrade.cost && !purchaseUpgradeButton.text.contentEquals("Researched"))
                 {
-                    money -= currentUpgrade.cost;
+                    Statistics.getStatistics().getCurrentTurnStatistics().money -= currentUpgrade.cost;
                     if(currentUpgrade.group == ItemGroups.Research)
                     {
                         storeManager.completeResearch(researchMap.get(currentUpgrade.name));
@@ -798,7 +798,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
-        Assets.drawString(batch, "Money: " + money, Config.gameWidth / 2 - 90, Config.gameHeight - 20, Config.COLOR_GOLD, 0.5f, Assets.font);
+        Assets.drawString(batch, "Money: " + Statistics.getStatistics().getCurrentTurnStatistics().money, Config.gameWidth / 2 - 90, Config.gameHeight - 20, Config.COLOR_GOLD, 0.5f, Assets.font);
     }
 
     @Override
