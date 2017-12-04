@@ -34,6 +34,7 @@ public class RouteManager extends ActionManager {
 
     int remainingSelections = 0;
     boolean activated;
+    ButtonGroup routeButtons = new ButtonGroup();
 
     private Rectangle hudBounds;
     private Array<TruckButton> truckButtons;
@@ -61,12 +62,10 @@ public class RouteManager extends ActionManager {
         float x = gap;
         float y = hudBounds.y + hudBounds.height - image.getRegionHeight();
 
-        ButtonGroup bg = new ButtonGroup();
-
         for (DumpTruck truck : routes.trucks) {
             Rectangle bounds = new Rectangle(x, y, width, image.getRegionHeight());
             TruckButton button = new TruckButton(truck, bounds, hudCamera);
-            bg.add(button);
+            routeButtons.add(button);
             truckButtons.add(button);
             x += (width + gap);
         }
@@ -81,6 +80,11 @@ public class RouteManager extends ActionManager {
     private void setState(RouteState state) {
         this.state = state;
         switch (state) {
+            case PICK_ROUTE:
+                routeButtons.clear();
+                newRoute = null;
+                world.setFilter(World.FilterType.None);
+                break;
             case PICK_SOURCES:
                 world.setFilter(World.FilterType.Source);
                 break;
@@ -97,7 +101,7 @@ public class RouteManager extends ActionManager {
     public void renderManager(SpriteBatch batch) {
         if (!activated) return;
 
-        world.renderRoutes(batch, worldCamera);
+        world.renderRoutes(batch, worldCamera, newRoute, routeButtons.selectedIndex());
 
         batch.setColor(Color.BLACK);
         batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight/3);
@@ -151,11 +155,15 @@ public class RouteManager extends ActionManager {
     }
 
     public void selectTruck(TruckButton truck) {
-        truck.select();
-        selectedTruck = truck.truck;
-        newRoute = new IntArray();
-        remainingSelections = selectedTruck.speed;
-        setState(RouteState.PICK_SOURCES);
+        if (truck.selected) {
+            setState(RouteState.PICK_ROUTE);
+        } else {
+            truck.select();
+            selectedTruck = truck.truck;
+            newRoute = new IntArray();
+            remainingSelections = selectedTruck.speed;
+            setState(RouteState.PICK_SOURCES);
+        }
     }
 
     @Override

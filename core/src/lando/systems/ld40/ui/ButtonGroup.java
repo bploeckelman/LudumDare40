@@ -17,13 +17,25 @@ public class ButtonGroup {
     }
 
     public void select(Button button) {
-        if (selected != null) {
-            selected.selected = false;
-        }
+        clear();
 
         selected = button;
         if (button != null) {
             button.selected = true;
         }
+    }
+
+    public void clear() {
+        if (selected != null) {
+            selected.selected = false;
+            selected = null;
+        }
+    }
+
+    public int selectedIndex() {
+        if (selected == null) {
+            return -1;
+        }
+        return buttons.indexOf(selected, true);
     }
 }

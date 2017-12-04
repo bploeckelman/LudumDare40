@@ -113,33 +113,42 @@ public class World {
         }
     }
 
-    public void renderRoutes(SpriteBatch batch, OrthographicCamera camera) {
+    public void renderRoutes(SpriteBatch batch, OrthographicCamera camera, IntArray newRoute, int routeIndex) {
         batch.end();
         Assets.shapes.begin(ShapeRenderer.ShapeType.Filled);
         Assets.shapes.setProjectionMatrix(camera.combined);
 
-        Vector2 point1;
-        Vector2 point2;
-
-        float thickness = 25;
-
-        for (int d = 0; d < routes.trucks.size; d++) {
-            point1  = getPoint(hqIndex, d, thickness);
-            Assets.shapes.setColor(routes.getColor(d));
-            IntArray route = routes.routes.get(routes.trucks.get(d));
-            if (route.size == 0) continue;
-            for (int i = 0; i < route.size; i++) {
-                point2 = getPoint(route.get(i), d, thickness);
-                Assets.shapes.rectLine(point1, point2, thickness);
-                point1 = point2;
+        if (newRoute != null) {
+            renderRoute(newRoute, routeIndex, false);
+        } else {
+            for (int i = 0; i < routes.trucks.size; i++) {
+                IntArray route = routes.routes.get(routes.trucks.get(i));
+                renderRoute(route, i, true);
             }
-            point2 = getPoint(hqIndex, d, thickness);
-
-            Assets.shapes.rectLine(point1, point2, thickness);
         }
 
         Assets.shapes.end();
         batch.begin();
+    }
+
+    private void renderRoute(IntArray route, int index, boolean complete) {
+        Vector2 point1;
+        Vector2 point2;
+
+        float thickness = 25;
+        point1  = getPoint(hqIndex, index, thickness);
+        Assets.shapes.setColor(routes.getColor(index));
+        if (route.size == 0) return;
+
+        for (int i = 0; i < route.size; i++) {
+            point2 = getPoint(route.get(i), index, thickness);
+            Assets.shapes.rectLine(point1, point2, thickness);
+            point1 = point2;
+        }
+        point2 = getPoint(hqIndex, index, thickness);
+        if (complete) {
+            Assets.shapes.rectLine(point1, point2, thickness);
+        }
     }
 
     private Vector2 getPoint(int bIndex, int rIndex, float thickness) {
