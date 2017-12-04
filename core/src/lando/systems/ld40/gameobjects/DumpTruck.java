@@ -18,15 +18,15 @@ public class DumpTruck extends GameObject {
         }
     }
 
-    public static final TruckType One = new TruckType(2, 50, "truck1");
-    public static final TruckType Two = new TruckType(2, 100, "truck2");
-    public static final TruckType Three = new TruckType(2, 200, "truck3");
-    public static final TruckType Four = new TruckType(3, 50, "truck1");
-    public static final TruckType Five = new TruckType(3, 100, "truck2");
-    public static final TruckType Six = new TruckType(3, 200, "truck3");
-    public static final TruckType Seven = new TruckType(4, 50, "truck1");
-    public static final TruckType Eight = new TruckType(4, 100, "truck2");
-    public static final TruckType Nine = new TruckType(4, 200, "truck3");
+    public static final TruckType One = new TruckType(1, 50, "truck1");
+    public static final TruckType Two = new TruckType(1, 100, "truck2");
+    public static final TruckType Three = new TruckType(1, 200, "truck3");
+    public static final TruckType Four = new TruckType(2, 50, "truck1");
+    public static final TruckType Five = new TruckType(2, 100, "truck2");
+    public static final TruckType Six = new TruckType(2, 200, "truck3");
+    public static final TruckType Seven = new TruckType(3, 50, "truck1");
+    public static final TruckType Eight = new TruckType(3, 100, "truck2");
+    public static final TruckType Nine = new TruckType(3, 200, "truck3");
 
     public final UpgradeType type = UpgradeType.TRUCK;
 
