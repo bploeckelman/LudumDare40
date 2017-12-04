@@ -260,7 +260,7 @@ public class PlanPhaseScreen extends BaseScreen {
                 tooltip,
                 stringTX,
                 stringTY,
-                Statistics.COLOR_TEXT,
+                Config.COLOR_TEXT,
                 TOOLTIP_TEXT_SCALE,
                 Assets.font);
     }
