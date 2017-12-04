@@ -253,16 +253,12 @@ public class Statistics {
             batch.draw(Assets.whitePixel, graphBounds.x + (turn * dx) - 1, graphBounds.y -5,
                        2 , graphBounds.height + 10);
             float offset = 10;
-            float left = screenPos.x + offset;
-            float bottom = screenPos.y + offset;
-            if (screenPos.x > camera.viewportWidth/2f){
-                left -= 350 + (2 * offset);
-            }
-            if (screenPos.y > camera.viewportHeight/2f){
-                bottom -= 200 + (2* offset);
+            float left = 10;
+            if (screenPos.x < camera.viewportWidth/2f){
+                left = camera.viewportWidth - (10 + tooltipBounds.width);
             }
             TurnStatistics turnStats = turns.get(turn);
-            tooltipBounds.set(left, bottom, 350, 200);
+            tooltipBounds.set(left, 10, 350, 200);
             batch.setColor(1,1,1, .8f);
             Assets.tooltipNinePatch.draw(batch, tooltipBounds.x, tooltipBounds.y, tooltipBounds.width, tooltipBounds.height);
             Assets.drawString(batch, "Turn " + (turn+1), tooltipBounds.x, tooltipBounds.y + tooltipBounds.height - 4,

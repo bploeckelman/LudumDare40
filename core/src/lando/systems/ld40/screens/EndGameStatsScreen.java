@@ -25,12 +25,12 @@ public class EndGameStatsScreen extends BaseScreen {
         stats = Statistics.getStatistics();
         // I am a bad person.  Here are some magic numbers
         replayButton = new Button(Assets.replayButton, new Rectangle(60, 60, 50, 50), hudCamera);
-        showMoneyButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 400, 20, 20), hudCamera);
-        showBuildingsButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 360, 20, 20), hudCamera);
-        showAddonsButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 320, 20, 20), hudCamera);
-        showGarbageGenerated = new Button(Assets.whiteNinePatch, new Rectangle(550, 280, 20, 20), hudCamera);
-        showGarbageHauled = new Button(Assets.whiteNinePatch, new Rectangle(550, 240, 20, 20), hudCamera);
-        showGarbageInLandfills = new Button(Assets.whiteNinePatch, new Rectangle(550, 200, 20, 20), hudCamera);
+        showMoneyButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 440, 20, 20), hudCamera);
+        showBuildingsButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 400, 20, 20), hudCamera);
+        showAddonsButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 360, 20, 20), hudCamera);
+        showGarbageGenerated = new Button(Assets.whiteNinePatch, new Rectangle(550, 320, 20, 20), hudCamera);
+        showGarbageHauled = new Button(Assets.whiteNinePatch, new Rectangle(550, 280, 20, 20), hudCamera);
+        showGarbageInLandfills = new Button(Assets.whiteNinePatch, new Rectangle(550, 240, 20, 20), hudCamera);
     }
 
     @Override
