@@ -26,7 +26,12 @@ public class Statistics {
     private static int TURN_HASH = 10;
     public static Color COLOR_MONEY = new Color(235/255f,208/255f,0,1);
     public static Color COLOR_BUILDINGS = new Color(90/255f, 178/255f, 23/255f, 1f);
+    public static Color COLOR_ADDONS = new Color(104/255f, 41/255f, 62/255f, 1f);
     public static Color COLOR_GARBAGE_GENERATED = new Color(85/255f, 222/255f, 183/255f, 1f);
+    public static Color COLOR_GARBAGE_HAULED = new Color(169/255f, 68/255f, 0/255f, 1f);
+    public static Color COLOR_GARBAGE_IN_LANDFILLS = new Color(23/255f, 13/255f, 32/255f, 1f);
+
+    public static Color COLOR_BACKGROUND = new Color(71/255f, 71/255f, 87/255f, 1f);
 
     private static Statistics STATS;
     public static Statistics getStatistics(){
@@ -100,7 +105,7 @@ public class Statistics {
         modalBounds.set((int)MODAL_X_MARGIN, (int)MODAL_Y_MARGIN,
                 (int)(camera.viewportWidth - (2*MODAL_X_MARGIN)),
                 (int)(camera.viewportHeight - (2*MODAL_Y_MARGIN)));
-        graphBounds.set(modalBounds.x + 30, modalBounds.y + 100, modalBounds.width - 200, modalBounds.height - 200);
+        graphBounds.set(modalBounds.x + 30, modalBounds.y + 100, modalBounds.width - 250, modalBounds.height - 200);
         batch.setColor(Color.WHITE);
         Assets.statsNinePatch.draw(batch, modalBounds.x, modalBounds.y, modalBounds.width, modalBounds.height);
 
@@ -131,7 +136,9 @@ public class Statistics {
         for (TurnStatistics turn : turns){
             if (showMoney) maxStat = Math.max(maxStat, turn.money);
             if (showBuildings) maxStat = Math.max(maxStat, turn.buildings);
-            if (showGarbageGenerated) maxStat = Math.max(maxStat, turn.garbageGenerated);
+            if (showAddons) maxStat = Math.max(maxStat, turn.addons);
+            if (showGarbageHauled) maxStat = Math.max(maxStat, turn.garbageHauled);
+            if (showGarbageInLandFills) maxStat = Math.max(maxStat, turn.garbageInLandFills);
         }
         maxStat *= 1.1f;
         float graphPercent = animationTimer / ANIMATION_TIME;
@@ -174,6 +181,17 @@ public class Statistics {
                 sr.setColor(COLOR_BUILDINGS);
                 sr.line(x1, y1, x2, y2);
             }
+            if (showAddons) {
+                // Buildings
+                y1 = graphBounds.y + lastTurn.addons / maxStat * graphBounds.height;
+                y2 = graphBounds.y + currentTurn.addons / maxStat * graphBounds.height;
+
+                x2 = MathUtils.lerp(x1, x2, lerpPercent);
+                y2 = MathUtils.lerp(y1, y2, lerpPercent);
+
+                sr.setColor(COLOR_ADDONS);
+                sr.line(x1, y1, x2, y2);
+            }
 
             if (showGarbageGenerated) {
                 // Buildings
@@ -186,7 +204,30 @@ public class Statistics {
                 sr.setColor(COLOR_GARBAGE_GENERATED);
                 sr.line(x1, y1, x2, y2);
             }
+            if (showGarbageHauled) {
+                // Buildings
+                y1 = graphBounds.y + lastTurn.garbageHauled / maxStat * graphBounds.height;
+                y2 = graphBounds.y + currentTurn.garbageHauled / maxStat * graphBounds.height;
+
+                x2 = MathUtils.lerp(x1, x2, lerpPercent);
+                y2 = MathUtils.lerp(y1, y2, lerpPercent);
+
+                sr.setColor(COLOR_GARBAGE_HAULED);
+                sr.line(x1, y1, x2, y2);
+            }
+            if (showGarbageInLandFills) {
+                // Buildings
+                y1 = graphBounds.y + lastTurn.garbageInLandFills / maxStat * graphBounds.height;
+                y2 = graphBounds.y + currentTurn.garbageInLandFills / maxStat * graphBounds.height;
+
+                x2 = MathUtils.lerp(x1, x2, lerpPercent);
+                y2 = MathUtils.lerp(y1, y2, lerpPercent);
+
+                sr.setColor(COLOR_GARBAGE_IN_LANDFILLS);
+                sr.line(x1, y1, x2, y2);
+            }
         }
+
     }
 
     public void drawDashedLine(float x1, float y1, float x2, float y2, int numDashes, float dashSize) {
