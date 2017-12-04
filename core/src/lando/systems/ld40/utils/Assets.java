@@ -39,6 +39,7 @@ public class Assets {
     public static ShaderProgram radialShader;
     public static ShaderProgram doomShader;
     public static ShaderProgram pizelizeShader;
+    public static ShaderProgram doorwayShader;
 
     public static TextureAtlas atlas;
 
@@ -62,6 +63,9 @@ public class Assets {
     public static TextureRegion dumpsterCutoutTexture;
     public static TextureRegion recycleTexture;
     public static TextureRegion recycleCutoutTexture;
+    public static TextureRegion buttonBackgroundTexture;
+
+    public static Texture titleScreen;
 
     public static boolean initialized;
 
@@ -79,6 +83,7 @@ public class Assets {
         mgr = new AssetManager();
 
         mgr.load("sprites.atlas", TextureAtlas.class);
+        mgr.load("images/titlescreen.png", Texture.class);
 
         if (tween == null) {
             tween = new TweenManager();
@@ -100,6 +105,8 @@ public class Assets {
         if (initialized) return 1f;
         initialized = true;
 
+        titleScreen = mgr.get("images/titlescreen.png", Texture.class);
+
         atlas = mgr.get("sprites.atlas", TextureAtlas.class);
         testTexture = atlas.findRegion("badlogic");
         whitePixel = atlas.findRegion("white-pixel");
@@ -114,6 +121,7 @@ public class Assets {
         dumpsterCutoutTexture = atlas.findRegion("newdumpster-cutout");
         recycleTexture = atlas.findRegion("recycle");
         recycleCutoutTexture = atlas.findRegion("recycle-cutout");
+        buttonBackgroundTexture = atlas.findRegion("button-background");
 
         final Texture distText = new Texture(Gdx.files.internal("fonts/ubuntu.png"), true);
         distText.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
@@ -136,6 +144,7 @@ public class Assets {
         radialShader = loadShader("shaders/default.vert", "shaders/radial.frag");
         doomShader = loadShader("shaders/default.vert", "shaders/doomdrip.frag");
         pizelizeShader = loadShader("shaders/default.vert", "shaders/pixelize.frag");
+        doorwayShader = loadShader("shaders/default.vert", "shaders/doorway.frag");
 
         randomTransitions.add(blindsShader);
         randomTransitions.add(fadeShader);

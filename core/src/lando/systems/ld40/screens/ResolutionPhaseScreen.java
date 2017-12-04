@@ -559,7 +559,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
             else if (bContinue.checkForTouch(touchX, touchY)){
                 world.nextTurn();
                 if (world.turnNumber >= Config.gameTurns){
-                    LudumDare40.game.setScreen(new EndGameStatsScreen());
+                    LudumDare40.game.setScreen(new EndGameStatsScreen(), Assets.doorwayShader);
                 } else {
                     LudumDare40.game.setScreen(new PlanPhaseScreen());
                 }

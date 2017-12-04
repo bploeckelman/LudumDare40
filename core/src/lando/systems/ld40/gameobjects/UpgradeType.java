@@ -12,7 +12,7 @@ public enum UpgradeType {
     INCINERATOR(Assets.incineratorTexture, "Burner", "Burn trash in a landfill over time"),
     RECLAMATION(Assets.recycleTexture, "Recycle", "Recycles trash in a landfill over time"),
     TIER_UPGRADE(Assets.testTexture, "Upgrade", "Improves a building"),  // TODO: make a texture for this
-    TRUCK(Assets.testTexture, "Truck", "Add a new garbage truck"); // TODO: make a texture for this
+    TRUCK(Assets.atlas.findRegion("garbagetruck"), "Truck", "Add a new garbage truck"); // TODO: make a texture for this
 
     public TextureRegion texture;
     public String shortName;

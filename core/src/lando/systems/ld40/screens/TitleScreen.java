@@ -29,7 +29,7 @@ public class TitleScreen extends BaseScreen {
             game.setScreen(new ResolutionPhaseScreen());
         }
         if (Gdx.input.justTouched()) {
-            game.setScreen(new PlanPhaseScreen(), Assets.doomShader);
+            game.setScreen(new PlanPhaseScreen(), Assets.doorwayShader);
         }
     }
 
@@ -41,11 +41,12 @@ public class TitleScreen extends BaseScreen {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
         {
-            batch.setColor(Color.DARK_GRAY);
-            batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
-            batch.setColor(Color.WHITE);
-            Assets.drawString(batch, "Garbage Town", 10f, hudCamera.viewportHeight - 20f, Color.GOLD, 1.5f, Assets.font);
-            Assets.drawString(batch, "Population: You", 10f, hudCamera.viewportHeight - 20f - 100f, Color.WHITE, 0.5f, Assets.font);
+            batch.draw(Assets.titleScreen, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
+//            batch.setColor(Color.DARK_GRAY);
+//            batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
+//            batch.setColor(Color.WHITE);
+//            Assets.drawString(batch, "Garbage Town", 10f, hudCamera.viewportHeight - 20f, Color.GOLD, 1.5f, Assets.font);
+//            Assets.drawString(batch, "Population: You", 10f, hudCamera.viewportHeight - 20f - 100f, Color.WHITE, 0.5f, Assets.font);
         }
         batch.end();
     }
