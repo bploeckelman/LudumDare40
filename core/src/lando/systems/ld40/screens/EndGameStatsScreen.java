@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.world.Statistics;
 
 public class EndGameStatsScreen extends BaseScreen {
@@ -21,9 +23,9 @@ public class EndGameStatsScreen extends BaseScreen {
     public EndGameStatsScreen(){
         stats = Statistics.getStatistics();
         // I am a bad person.  Here are some magic numbers
-        replayButton = new Button(Assets.whitePixel, new Rectangle(60, 60, 50, 50), hudCamera);
-        showMoneyButton = new Button(Assets.whitePixel, new Rectangle(600, 400, 20, 20), hudCamera);
-        showBuildingsButton = new Button(Assets.whitePixel, new Rectangle(600, 360, 20, 20), hudCamera);
+        replayButton = new Button(Assets.whiteNinePatch, new Rectangle(60, 60, 50, 50), hudCamera);
+        showMoneyButton = new Button(Assets.whiteNinePatch, new Rectangle(600, 400, 20, 20), hudCamera);
+        showBuildingsButton = new Button(Assets.whiteNinePatch, new Rectangle(600, 360, 20, 20), hudCamera);
     }
 
     @Override
@@ -35,7 +37,7 @@ public class EndGameStatsScreen extends BaseScreen {
 
     @Override
     public void render(SpriteBatch batch) {
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+        Gdx.gl.glClearColor(Config.bgColor.r, Config.bgColor.g, Config.bgColor.b, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(hudCamera.combined);
@@ -52,9 +54,11 @@ public class EndGameStatsScreen extends BaseScreen {
         showBuildingsButton.render(batch);
 
         batch.setColor(Color.WHITE);
+        Assets.drawString(batch, "Statistics", stats.modalBounds.x, stats.modalBounds.y + stats.modalBounds.height - 10, Color.WHITE, 1f, Assets.font, stats.modalBounds.width, Align.center);
         Assets.drawString(batch, "Money", showMoneyButton.bounds.x + 25, showMoneyButton.bounds.y + 17, Color.WHITE, .3f, Assets.font);
         Assets.drawString(batch, "Buildings", showBuildingsButton.bounds.x + 25, showBuildingsButton.bounds.y + 17, Color.WHITE, .3f, Assets.font);
 
+        stats.drawTooltip(batch, hudCamera);
         batch.end();
     }
 
