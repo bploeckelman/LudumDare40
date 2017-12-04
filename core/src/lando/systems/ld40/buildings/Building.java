@@ -203,6 +203,8 @@ public class Building extends Tile {
         this.resource = resource;
 
         this.valueAnimations = new ArrayList<ValueAnimation>();
+
+        resetForNewTurn();
     }
 
     public static Building getBuilding(Type buildingType) {
@@ -431,15 +433,16 @@ public class Building extends Tile {
      * Generate the trash for the building.
      * Track it in the thisTurn variables
      * Add the trash to the building.
+     * @return True if this building generates trash (e.g. kicks off animation), false otherwise.
      */
-    public void generateTrash() {
+    public boolean generateTrash(boolean animate) {
         if (thisTurnTrashHasBeenGenerated) { throw new RuntimeException("You've already generated trash this turn"); }
         // Flag
         thisTurnTrashHasBeenGenerated = true;
         // Does this tile generate trash?
         if (trashGeneratedPerRound == 0) {
             // Nothing to do here...
-            return;
+            return false;
         }
         ArrayList<ValueAnimationIcon> modifierIcons = new ArrayList<ValueAnimationIcon>();
         float newTrash = trashGeneratedPerRound;
@@ -459,8 +462,11 @@ public class Building extends Tile {
         thisTurnGarbageGenerated += newTrash;
         // Add the trash to the building.
         currentTrashLevel += newTrash;
-        // Animate
-        addValueAnimation(new ValueAnimation(newTrash, ValueAnimationIcon.TRASH, modifierIcons));
+        // Animate?
+        if (animate) {
+            addValueAnimation(new ValueAnimation(newTrash, ValueAnimationIcon.TRASH, modifierIcons));
+        }
+        return true;
     }
 
     public void runUpkeep() {
@@ -693,6 +699,9 @@ public class Building extends Tile {
         }
 
     }
+    public boolean isAnimating() {
+        return valueAnimations.size() > 0;
+    }
 
     // things I want to animate:
     // add/remove trash
@@ -736,7 +745,6 @@ public class Building extends Tile {
                     this.valueString = "+" + this.valueString;
                 }
             }
-            System.out.println(valueString);
             this.icon = icon;
             this.modifierIcons = modifierIcons;
 
@@ -755,14 +763,11 @@ public class Building extends Tile {
             this.computedBackgroundHeight = Assets.layout.height + BACKGROUND_PADDING * 2;
             textOffsetX = BACKGROUND_PADDING;
             textOffsetY = BACKGROUND_PADDING + Assets.layout.height; // Text is *top* left corner
-
-            System.out.println("ValueAnimation Created | valueString='" + valueString + "'");
         }
 
         public void update(float dt) {
             this.currentTime += dt;
             if (currentTime > DURATION) {
-                System.out.println("ValueAnimation | complete");
                 this.isComplete = true;
             }
         }
