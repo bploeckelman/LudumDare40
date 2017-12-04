@@ -80,7 +80,7 @@ public class TitleScreen extends BaseScreen {
             game.setScreen(new ResolutionPhaseScreen());
         }
         if (Gdx.input.justTouched() & allowInput) {
-            game.setScreen(new PlanPhaseScreen(true), Assets.doorwayShader);
+            game.setScreen(new PlanPhaseScreen(true), Assets.doorwayShader, 2.5f);
         }
     }
 

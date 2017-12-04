@@ -70,7 +70,7 @@ class ActionPhaseScreen extends BaseScreen {
 
     private void nextPhase() {
         if (currentPhase == Phase.REWARDS_FINAL) {
-            LudumDare40.game.setScreen(new ResolutionPhaseScreen(), Assets.crosshatchShader);
+            LudumDare40.game.setScreen(new ResolutionPhaseScreen(), Assets.crosshatchShader, 1f);
             return;
         }
         switch (currentPhase) {

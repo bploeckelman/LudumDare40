@@ -104,10 +104,10 @@ public class LudumDare40 extends ApplicationAdapter {
     }
 
     public void setScreen(final BaseScreen newScreen){
-        setScreen(newScreen, null);
+        setScreen(newScreen, null, 1f);
     }
 
-    public void setScreen(final BaseScreen newScreen, ShaderProgram transitionType){
+    public void setScreen(final BaseScreen newScreen, ShaderProgram transitionType, float tranistionSpeed){
         if (nextScreen != null) return;
         if (screen == null) { // First time i hope
             screen = newScreen;
@@ -129,7 +129,7 @@ public class LudumDare40 extends ApplicationAdapter {
                             nextScreen = newScreen;
                         }
                     }))
-                    .push(Tween.to(transitionPercent, 1, 2.5f)
+                    .push(Tween.to(transitionPercent, 1, tranistionSpeed)
                         .target(1f))
                     .push(Tween.call(new TweenCallback() {
                         @Override

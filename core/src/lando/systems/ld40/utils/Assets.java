@@ -40,6 +40,8 @@ public class Assets {
     public static ShaderProgram pizelizeShader;
     public static ShaderProgram doorwayShader;
     public static ShaderProgram crosshatchShader;
+    public static ShaderProgram rippleShader;
+    public static ShaderProgram heartShader;
 
     public static TextureAtlas atlas;
 
@@ -234,11 +236,13 @@ public class Assets {
         pizelizeShader = loadShader("shaders/default.vert", "shaders/pixelize.frag");
         doorwayShader = loadShader("shaders/default.vert", "shaders/doorway.frag");
         crosshatchShader = loadShader("shaders/default.vert", "shaders/crosshatch.frag");
-
+        rippleShader = loadShader("shaders/default.vert", "shaders/ripple.frag");
+        heartShader = loadShader("shaders/default.vert", "shaders/heart.frag");
 
 //        randomTransitions.add(blindsShader);
         randomTransitions.add(fadeShader);
         randomTransitions.add(radialShader);
+        randomTransitions.add(rippleShader);
 //        randomTransitions.add(pizelizeShader);
 
         truck1AtlasRegions = atlas.findRegions("truck1");
