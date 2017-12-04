@@ -1,5 +1,6 @@
 package lando.systems.ld40.buildings;
 
+import aurelienribon.tweenengine.primitives.MutableFloat;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -90,6 +91,10 @@ public class Building extends Tile {
     private int turnsOverCapacity = 0;
     private boolean isMarkedForRemoval = false;
     private Color trashColor = new Color();
+
+    private final float trash_button_default_size = 1f;
+    private MutableFloat trashButtonSizeScale = new MutableFloat(trash_button_default_size);
+    private float accum = 0f;
 
     // if this gets grayed out in world
     public boolean filtered = false;
@@ -243,7 +248,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 1;
                 valueGeneratedPerRound = 1;
-                baseTrashCapacity = 10;
+                baseTrashCapacity = 5;
                 resource = Resource.MONEY;
                 break;
 
@@ -254,7 +259,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 2;
                 valueGeneratedPerRound = 3;
-                baseTrashCapacity = 13;
+                baseTrashCapacity = 8;
                 resource = Resource.MONEY;
                 break;
 
@@ -265,7 +270,7 @@ public class Building extends Tile {
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 3;
                 valueGeneratedPerRound = 5;
-                baseTrashCapacity = 16;
+                baseTrashCapacity = 12;
                 resource = Resource.MONEY;
                 break;
 
@@ -704,11 +709,24 @@ public class Building extends Tile {
             }
         }
 
-        if (currentTrashLevel > 0){
-            batch.draw(Assets.trashButton, bounds.x + bounds.width - 44, bounds.y + bounds.height - 44);
-            float n = 1.0f - MathUtils.clamp(currentTrashLevel / (float) baseTrashCapacity, 0, 1f);
+        if (currentTrashLevel > 0) {
+            TextureRegion trashIcon = (currentTrashLevel >= getCurrentTrashCapacity()) ? Assets.trashButtonFull : Assets.trashButton;
+            float trashButtonCurrentSize = trashButtonSizeScale.floatValue();
+            batch.draw(trashIcon,
+                    bounds.x + bounds.width - 44f,
+                    bounds.y + bounds.height - 44f,
+                    trashIcon.getRegionWidth() / 2f, trashIcon.getRegionHeight() / 2f,
+                    trashIcon.getRegionWidth(), trashIcon.getRegionHeight(),
+                    trashButtonCurrentSize, trashButtonCurrentSize,
+                    0f);
+
+            float n = 1.0f - MathUtils.clamp(currentTrashLevel / getCurrentTrashCapacity(), 0, 1f);
             trashColor = Utils.hsvToRgb(((n * 120f) - 20) / 365f, 1.0f, 1.0f, trashColor);
-            Assets.drawString(batch, (int)currentTrashLevel + "", bounds.x + bounds.width - 44, bounds.y + bounds.height , trashColor, .5f, Assets.font, Assets.trashButton.getRegionWidth(), Align.center);
+            Assets.drawString(batch,
+                    (int)currentTrashLevel + "",
+                    bounds.x + bounds.width - 44f,
+                    bounds.y + bounds.height ,
+                    trashColor, .5f, Assets.font, Assets.trashButton.getRegionWidth(), Align.center);
         }
 
         if (filtered) {
@@ -795,6 +813,13 @@ public class Building extends Tile {
     public void update(float dt) {
         super.update(dt);
         updateValueAnimations(dt);
+        if (currentTrashLevel < getCurrentTrashCapacity()) {
+            trashButtonSizeScale.setValue(1f);
+            accum = 0f;
+        } else {
+            accum += 4f * dt;
+            trashButtonSizeScale.setValue(trashButtonSizeScale.floatValue() * ((float) Math.sin(accum) * 0.2f) + 1f);
+        }
     }
 
     // Value Animations ------------------------------------------------------------------------------------------------

@@ -89,6 +89,7 @@ public class Assets {
     public static TextureRegion residentialHighTexture;
     public static TextureRegion trashBag;
     public static TextureRegion trashButton;
+    public static TextureRegion trashButtonFull;
     public static TextureRegion whiteCircle;
     public static TextureRegion tier1Texture;
     public static TextureRegion tier2Texture;
@@ -196,6 +197,7 @@ public class Assets {
         residentialHighTexture   = atlas.findRegion("res-high");
         trashBag = atlas.findRegion("bag_o_trash");
         trashButton = atlas.findRegion("trash_button");
+        trashButtonFull = atlas.findRegion("trash_button_danger");
         whiteCircle = atlas.findRegion("white-circle");
         tier1Texture = atlas.findRegion("tier1");
         tier2Texture = atlas.findRegion("tier2");
