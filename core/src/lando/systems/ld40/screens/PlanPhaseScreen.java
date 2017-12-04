@@ -22,6 +22,7 @@ import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
+import lando.systems.ld40.world.Statistics;
 import lando.systems.ld40.world.World;
 import lando.systems.ld40.managers.BuildManager;
 import lando.systems.ld40.managers.IManager;
@@ -57,12 +58,14 @@ public class PlanPhaseScreen extends BaseScreen {
 
     private static final float TOOLTIP_TEXT_PADDING_X = 8f;
     private static final float TOOLTIP_TEXT_SCALE = 0.3f;
-    private static final float TOOLTIP_SHOW_DELAY = 0.3f;
+    private static final float TOOLTIP_SHOW_DELAY = 1f;
     private static final float TOOLTIP_CURSOR_OFFSET_X = 8f;
 
-    private float tooltipBackgroundHeight = 120f;
-    private float tooltipBackgroundWidth = 270f;
-    private float tooltipTextOffsetY = 0;
+    //these tooltip values are assigned in checkForTouch, as the size depends on individual building
+    private float tooltipBackgroundHeight;
+    private float tooltipBackgroundWidth;
+    private float tooltipTextOffsetY;
+
     public String tooltip = null;
     private boolean showTooltip = false;
     Vector3 tempVec3 = new Vector3();
@@ -211,9 +214,6 @@ public class PlanPhaseScreen extends BaseScreen {
     }
 
     public void renderTooltip(SpriteBatch batch, OrthographicCamera hudCamera){
-        // Tooltip
-
-        if (tooltip == null || tooltip.equals("") || !showTooltip) return;
 
         tempVec3.set(input.getX(), input.getY(), 0);
         hudCamera.unproject(tempVec3);
@@ -223,6 +223,9 @@ public class PlanPhaseScreen extends BaseScreen {
         float backgroundY;
         float stringTX ;
         float stringTY;
+
+        if (tooltip == null || tooltip.equals("") || !showTooltip) return;
+
 
         // Screen spacee
         if (tX < Config.gameWidth / 2) {
@@ -241,23 +244,21 @@ public class PlanPhaseScreen extends BaseScreen {
         stringTX = backgroundX + TOOLTIP_TEXT_PADDING_X;
         if (tY <= Config.gameHeight / 2) {
             // bottom half of screen: align bottom edge of tooltip with cursor
-            backgroundY = tY + tooltipBackgroundHeight;
+            backgroundY = tY;
         } else {
             // top half of screen: align top edge of tooltip with cursor
-            backgroundY = tY;
+            backgroundY = tY - tooltipBackgroundHeight;
         }
         stringTY = backgroundY + tooltipTextOffsetY;
 
         // DRAW
-        batch.setColor(Color.DARK_GRAY);
-        batch.draw(Assets.whitePixel, backgroundX, backgroundY - 100f, tooltipBackgroundWidth, tooltipBackgroundHeight);
-        batch.setColor(Color.WHITE);
-        Assets.defaultNinePatch.draw(batch, backgroundX, backgroundY - 100f, tooltipBackgroundWidth, tooltipBackgroundHeight);
+        batch.setColor(1,1,1,.8f);
+        Assets.tooltipNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         Assets.drawString(batch,
                 tooltip,
                 stringTX,
                 stringTY,
-                Color.WHITE,
+                Statistics.COLOR_TEXT,
                 TOOLTIP_TEXT_SCALE,
                 Assets.font);
     }
@@ -267,14 +268,22 @@ public class PlanPhaseScreen extends BaseScreen {
         touchPosScreen.set(touchPosUnproject.x, touchPosUnproject.y);
 
         for (Building tile : World.buildings) {
+            int additionalLine = 0;
+            tooltipBackgroundHeight = 150f;
+            tooltipBackgroundWidth = 270f;
+            tooltipTextOffsetY = 130f;
             if (tile.bounds.contains(touchPosScreen.x, touchPosScreen.y) && !nextButton.checkForTouch(screenX, screenY) && !buildButton.checkForTouch(screenX, screenY) && !routeButton.checkForTouch(screenX, screenY)) {
-                tooltip = "Type: " + tile.type;
+                tooltip = "Type: " + tile.type + "\nCurrent Trash: " + tile.currentTrashLevel;
                 if (tile.currentTier != null) {
                     tooltip += "\nTier: " + tile.currentTier;
+                    additionalLine++;
                 }
-                tooltip += "\nBase Trash Capacity: " + tile.baseTrashCapacity + "\nTrash per Round: " + tile.trashGeneratedPerRound
-                        + "\nResource Generated: " + tile.valueGeneratedPerRound;
+                tooltip += "\nBase Trash Capacity: " + tile.baseTrashCapacity;
+                if (tile.trashGeneratedPerRound != 0) tooltip += "\nTrash per Round: " + tile.trashGeneratedPerRound;
+                if (tile.valueGeneratedPerRound != 0) tooltip += "\nMoney Generated: " + tile.valueGeneratedPerRound;
                 currentMouseOveredTile = tile;
+                tooltipBackgroundHeight += additionalLine * 30f;
+                tooltipTextOffsetY += additionalLine * 20f;
                 return true;
             }
         }

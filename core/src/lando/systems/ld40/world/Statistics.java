@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.utils.Assets;
 
@@ -21,11 +22,17 @@ public class Statistics {
 
     private static float MODAL_X_MARGIN = 50;
     private static float MODAL_Y_MARGIN = 50;
-    private static float ANIMATION_TIME = 5f;
+    private static float ANIMATION_TIME = 3f;
     private static int TURN_HASH = 10;
     public static Color COLOR_MONEY = new Color(235/255f,208/255f,0,1);
     public static Color COLOR_BUILDINGS = new Color(90/255f, 178/255f, 23/255f, 1f);
+    public static Color COLOR_ADDONS = new Color(104/255f, 41/255f, 62/255f, 1f);
     public static Color COLOR_GARBAGE_GENERATED = new Color(85/255f, 222/255f, 183/255f, 1f);
+    public static Color COLOR_GARBAGE_HAULED = new Color(169/255f, 68/255f, 0/255f, 1f);
+    public static Color COLOR_GARBAGE_IN_LANDFILLS = new Color(23/255f, 13/255f, 32/255f, 1f);
+
+    public static Color COLOR_BACKGROUND = new Color(71/255f, 71/255f, 87/255f, 1f);
+    public static Color COLOR_TEXT = new Color(235/255f, 255/255f, 218/255f, 1f);
 
     private static Statistics STATS;
     public static Statistics getStatistics(){
@@ -38,6 +45,7 @@ public class Statistics {
 
     public Rectangle modalBounds;
     public Rectangle graphBounds;
+    public Rectangle tooltipBounds;
     private Array<TurnStatistics> turns;
     private TurnStatistics currentTurnStatistics;
 
@@ -57,6 +65,7 @@ public class Statistics {
 
         modalBounds = new Rectangle();
         graphBounds = new Rectangle();
+        tooltipBounds = new Rectangle();
         animationTimer = 0;
         screenPos = new Vector2();
         worldPos = new Vector3();
@@ -97,10 +106,9 @@ public class Statistics {
         modalBounds.set((int)MODAL_X_MARGIN, (int)MODAL_Y_MARGIN,
                 (int)(camera.viewportWidth - (2*MODAL_X_MARGIN)),
                 (int)(camera.viewportHeight - (2*MODAL_Y_MARGIN)));
-        graphBounds.set(modalBounds.x + 30, modalBounds.y + 100, modalBounds.width - 200, modalBounds.height - 200);
-        batch.setColor(120/255f, 120/255f, 118/255f, 1f);
-        batch.draw(Assets.whitePixel, modalBounds.x, modalBounds.y, modalBounds.width, modalBounds.height);
-
+        graphBounds.set(modalBounds.x + 30, modalBounds.y + 100, modalBounds.width - 250, modalBounds.height - 200);
+        batch.setColor(Color.WHITE);
+        Assets.statsNinePatch.draw(batch, modalBounds.x, modalBounds.y, modalBounds.width, modalBounds.height);
 
         batch.end();
         Assets.shapes.setProjectionMatrix(camera.combined);
@@ -108,14 +116,13 @@ public class Statistics {
         renderGraph();
         Assets.shapes.end();
         batch.begin();
-        drawTooltip(batch, camera);
     }
 
     private void renderGraph(){
         float dx = graphBounds.width / (turns.size - 1);
         ShapeRenderer sr = Assets.shapes;
         
-        sr.setColor(.8f,.8f,.8f,1);
+        sr.setColor(COLOR_TEXT);
         sr.rect(graphBounds.x - 5, graphBounds.y - 5, graphBounds.width + 10, graphBounds.height+ 10);
 
         // Turn hashes
@@ -130,7 +137,9 @@ public class Statistics {
         for (TurnStatistics turn : turns){
             if (showMoney) maxStat = Math.max(maxStat, turn.money);
             if (showBuildings) maxStat = Math.max(maxStat, turn.buildings);
-            if (showGarbageGenerated) maxStat = Math.max(maxStat, turn.garbageGenerated);
+            if (showAddons) maxStat = Math.max(maxStat, turn.addons);
+            if (showGarbageHauled) maxStat = Math.max(maxStat, turn.garbageHauled);
+            if (showGarbageInLandFills) maxStat = Math.max(maxStat, turn.garbageInLandFills);
         }
         maxStat *= 1.1f;
         float graphPercent = animationTimer / ANIMATION_TIME;
@@ -173,6 +182,17 @@ public class Statistics {
                 sr.setColor(COLOR_BUILDINGS);
                 sr.line(x1, y1, x2, y2);
             }
+            if (showAddons) {
+                // Buildings
+                y1 = graphBounds.y + lastTurn.addons / maxStat * graphBounds.height;
+                y2 = graphBounds.y + currentTurn.addons / maxStat * graphBounds.height;
+
+                x2 = MathUtils.lerp(x1, x2, lerpPercent);
+                y2 = MathUtils.lerp(y1, y2, lerpPercent);
+
+                sr.setColor(COLOR_ADDONS);
+                sr.line(x1, y1, x2, y2);
+            }
 
             if (showGarbageGenerated) {
                 // Buildings
@@ -185,7 +205,30 @@ public class Statistics {
                 sr.setColor(COLOR_GARBAGE_GENERATED);
                 sr.line(x1, y1, x2, y2);
             }
+            if (showGarbageHauled) {
+                // Buildings
+                y1 = graphBounds.y + lastTurn.garbageHauled / maxStat * graphBounds.height;
+                y2 = graphBounds.y + currentTurn.garbageHauled / maxStat * graphBounds.height;
+
+                x2 = MathUtils.lerp(x1, x2, lerpPercent);
+                y2 = MathUtils.lerp(y1, y2, lerpPercent);
+
+                sr.setColor(COLOR_GARBAGE_HAULED);
+                sr.line(x1, y1, x2, y2);
+            }
+            if (showGarbageInLandFills) {
+                // Buildings
+                y1 = graphBounds.y + lastTurn.garbageInLandFills / maxStat * graphBounds.height;
+                y2 = graphBounds.y + currentTurn.garbageInLandFills / maxStat * graphBounds.height;
+
+                x2 = MathUtils.lerp(x1, x2, lerpPercent);
+                y2 = MathUtils.lerp(y1, y2, lerpPercent);
+
+                sr.setColor(COLOR_GARBAGE_IN_LANDFILLS);
+                sr.line(x1, y1, x2, y2);
+            }
         }
+
     }
 
     public void drawDashedLine(float x1, float y1, float x2, float y2, int numDashes, float dashSize) {
@@ -206,9 +249,55 @@ public class Statistics {
 
         if (graphBounds.contains(screenPos)){
             int turn = (int)(((screenPos.x - graphBounds.x) / dx) + .5f);
-            batch.setColor(Color.WHITE);
+            batch.setColor(Statistics.COLOR_TEXT);
             batch.draw(Assets.whitePixel, graphBounds.x + (turn * dx) - 1, graphBounds.y -5,
                        2 , graphBounds.height + 10);
+            float offset = 10;
+            float left = screenPos.x + offset;
+            float bottom = screenPos.y + offset;
+            if (screenPos.x > camera.viewportWidth/2f){
+                left -= 350 + (2 * offset);
+            }
+            if (screenPos.y > camera.viewportHeight/2f){
+                bottom -= 200 + (2* offset);
+            }
+            TurnStatistics turnStats = turns.get(turn);
+            tooltipBounds.set(left, bottom, 350, 200);
+            batch.setColor(1,1,1, .8f);
+            Assets.tooltipNinePatch.draw(batch, tooltipBounds.x, tooltipBounds.y, tooltipBounds.width, tooltipBounds.height);
+            Assets.drawString(batch, "Turn " + (turn+1), tooltipBounds.x, tooltipBounds.y + tooltipBounds.height - 4,
+                    Statistics.COLOR_TEXT, .5f, Assets.font, tooltipBounds.width, Align.center);
+            float yOffset = 45;
+            if (showMoney){
+                Assets.drawString(batch, "Money: " + turnStats.money, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
+                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                yOffset += 20;
+            }
+            if (showBuildings){
+                Assets.drawString(batch, "Buildings: " + turnStats.buildings, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
+                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                yOffset += 20;
+            }
+            if (showAddons){
+                Assets.drawString(batch, "Building Add-ons: " + turnStats.addons, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
+                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                yOffset += 20;
+            }
+            if (showGarbageGenerated){
+                Assets.drawString(batch, "Garbage Created: " + turnStats.garbageGenerated, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
+                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                yOffset += 20;
+            }
+            if (showGarbageHauled){
+                Assets.drawString(batch, "Garbage Hauled: " + turnStats.garbageHauled, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
+                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                yOffset += 20;
+            }
+            if (showGarbageInLandFills){
+                Assets.drawString(batch, "Garbage In Landfills: " + turnStats.garbageInLandFills, tooltipBounds.x + 10, tooltipBounds.y + tooltipBounds.height - yOffset,
+                        Statistics.COLOR_TEXT, .35f, Assets.font, tooltipBounds.width - 20, Align.left);
+                yOffset += 20;
+            }
         }
 
     }

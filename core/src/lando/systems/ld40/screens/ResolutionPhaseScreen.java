@@ -355,7 +355,11 @@ public class ResolutionPhaseScreen extends BaseScreen {
             }
             else if (bContinue.checkForTouch(touchX, touchY)){
                 world.nextTurn();
-                LudumDare40.game.setScreen(new PlanPhaseScreen());
+                if (world.turnNumber >= Config.gameTurns){
+                    LudumDare40.game.setScreen(new EndGameStatsScreen());
+                } else {
+                    LudumDare40.game.setScreen(new PlanPhaseScreen());
+                }
             }
 
             //Loop through the array pertaining to the selected item group
