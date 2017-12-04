@@ -60,9 +60,11 @@ public class PlanPhaseScreen extends BaseScreen {
     private static final float TOOLTIP_SHOW_DELAY = 0.3f;
     private static final float TOOLTIP_CURSOR_OFFSET_X = 8f;
 
-    private float tooltipBackgroundHeight = 120f;
-    private float tooltipBackgroundWidth = 270f;
-    private float tooltipTextOffsetY = 100f;
+    //these tooltip values are assigned in checkForTouch, as the size depends on individual building
+    private float tooltipBackgroundHeight;
+    private float tooltipBackgroundWidth;
+    private float tooltipTextOffsetY;
+
     public String tooltip = null;
     private boolean showTooltip = false;
     Vector3 tempVec3 = new Vector3();
@@ -210,18 +212,18 @@ public class PlanPhaseScreen extends BaseScreen {
     }
 
     public void renderTooltip(SpriteBatch batch, OrthographicCamera hudCamera){
-        // Tooltip
 
-        if (tooltip == null || tooltip.equals("") || !showTooltip) return;
-
-        tempVec3.set(input.getX(), input.getY(), 0);
-        hudCamera.unproject(tempVec3);
         float tX = tempVec3.x;
         float tY = tempVec3.y;
         float backgroundX;
         float backgroundY;
         float stringTX ;
         float stringTY;
+
+        if (tooltip == null || tooltip.equals("") || !showTooltip) return;
+
+        tempVec3.set(input.getX(), input.getY(), 0);
+        hudCamera.unproject(tempVec3);
 
         // Screen spacee
         if (tX < Config.gameWidth / 2) {
@@ -240,10 +242,10 @@ public class PlanPhaseScreen extends BaseScreen {
         stringTX = backgroundX + TOOLTIP_TEXT_PADDING_X;
         if (tY <= Config.gameHeight / 2) {
             // bottom half of screen: align bottom edge of tooltip with cursor
-            backgroundY = tY - tooltipBackgroundHeight;
+            backgroundY = tY;
         } else {
             // top half of screen: align top edge of tooltip with cursor
-            backgroundY = tY;
+            backgroundY = tY - tooltipBackgroundHeight;
         }
         stringTY = backgroundY + tooltipTextOffsetY;
 
@@ -267,10 +269,11 @@ public class PlanPhaseScreen extends BaseScreen {
 
         int additionalLine = 0;
         for (Building tile : World.buildings) {
-            tooltipBackgroundHeight = 120f;
-            tooltipTextOffsetY = 100f;
+            tooltipBackgroundHeight = 150f;
+            tooltipBackgroundWidth = 270f;
+            tooltipTextOffsetY = 130f;
             if (tile.bounds.contains(touchPosScreen.x, touchPosScreen.y) && !nextButton.checkForTouch(screenX, screenY) && !buildButton.checkForTouch(screenX, screenY) && !routeButton.checkForTouch(screenX, screenY)) {
-                tooltip = "Type: " + tile.type;
+                tooltip = "Type: " + tile.type + "\nCurrent Trash: " + tile.currentTrashLevel;
                 if (tile.currentTier != null) {
                     tooltip += "\nTier: " + tile.currentTier;
                     additionalLine++;
@@ -278,7 +281,7 @@ public class PlanPhaseScreen extends BaseScreen {
                 tooltip += "\nBase Trash Capacity: " + tile.baseTrashCapacity + "\nTrash per Round: " + tile.trashGeneratedPerRound
                         + "\nResource Generated: " + tile.valueGeneratedPerRound;
                 currentMouseOveredTile = tile;
-                tooltipBackgroundHeight += additionalLine * 20f;
+                tooltipBackgroundHeight += additionalLine * 30f;
                 tooltipTextOffsetY += additionalLine * 20f;
                 return true;
             }
