@@ -24,7 +24,7 @@ public class Statistics {
     private static float MODAL_X_MARGIN = 50;
     private static float MODAL_Y_MARGIN = 50;
     private static float ANIMATION_TIME = 3f;
-    private static int TURN_HASH = 10;
+    private static int TURN_HASH = 5;
     public static Color COLOR_MONEY = new Color(235/255f,208/255f,0,1);
     public static Color COLOR_BUILDINGS = new Color(90/255f, 178/255f, 23/255f, 1f);
     public static Color COLOR_ADDONS = new Color(104/255f, 41/255f, 62/255f, 1f);

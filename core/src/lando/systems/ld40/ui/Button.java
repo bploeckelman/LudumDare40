@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
@@ -22,6 +23,7 @@ public class Button {
     private static final float TOOLTIP_TEXT_SCALE = 0.4f;
     private static final float TOOLTIP_SHOW_DELAY = 0.3f;
     private static final float TOOLTIP_CURSOR_OFFSET_X = 8f;
+    private static final float TOOLTIP_MAX_WIDTH = 350;
 //    private static final float TOOLTIP_CURSOR_OFFSET_Y = 10f;
 
     private float tooltipBackgroundHeight;
@@ -182,17 +184,17 @@ public class Button {
         stringTY = backgroundY + tooltipTextOffsetY;
 
         // DRAW
-        batch.setColor(Color.DARK_GRAY);
-        batch.draw(Assets.whitePixel, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
+//        batch.setColor(Color.DARK_GRAY);
+//        Assets.tooltipNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         batch.setColor(Color.WHITE);
-        Assets.defaultNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
+        Assets.tooltipNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         Assets.drawString(batch,
                 tooltip,
                 stringTX,
                 stringTY,
                 Color.WHITE,
                 TOOLTIP_TEXT_SCALE,
-                Assets.font);
+                Assets.font, TOOLTIP_MAX_WIDTH, Align.center);
     }
 
     public void update(float dt) {
@@ -241,9 +243,9 @@ public class Button {
         this.tooltip = tooltip;
         if (tooltip != null) {
             Assets.font.getData().setScale(TOOLTIP_TEXT_SCALE);
-            Assets.layout.setText(Assets.font, tooltip);
+            Assets.layout.setText(Assets.font, tooltip, Color.WHITE, TOOLTIP_MAX_WIDTH, Align.center, true);
             tooltipBackgroundHeight = Assets.layout.height + (TOOLTIP_TEXT_PADDING_Y * 2);
-            tooltipBackgroundWidth = Assets.layout.width + (TOOLTIP_TEXT_PADDING_X * 2);
+            tooltipBackgroundWidth = TOOLTIP_MAX_WIDTH + (TOOLTIP_TEXT_PADDING_X * 2);
             tooltipTextOffsetY = (Assets.layout.height + TOOLTIP_TEXT_PADDING_Y + TOOLTIP_TEXT_OFFSET_Y);
             Assets.font.getData().setScale(1f);
         }
