@@ -358,20 +358,10 @@ public class Building extends Tile {
                 supportsRecycle, hasRecycle,
                 supportsGreenCert, hasGreenCert,
                 supportsIncinerator, hasIncinerator,
-<<<<<<< Updated upstream
-                supportsTiers,
-                canBuild, canRaze,
-                currentTier,
-                trashGeneratedPerRound,
-                valueGeneratedPerRound,
-                baseTrashCapacity,
-                currentTrashLevel,
-=======
                 supportsTiers, currentTier,
                 canBuild, canRaze,
                 trashGeneratedPerRound, valueGeneratedPerRound,
                 baseTrashCapacity, currentTrashLevel,
->>>>>>> Stashed changes
                 resource);
     }
 
