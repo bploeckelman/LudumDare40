@@ -1,13 +1,23 @@
 package lando.systems.ld40.screens;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.equations.Back;
+import aurelienribon.tweenengine.equations.Bounce;
+import aurelienribon.tweenengine.equations.Elastic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.LudumDare40;
+import lando.systems.ld40.gameobjects.Bird;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
+import lando.systems.ld40.utils.accessors.Vector2Accessor;
 
 /**
  * Created by Brian on 11/28/2017
@@ -16,19 +26,43 @@ public class TitleScreen extends BaseScreen {
 
     private final LudumDare40 game;
 
+    private Vector2 titlePos;
+    Array<Bird> birds;
+
     public TitleScreen() {
         this.game = LudumDare40.game;
+        allowInput = false;
+        titlePos = new Vector2(0, 500);
+        birds = new Array<Bird>();
+        for (int i = 0; i < 25; i++){
+            birds.add(new Bird());
+        }
+
+        Tween.to(titlePos, Vector2Accessor.Y, 3f)
+                .target(0)
+                .ease(Elastic.OUT)
+                .setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        allowInput = true;
+                    }
+                })
+                .start(Assets.tween);
     }
 
     @Override
     public void update(float dt) {
+        for (Bird bird : birds){
+            bird.update(dt);
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             game.setScreen(new ResolutionPhaseScreen());
         }
-        if (Gdx.input.justTouched()) {
+        if (Gdx.input.justTouched() & allowInput) {
             game.setScreen(new PlanPhaseScreen(), Assets.doorwayShader);
         }
     }
@@ -41,7 +75,11 @@ public class TitleScreen extends BaseScreen {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
         {
-            batch.draw(Assets.titleScreen, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
+            batch.draw(Assets.titleScreenBackground, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
+            batch.draw(Assets.titleName, titlePos.x, titlePos.y, hudCamera.viewportWidth, hudCamera.viewportHeight);
+            for (Bird bird : birds){
+                bird.render(batch);
+            }
 //            batch.setColor(Color.DARK_GRAY);
 //            batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
 //            batch.setColor(Color.WHITE);

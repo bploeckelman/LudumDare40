@@ -65,8 +65,11 @@ public class Assets {
     public static TextureRegion recycleCutoutTexture;
     public static TextureRegion tileCover;
     public static TextureRegion buttonBackgroundTexture;
+    public static TextureRegion bird1;
+    public static TextureRegion bird2;
 
-    public static Texture titleScreen;
+    public static Texture titleScreenBackground;
+    public static Texture titleName;
 
     public static boolean initialized;
 
@@ -84,7 +87,8 @@ public class Assets {
         mgr = new AssetManager();
 
         mgr.load("sprites.atlas", TextureAtlas.class);
-        mgr.load("images/titlescreen.png", Texture.class);
+        mgr.load("images/titlebackground.png", Texture.class);
+        mgr.load("images/titlename.png", Texture.class);
 
         if (tween == null) {
             tween = new TweenManager();
@@ -106,7 +110,8 @@ public class Assets {
         if (initialized) return 1f;
         initialized = true;
 
-        titleScreen = mgr.get("images/titlescreen.png", Texture.class);
+        titleScreenBackground = mgr.get("images/titlebackground.png", Texture.class);
+        titleName = mgr.get("images/titlename.png", Texture.class);
 
         atlas = mgr.get("sprites.atlas", TextureAtlas.class);
         testTexture = atlas.findRegion("badlogic");
@@ -124,6 +129,8 @@ public class Assets {
         recycleCutoutTexture = atlas.findRegion("recycle-cutout");
         tileCover = atlas.findRegion("coverTile");
         buttonBackgroundTexture = atlas.findRegion("button-background");
+        bird1 = atlas.findRegion("bird1");
+        bird2 = atlas.findRegion("bird2");
 
         final Texture distText = new Texture(Gdx.files.internal("fonts/ubuntu.png"), true);
         distText.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
