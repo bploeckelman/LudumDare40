@@ -266,7 +266,7 @@ public class PlanPhaseScreen extends BaseScreen {
         stringTY = backgroundY + tooltipTextOffsetY;
 
         // DRAW
-        batch.setColor(1,1,1,.9f);
+        batch.setColor(Color.WHITE);
         Assets.tooltipNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         Assets.drawString(batch,
                 tooltip,
