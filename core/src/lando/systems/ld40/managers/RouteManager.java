@@ -97,6 +97,8 @@ public class RouteManager extends ActionManager {
     public void renderManager(SpriteBatch batch) {
         if (!activated) return;
 
+        world.renderRoutes(batch, worldCamera);
+
         batch.setColor(Color.BLACK);
         batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight/3);
 
@@ -106,12 +108,17 @@ public class RouteManager extends ActionManager {
         }
 
         switch (state) {
+            case PICK_ROUTE:
+                drawHudText(batch, "Select a route");
+                break;
             case PICK_SOURCES:
                 drawHudText(batch, "Source selections: " + remainingSelections);
                 break;
+            case PICK_DEST:
+                drawHudText(batch, "Select a dump");
+                break;
         }
 
-        world.renderRoutes(batch, worldCamera);
     }
 
     private void drawHudText(SpriteBatch batch, String text) {
@@ -173,7 +180,7 @@ public class RouteManager extends ActionManager {
                 handled = addToRoute(touchPosition);
                 if (handled) {
                     routes.setRoute(selectedTruck, newRoute);
-                    setState(RouteState.DONE);
+                    setState(RouteState.PICK_ROUTE);
                 }
                 break;
         }

@@ -47,6 +47,9 @@ public class World {
     public Inventory inventory;
     public Routes routes;
 
+    private int renderIndex = 0;
+    private float time = 0;
+
     public World() {
         turnNumber = 0;
         bounds = new Rectangle(0, 0, pixels_wide, pixels_high);
@@ -92,12 +95,19 @@ public class World {
     }
 
     public void update(float dt){
+        time += dt;
+        if (time > 500) {
+            time -= 500;
+            if (++renderIndex == routes.trucks.size) {
+                renderIndex = 0;
+            }
+        }
         for (GameObject tile : buildings){
             tile.update(dt);
         }
     }
 
-    public void render(SpriteBatch batch){
+    public void render(SpriteBatch batch) {
         for (GameObject tile : buildings){
             tile.render(batch);
         }
@@ -108,39 +118,55 @@ public class World {
         Assets.shapes.begin(ShapeRenderer.ShapeType.Filled);
         Assets.shapes.setProjectionMatrix(camera.combined);
 
-
-        Vector2 hqPoint = getPoint(hqIndex);
-        Vector2 point = hqPoint;
-
-        Color[] colors = new Color[] {
-                new Color(104/255f,41/255f,62/255f, 1),
-                new Color(217/255f,126/255f,0, 1),
-                new Color(188/255f,139/255f,87/255f,1),
-                new Color(90/255f,178/255f,23/255f, 1),
-                new Color(71/255f,71/255f,87/255f, 1),
-                new Color(1/255f,163/255f,195/255f, 1)
-        };
+        Vector2 point1;
+        Vector2 point2;
 
         float thickness = 25;
 
         for (int d = 0; d < routes.trucks.size; d++) {
-            Assets.shapes.setColor(colors[d]);
+            point1  = getPoint(hqIndex, d, thickness);
+            Assets.shapes.setColor(routes.getColor(d));
             IntArray route = routes.routes.get(routes.trucks.get(d));
+            if (route.size == 0) continue;
             for (int i = 0; i < route.size; i++) {
-                Vector2 newPoint = getPoint(route.get(i));
-                Assets.shapes.rectLine(point, newPoint, thickness);
-                point = newPoint;
+                point2 = getPoint(route.get(i), d, thickness);
+                Assets.shapes.rectLine(point1, point2, thickness);
+                point1 = point2;
             }
-            Assets.shapes.rectLine(point, hqPoint, thickness);
+            point2 = getPoint(hqIndex, d, thickness);
+
+            Assets.shapes.rectLine(point1, point2, thickness);
         }
 
         Assets.shapes.end();
         batch.begin();
     }
 
-    private Vector2 getPoint(int index) {
-        Rectangle bounds = buildings.get(index).bounds;
-        return new Vector2(bounds.x + bounds.width/2, bounds.y + bounds.height/2);
+    private Vector2 getPoint(int bIndex, int rIndex, float thickness) {
+        Rectangle bounds = buildings.get(bIndex).bounds;
+        Vector2 point = new Vector2(bounds.x + bounds.width/2, bounds.y + bounds.height/2);
+
+        int corner = rIndex % 5;
+        switch (corner) {
+            case 1:
+                point.x = bounds.x + bounds.width - thickness;
+                point.y = bounds.y + bounds.height - thickness;
+                break;
+            case 2:
+                point.x = bounds.x + thickness;
+                point.y = bounds.y + thickness;
+                break;
+            case 3:
+                point.x = bounds.x + thickness;
+                point.y = bounds.y + bounds.height - thickness;
+                break;
+            case 4:
+                point.x = bounds.x + bounds.width - thickness;
+                point.y = bounds.y + thickness;
+                break;
+        }
+
+        return point;
     }
 
 
