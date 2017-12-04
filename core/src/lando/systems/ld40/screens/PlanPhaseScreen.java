@@ -22,6 +22,7 @@ import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
+import lando.systems.ld40.world.Statistics;
 import lando.systems.ld40.world.World;
 import lando.systems.ld40.managers.BuildManager;
 import lando.systems.ld40.managers.IManager;
@@ -57,7 +58,7 @@ public class PlanPhaseScreen extends BaseScreen {
 
     private static final float TOOLTIP_TEXT_PADDING_X = 8f;
     private static final float TOOLTIP_TEXT_SCALE = 0.3f;
-    private static final float TOOLTIP_SHOW_DELAY = 0.3f;
+    private static final float TOOLTIP_SHOW_DELAY = 1f;
     private static final float TOOLTIP_CURSOR_OFFSET_X = 8f;
 
     //these tooltip values are assigned in checkForTouch, as the size depends on individual building
@@ -250,15 +251,13 @@ public class PlanPhaseScreen extends BaseScreen {
         stringTY = backgroundY + tooltipTextOffsetY;
 
         // DRAW
-        batch.setColor(Color.DARK_GRAY);
-        batch.draw(Assets.whitePixel, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
-        batch.setColor(Color.WHITE);
-        Assets.defaultNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
+        batch.setColor(1,1,1,.8f);
+        Assets.tooltipNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         Assets.drawString(batch,
                 tooltip,
                 stringTX,
                 stringTY,
-                Color.WHITE,
+                Statistics.COLOR_TEXT,
                 TOOLTIP_TEXT_SCALE,
                 Assets.font);
     }
@@ -278,8 +277,9 @@ public class PlanPhaseScreen extends BaseScreen {
                     tooltip += "\nTier: " + tile.currentTier;
                     additionalLine++;
                 }
-                tooltip += "\nBase Trash Capacity: " + tile.baseTrashCapacity + "\nTrash per Round: " + tile.trashGeneratedPerRound
-                        + "\nResource Generated: " + tile.valueGeneratedPerRound;
+                tooltip += "\nBase Trash Capacity: " + tile.baseTrashCapacity;
+                if (tile.trashGeneratedPerRound != 0) tooltip += "\nTrash per Round: " + tile.trashGeneratedPerRound;
+                if (tile.valueGeneratedPerRound != 0) tooltip += "\nMoney Generated: " + tile.valueGeneratedPerRound;
                 currentMouseOveredTile = tile;
                 tooltipBackgroundHeight += additionalLine * 30f;
                 tooltipTextOffsetY += additionalLine * 20f;
