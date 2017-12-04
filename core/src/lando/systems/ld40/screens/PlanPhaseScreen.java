@@ -344,10 +344,12 @@ public class PlanPhaseScreen extends BaseScreen {
         // if one of the buttons, disable button presses, zoom out and create correct action maanger
 
         if (nextButton.checkForTouch(screenX, screenY)) {
+            world.setFilter(World.FilterType.None);
             game.setScreen(new ActionPhaseScreen());
             return true;
         } else if (buildButton.checkForTouch(screenX, screenY)) {
             buildButton.select();
+            world.setFilter(World.FilterType.None);
             IManager manager = new BuildManager(hudCamera, camera);
             setManager(manager);
             zoomOut(manager);
