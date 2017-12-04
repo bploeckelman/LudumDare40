@@ -1,5 +1,6 @@
 package lando.systems.ld40.managers;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,6 +19,7 @@ import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.world.World;
+import lando.systems.ld40.utils.SoundManager;
 
 /**
  * Created by Brian on 12/3/2017.
@@ -190,6 +192,7 @@ public class RouteManager extends ActionManager {
                     routes.setRoute(selectedTruck, newRoute);
                     setState(RouteState.PICK_ROUTE);
                 }
+                SoundManager.playSound(SoundManager.SoundOptions.startRoute);
                 break;
         }
 
