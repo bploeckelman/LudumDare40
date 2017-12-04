@@ -17,6 +17,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
+import lando.systems.ld40.gameobjects.TileType;
+import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
@@ -79,6 +81,13 @@ public class PlanPhaseScreen extends BaseScreen {
     public PlanPhaseScreen() {
         this.game = LudumDare40.game;
         world = World.GetWorld();
+
+        // TODO: remove me... testing
+        world.inventory.addTileItem(TileType.DUMP);
+        world.inventory.addUpgradeItem(UpgradeType.TIER_UPGRADE);
+        world.inventory.addUpgradeItem(UpgradeType.DUMPSTER);
+        world.inventory.addUpgradeItem(UpgradeType.INCINERATOR);
+        // TODO: remove me... testing
 
         cameraTouchStart = new Vector3();
         touchStart = new Vector3();

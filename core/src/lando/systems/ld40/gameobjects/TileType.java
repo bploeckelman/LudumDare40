@@ -6,16 +6,16 @@ import lando.systems.ld40.utils.Assets;
 
 public enum TileType {
 
-    DUMP               (Assets.dumpTexture,              "Dump",   "A place for trash to live"),
-    COMMERCIAL_LOW     (Assets.commercialLowTexture,     "Store1", "Low density commercial building"),
-    COMMERCIAL_MEDIUM  (Assets.commercialMediumTexture,  "Store2", "Medium density commercial building"),
-    COMMERCIAL_HIGH    (Assets.commercialHighTexture,    "Store3", "High density commercial building"),
-    INDUSTRIAL_LOW     (Assets.industrialLowTexture,     "Work1",  "Low density industrial building"),
-    INDUSTRIAL_MEDIUM  (Assets.industrialMediumTexture,  "Work2",  "Medium density industrial building"),
-    INDUSTRIAL_HIGH    (Assets.industrialHighTexture,    "Work3",  "High density industrial building"),
-    RESIDENTIAL_LOW    (Assets.residentialLowTexture,    "Home1",  "Low density residential building"),
-    RESIDENTIAL_MEDIUM (Assets.residentialMediumTexture, "Home2",  "Medium density residential building"),
-    RESIDENTIAL_HIGH   (Assets.residentialHighTexture,   "Home3",  "High density residential building");
+    DUMP               (Assets.dumpTexture,              "Dump",       "A place for trash to live"),
+    COMMERCIAL_LOW     (Assets.commercialLowTexture,     "Store Sm.",  "Low density commercial building"),
+    COMMERCIAL_MEDIUM  (Assets.commercialMediumTexture,  "Store Med.", "Medium density commercial building"),
+    COMMERCIAL_HIGH    (Assets.commercialHighTexture,    "Store Lg.",  "High density commercial building"),
+    INDUSTRIAL_LOW     (Assets.industrialLowTexture,     "Work Sm.",   "Low density industrial building"),
+    INDUSTRIAL_MEDIUM  (Assets.industrialMediumTexture,  "Work Med.",  "Medium density industrial building"),
+    INDUSTRIAL_HIGH    (Assets.industrialHighTexture,    "Work Lg.",   "High density industrial building"),
+    RESIDENTIAL_LOW    (Assets.residentialLowTexture,    "Home Sm.",   "Low density residential building"),
+    RESIDENTIAL_MEDIUM (Assets.residentialMediumTexture, "Home Med.",  "Medium density residential building"),
+    RESIDENTIAL_HIGH   (Assets.residentialHighTexture,   "Home Lg.",   "High density residential building");
 
     public TextureRegion texture;
     public String shortName;

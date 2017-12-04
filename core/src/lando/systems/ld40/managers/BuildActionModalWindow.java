@@ -4,8 +4,6 @@ import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Circ;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,6 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.buildings.Building;
+import lando.systems.ld40.gameobjects.Inventory;
 import lando.systems.ld40.gameobjects.TileType;
 import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.ui.Button;
@@ -26,7 +25,12 @@ import java.util.Comparator;
 
 public class BuildActionModalWindow extends ModalWindow {
 
-    private static final Color highlight_color = new Color();
+//    private static final Color text_msg_color = new Color(235f / 255f, 208f / 255f, 0f, 1f);
+//    private static final Color text_msg_color = new Color(177f / 255f, 185f / 255f, 166f / 255f, 1f);
+    private static final Color text_msg_color = new Color(235f / 255f, 255f / 255f, 218f / 255f, 1f);
+    private static final Color text_msg_bg_color = new Color(71f / 255f, 71f / 255f, 87f / 255f, 1f);
+    private static final Color text_color = new Color(217f / 255f, 126f / 255f, 0f, 1f);
+    private static final float text_scale = 0.3f;
 
     private BuildManager buildAction;
     private Rectangle inventoryRect;
@@ -42,6 +46,12 @@ public class BuildActionModalWindow extends ModalWindow {
     private Rectangle selectedTileRect;
     private Button buildButton;
     private Button cancelButton;
+    private Inventory inventory;
+
+    private boolean isNothingToBuild;
+    private String nothingToBuildMsg1;
+    private String nothingToBuildMsg2;
+    private Rectangle nothingToBuildRect;
 
     public BuildActionModalWindow(OrthographicCamera camera, BuildManager buildAction) {
         super(camera);
@@ -80,6 +90,12 @@ public class BuildActionModalWindow extends ModalWindow {
         this.isTweening = false;
         this.lastSelectedBuilding = null;
         this.lastSelectedBuildingTexture = null;
+        this.inventory = World.GetWorld().inventory;
+        this.nothingToBuildMsg1 = "You have nothing that can be built on this tile.";
+        this.nothingToBuildMsg2 = "Buy some things in the store after this round.";
+        this.isNothingToBuild = false;
+        this.nothingToBuildRect = new Rectangle();
+
     }
 
     @Override
@@ -123,7 +139,7 @@ public class BuildActionModalWindow extends ModalWindow {
         if (buildButton.checkForTouchNoUnproject(x, y)) {
             if (isAddon) {
                 if (lastSelectedUpgrade != null) {
-                    World.GetWorld().inventory.useUpgradeItem(lastSelectedUpgrade);
+                    inventory.useUpgradeItem(lastSelectedUpgrade);
 
                     for (Button button : inventoryButtons) {
                         if (button.meta == lastSelectedUpgrade) {
@@ -163,7 +179,7 @@ public class BuildActionModalWindow extends ModalWindow {
                 }
 
             } else { // isBuilding
-                World.GetWorld().inventory.useTileItem(lastSelectedBuilding);
+                inventory.useTileItem(lastSelectedBuilding);
 
                 for (Button button : buildingButtons) {
                     if (button.meta == lastSelectedBuilding) {
@@ -191,24 +207,32 @@ public class BuildActionModalWindow extends ModalWindow {
             }
         }
 
+        if (isNothingToBuild) {
+            buildButton.enable(false);
+        }
+
         // Check for addon / tile type inventory button click
         if (isAddon) {
-            for (int i = 0; i < inventoryButtons.size; ++i) {
-                Button button = inventoryButtons.get(i);
-                if (button.checkForTouchNoUnproject(x, y)) {
-                    lastSelectedUpgrade = (UpgradeType) inventoryButtons.get(i).meta;
-                    if (building.allowsUpgrade(lastSelectedUpgrade)) {
-                        buildButton.enable(true);
-                    } else {
-                        lastSelectedUpgrade = null;
+            if (!isNothingToBuild) {
+                for (int i = 0; i < inventoryButtons.size; ++i) {
+                    Button button = inventoryButtons.get(i);
+                    if (button.checkForTouchNoUnproject(x, y)) {
+                        lastSelectedUpgrade = (UpgradeType) inventoryButtons.get(i).meta;
+                        if (building.allowsUpgrade(lastSelectedUpgrade)) {
+                            buildButton.enable(true);
+                        } else {
+                            lastSelectedUpgrade = null;
+                        }
                     }
                 }
             }
         } else {
-            for (Button button : buildingButtons) {
-                if (button.checkForTouchNoUnproject(x, y)) {
-                    lastSelectedBuilding = (TileType) button.meta;
-                    buildButton.enable(true);
+            if (!isNothingToBuild) {
+                for (Button button : buildingButtons) {
+                    if (button.checkForTouchNoUnproject(x, y)) {
+                        lastSelectedBuilding = (TileType) button.meta;
+                        buildButton.enable(true);
+                    }
                 }
             }
         }
@@ -233,7 +257,7 @@ public class BuildActionModalWindow extends ModalWindow {
         float modal_button_w = 200f;
         float modal_button_h = 40f;
         float modal_button_gap = 40f;
-        batch.setColor(Color.RED);
+        batch.setColor(217f / 255f, 126f / 255f, 0f, 1f);
         cancelButton.bounds.set(modalRect.x + modalRect.width / 2f + modal_button_gap / 2f, modalRect.y + margin_top, modal_button_w, modal_button_h);
         cancelButton.setText("Cancel"); // re-layout text
         buildButton.bounds.set(modalRect.x + modalRect.width / 2f - modal_button_gap / 2f - modal_button_w, modalRect.y + margin_top, modal_button_w, modal_button_h);
@@ -244,7 +268,6 @@ public class BuildActionModalWindow extends ModalWindow {
 
 
         final Building building = ((Building) buildAction.selectedObject);
-//        if (building.type == Building.Type.EMPTY) {
         if (!isAddon) {
             // TODO: sort available building options from inventory
 
@@ -261,6 +284,8 @@ public class BuildActionModalWindow extends ModalWindow {
             float button_height = (inventoryRect.height - 2f * button_margin_top - (num_rows - 1) * button_spacing_y) / num_rows;
             float button_size = Math.min(button_width, button_height);
 
+            isNothingToBuild = true;
+
             for (int i = 0; i < buildingButtons.size; i += 2) {
                 // Layout and draw button 1 in this row
                 Button buildingButton1 = buildingButtons.get(i);
@@ -268,8 +293,11 @@ public class BuildActionModalWindow extends ModalWindow {
                         inventoryRect.x + button_margin_left,
                         inventoryRect.y + inventoryRect.height - margin_top - (((i / 2) + 1) * button_size) - ((i / 2) * button_spacing_y),
                         button_size, button_size);
-                buildingButton1.textScale = 0.38f;
-                buildingButton1.setText(buildingButton1.text, button_size + 2f * margin_left); // re-layout text
+                int building1Count = inventory.getCurrentCountForTile((TileType) buildingButton1.meta);
+                if (building1Count > 0) isNothingToBuild = false;
+                buildingButton1.enable(building1Count != 0);
+                buildingButton1.textScale = text_scale;
+                buildingButton1.setText(((TileType) buildingButton1.meta).shortName + "\n  x" + building1Count, button_size + margin_left + 2f); // re-layout text
                 buildingButton1.render(batch);
 
                 // Draw selected highlight
@@ -285,8 +313,11 @@ public class BuildActionModalWindow extends ModalWindow {
                         inventoryRect.x + inventoryRect.width / 2f + button_margin_left,
                         inventoryRect.y + inventoryRect.height - margin_top - (((i / 2) + 1) * button_size) - ((i / 2) * button_spacing_y),
                         button_size, button_size);
-                buildingButton2.textScale = 0.38f;
-                buildingButton2.setText(buildingButton2.text, button_size + 2f * margin_left); // re-layout text
+                int building2Count = inventory.getCurrentCountForTile((TileType) buildingButton2.meta);
+                if (building2Count > 0) isNothingToBuild = false;
+                buildingButton2.enable(building2Count != 0);
+                buildingButton2.textScale = text_scale;
+                buildingButton2.setText(((TileType) buildingButton2.meta).shortName + "\n  x" + building2Count, button_size + margin_left + 2f); // re-layout text
                 buildingButton2.textColor = Color.WHITE;
                 buildingButton2.render(batch);
 
@@ -317,8 +348,6 @@ public class BuildActionModalWindow extends ModalWindow {
                         return 0;
                     } else if (building.allowsUpgrade(button1UpgradeType)
                            && !building.allowsUpgrade(button2UpgradeType)) {
-                        // TODO: take 'counts' into account
-//                           &&  World.GetWorld().inventory.getCurrentCountForUpgrade(button1UpgradeType) > 0) {
                         return -1;
                     } else return 1;
                 }
@@ -337,6 +366,8 @@ public class BuildActionModalWindow extends ModalWindow {
             float button_height = (inventoryRect.height - 2f * button_margin_top - (num_rows - 1) * button_spacing_y) / num_rows;
             float button_size = Math.min(button_width, button_height);
 
+            isNothingToBuild = true;
+
             for (int i = 0; i < inventoryButtons.size; i += 2) {
                 // Layout and draw button 1 in this row
                 Button inventoryButton1 = inventoryButtons.get(i);
@@ -344,10 +375,12 @@ public class BuildActionModalWindow extends ModalWindow {
                         inventoryRect.x + button_margin_left,
                         inventoryRect.y + inventoryRect.height - margin_top - (((i / 2) + 1) * button_size) - ((i / 2) * button_spacing_y),
                         button_size, button_size);
-                boolean isEnabled1 = building.allowsUpgrade((UpgradeType) inventoryButton1.meta);
+                int upgrade1Count = inventory.getCurrentCountForUpgrade((UpgradeType) inventoryButton1.meta);
+                boolean isEnabled1 = building.allowsUpgrade((UpgradeType) inventoryButton1.meta) && upgrade1Count > 0;
+                if (isEnabled1) isNothingToBuild = false;
                 inventoryButton1.enable(isEnabled1);
-                inventoryButton1.textScale = 0.38f;
-                inventoryButton1.setText(inventoryButton1.text, button_size + 2f * margin_left); // re-layout text
+                inventoryButton1.textScale = text_scale;
+                inventoryButton1.setText(((UpgradeType) inventoryButton1.meta).shortName + "\n  x" + upgrade1Count, button_size + margin_left + 2f); // re-layout text
                 inventoryButton1.render(batch);
 
                 // Draw selected highlight
@@ -366,10 +399,12 @@ public class BuildActionModalWindow extends ModalWindow {
                         inventoryRect.x + inventoryRect.width / 2f + button_margin_left,
                         inventoryRect.y + inventoryRect.height - margin_top - (((i / 2) + 1) * button_size) - ((i / 2) * button_spacing_y),
                         button_size, button_size);
-                boolean isEnabled2 = building.allowsUpgrade((UpgradeType) inventoryButton2.meta);
+                int upgrade2Count = inventory.getCurrentCountForUpgrade((UpgradeType) inventoryButton2.meta);
+                boolean isEnabled2 = building.allowsUpgrade((UpgradeType) inventoryButton2.meta) && upgrade2Count > 0;
                 inventoryButton2.enable(isEnabled2);
-                inventoryButton2.textScale = 0.38f;
-                inventoryButton2.setText(inventoryButton2.text, button_size + 2f * margin_left); // re-layout text
+                if (isEnabled2) isNothingToBuild = false;
+                inventoryButton2.textScale = text_scale;
+                inventoryButton2.setText(((UpgradeType) inventoryButton2.meta).shortName + "\n  x" + upgrade2Count, button_size + margin_left + 2f); // re-layout text
                 inventoryButton2.textColor = Color.WHITE;
                 inventoryButton2.render(batch);
 
@@ -393,6 +428,40 @@ public class BuildActionModalWindow extends ModalWindow {
         cancelButton.renderTooltip(batch, camera);
         buildButton.renderTooltip(batch, camera);
 
+        if (isNothingToBuild && !isTweening) {
+            final float rect_w = (2f / 3f) * modalRect.width;
+            final float rect_h = (1f / 3f) * modalRect.height;
+            nothingToBuildRect.set(
+                    modalRect.x + modalRect.width  / 2f - rect_w / 2f,
+                    modalRect.y + modalRect.height / 2f - rect_h / 2f,
+                    rect_w, rect_h);
+
+            batch.setColor(text_msg_bg_color);
+            Assets.whiteNinePatch.draw(batch, nothingToBuildRect.x, nothingToBuildRect.y, nothingToBuildRect.width, nothingToBuildRect.height);
+            batch.setColor(Color.WHITE);
+
+            batch.setShader(Assets.fontShader);
+            {
+                final float nothing_text_target_width = nothingToBuildRect.width - 2f * margin_left;
+                final float nothing_text_scale = 0.5f;
+                Assets.font.getData().setScale(nothing_text_scale);
+                Assets.fontShader.setUniformf("u_scale", nothing_text_scale);
+
+                Assets.layout.setText(Assets.font, nothingToBuildMsg1, text_msg_color, nothing_text_target_width, Align.center, true);
+                final float line1Y = nothingToBuildRect.y + nothingToBuildRect.height - 2f * margin_top;
+                Assets.font.draw(batch, Assets.layout, nothingToBuildRect.x + margin_left, line1Y);
+
+                final float line2Y = line1Y - Assets.layout.height - 2f * margin_top;
+                Assets.layout.setText(Assets.font, nothingToBuildMsg2, text_msg_color, nothing_text_target_width, Align.center, true);
+                Assets.font.draw(batch, Assets.layout, nothingToBuildRect.x + margin_left, line2Y);
+
+                Assets.font.setColor(Color.WHITE);
+                Assets.font.getData().setScale(1f);
+                Assets.fontShader.setUniformf("u_scale", 1f);
+            }
+            batch.setShader(null);
+        }
+
         // NOTE: 0,0 is top left instead of bottom for text
         batch.setShader(Assets.fontShader);
         {
@@ -401,10 +470,13 @@ public class BuildActionModalWindow extends ModalWindow {
             Assets.font.getData().setScale(title_text_scale);
             Assets.fontShader.setUniformf("u_scale", title_text_scale);
             Assets.layout.setText(Assets.font, "Pick an item to build on this tile...",
-                    Color.GOLD, target_width, Align.center, true);
+                    text_color, target_width, Align.center, true);
             Assets.font.draw(batch, Assets.layout,
                     modalRect.x + margin_left,
                     modalRect.y + modalRect.height - margin_top);
+            Assets.font.setColor(Color.WHITE);
+            Assets.font.getData().setScale(1f);
+            Assets.fontShader.setUniformf("u_scale", 1f);
         }
         batch.setShader(null);
     }

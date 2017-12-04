@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.RectangleAccessor;
 
 public abstract class ModalWindow {
@@ -99,13 +100,17 @@ public abstract class ModalWindow {
     }
 
     public void render(SpriteBatch batch) {
-        // Draw background
-        batch.setColor(0f, 0f, 0f, 0.95f);
-        batch.draw(Assets.whitePixel, modalRect.x, modalRect.y, modalRect.width, modalRect.height);
+//        // Draw background
+//        batch.setColor(0f, 0f, 0f, 0.95f);
+//        batch.draw(Assets.whitePixel, modalRect.x, modalRect.y, modalRect.width, modalRect.height);
+//
+//        // Draw outline
+//        batch.setColor(Color.WHITE);
+//        Assets.defaultNinePatch.draw(batch, modalRect.x, modalRect.y, modalRect.width, modalRect.height);
 
-        // Draw outline
+        batch.setColor(Config.COLOR_BLACK.r, Config.COLOR_BLACK.g, Config.COLOR_BLACK.b, 0.95f);
+        Assets.whiteNinePatch.draw(batch, modalRect.x, modalRect.y, modalRect.width, modalRect.height);
         batch.setColor(Color.WHITE);
-        Assets.defaultNinePatch.draw(batch, modalRect.x, modalRect.y, modalRect.width, modalRect.height);
 
         renderWindowContents(batch);
     }

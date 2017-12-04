@@ -25,6 +25,8 @@ public class Button {
     private static final float TOOLTIP_CURSOR_OFFSET_X = 8f;
     private static final float TOOLTIP_MAX_WIDTH = 350;
 //    private static final float TOOLTIP_CURSOR_OFFSET_Y = 10f;
+    private static final Color DISABLED_COLOR = new Color(120f / 255f, 120f / 255f, 118f / 255f, 1f);
+    private static final float DISABLED_ALPHA = 0.8f;
 
     private float tooltipBackgroundHeight;
     private float tooltipBackgroundWidth;
@@ -159,7 +161,7 @@ public class Button {
         }
 
         if (!enabled) {
-//            highlight(batch, Color.LIGHT_GRAY, 0.5f);
+            highlight(batch, DISABLED_COLOR, DISABLED_ALPHA);
         } else {
             if (isHover && !noHover) {
                 batch.setColor(217f / 255f, 126f / 255f, 0f, 0f);
