@@ -90,4 +90,13 @@ public class Routes {
         trucks.removeValue(dumpTruck, true);
         routes.remove(dumpTruck);
     }
+
+    public void verifyRoutesAfterBuildingChange(int index){
+        for (DumpTruck truck: trucks){
+            if (routes.get(truck).contains(index)){
+                routes.get(truck).clear();
+                buildSpline(truck, routes.get(truck));
+            }
+        }
+    }
 }

@@ -97,6 +97,7 @@ public class World {
         Building newBuilding = Building.getBuilding(buildingType);
         newBuilding.setLocation(building.position.x, building.position.y);
         buildings.set(index, newBuilding);
+        routes.verifyRoutesAfterBuildingChange(index);
     }
 
     public void replaceTile(Building originalTile, Building.Type newBuildingType) {
