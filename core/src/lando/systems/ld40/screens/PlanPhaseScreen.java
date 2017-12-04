@@ -51,7 +51,7 @@ public class PlanPhaseScreen extends BaseScreen {
     public static float ZOOM_LERP = .1f;
     public static float PAN_LERP = .2f;
     public boolean cancelTouchUp = false;
-    public MutableFloat targetZoom = new MutableFloat(2.5f);
+    public MutableFloat targetZoom = new MutableFloat(2f);
     public Vector3 cameraTargetPos;
 
     private Button nextButton;
@@ -78,7 +78,7 @@ public class PlanPhaseScreen extends BaseScreen {
 
     private IManager actionManager;
 
-    public PlanPhaseScreen() {
+    public PlanPhaseScreen(boolean firstLaunch) {
         this.game = LudumDare40.game;
         world = World.GetWorld();
 
@@ -93,6 +93,22 @@ public class PlanPhaseScreen extends BaseScreen {
         touchStart = new Vector3();
         camera.position.set(World.pixels_wide /2f, World.pixels_high/2f, 0);
         cameraTargetPos = new Vector3(camera.position);
+        camera.zoom = 2f;
+        if (firstLaunch){
+            minZoom = .1f;
+            camera.zoom = .2f;
+            targetZoom.setValue(.2f);
+            Tween.to(targetZoom, -1, 2f)
+                    .target(2f)
+                    .delay(2f)
+                    .setCallback(new TweenCallback() {
+                        @Override
+                        public void onEvent(int i, BaseTween<?> baseTween) {
+                            minZoom = .5f;
+                        }
+                    })
+                    .start(Assets.tween);
+        }
 
         float margin = 10f;
         float size = 80f;
