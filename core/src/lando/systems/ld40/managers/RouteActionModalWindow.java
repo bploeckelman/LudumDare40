@@ -86,11 +86,13 @@ public class RouteActionModalWindow extends ModalWindow {
 
     @Override
     public void handleTouch(float windowX, float windowY) {
+        /*
         for (Button truck : trucks) {
             if (truck.bounds.contains(windowX, windowY)) {
                 routeManager.selectTruck(truck.gameObject);
                 hide();
             }
         }
+        */
     }
 }

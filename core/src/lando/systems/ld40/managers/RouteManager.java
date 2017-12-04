@@ -1,13 +1,22 @@
 package lando.systems.ld40.managers;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.DumpTruck;
 import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.gameobjects.Routes;
+import lando.systems.ld40.ui.Button;
+import lando.systems.ld40.ui.ButtonGroup;
+import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.world.World;
 
 /**
@@ -24,19 +33,49 @@ public class RouteManager extends ActionManager {
     private IntArray newRoute;
 
     int remainingSelections = 0;
+    boolean activated;
+
+    private Rectangle hudBounds;
+    private Array<TruckButton> truckButtons;
 
     public RouteManager(OrthographicCamera hudCamera, OrthographicCamera worldCamera) {
 
         super(hudCamera, worldCamera);
+
         world = World.GetWorld();
         routes = world.routes;
+
+        init();
+    }
+
+    private void init() {
+        hudBounds = new Rectangle(0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight / 4);
+
+        int count = routes.trucks.size;
+        truckButtons = new Array<TruckButton>(count);
+
+        TextureRegion image = routes.trucks.get(0).texture;
+        float width = image.getRegionWidth();
+        float gap = (hudBounds.width - (width * count)) / (count + 1);
+
+        float x = gap;
+        float y = hudBounds.y + hudBounds.height - image.getRegionHeight();
+
+        ButtonGroup bg = new ButtonGroup();
+
+        for (DumpTruck truck : routes.trucks) {
+            Rectangle bounds = new Rectangle(x, y, width, image.getRegionHeight());
+            TruckButton button = new TruckButton(truck, bounds, hudCamera);
+            bg.add(button);
+            truckButtons.add(button);
+            x += (width + gap);
+        }
     }
 
     @Override
     public void activate() {
+        activated = true;
         setState(RouteState.PICK_ROUTE);
-        //window = new RouteActionModalWindow(hudCamera, this);
-        //window.show();
     }
 
     private void setState(RouteState state) {
@@ -56,29 +95,37 @@ public class RouteManager extends ActionManager {
 
     @Override
     public void renderManager(SpriteBatch batch) {
+        if (!activated) return;
+
+        batch.setColor(Color.BLACK);
+        batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight/3);
+
+        batch.setColor(Color.WHITE);
+        for (TruckButton button : truckButtons) {
+            button.render(batch);
+        }
+
         switch (state) {
-            case START:
-                break;
             case PICK_SOURCES:
-                //drawText(batch, "Select pickup location");
-                drawText(batch, "select " + remainingSelections);
-                renderSelectSourcesHud(batch);
-                break;
-            case PICK_DEST:
-                drawText(batch, "Pick a drop location");
-                break;
-            case DONE:
-                // nothing to see here
+                drawHudText(batch, "Source selections: " + remainingSelections);
                 break;
         }
     }
 
-    private void renderSelectSourcesHud(SpriteBatch batch) {
-
+    private void drawHudText(SpriteBatch batch, String text) {
+        batch.setShader(Assets.fontShader);
+        Assets.layout.setText(Assets.font, text);
+        Assets.font.draw(batch, text,
+                0, hudBounds.y + 50, hudBounds.width,
+                Align.center, true);
+        batch.setShader(null);
     }
 
     @Override
     public void updateManager(float dt) {
+        for (TruckButton button : truckButtons) {
+            button.update(dt);
+        }
         switch (state) {
             case PICK_SOURCES:
                 remainingSelections = selectedTruck.speed - newRoute.size;
@@ -94,17 +141,26 @@ public class RouteManager extends ActionManager {
         }
     }
 
-    public void selectTruck(GameObject truck) {
-        if (truck instanceof DumpTruck) {
-            selectedTruck = (DumpTruck)truck;
-            newRoute = new IntArray();
-            setState(RouteState.PICK_SOURCES);
-        }
+    public void selectTruck(TruckButton truck) {
+        truck.select();
+        selectedTruck = truck.truck;
+        newRoute = new IntArray();
+        remainingSelections = selectedTruck.speed;
+        setState(RouteState.PICK_SOURCES);
     }
 
     @Override
     public boolean handleTouch(float screenX, float screenY) {
         boolean handled = false;
+
+        for (TruckButton button : truckButtons) {
+            if (button.checkForTouch((int)screenX, (int)screenY)) {
+                selectTruck(button);
+                return true;
+            }
+        }
+
+
         Vector3 touchPosition = unprojectWorld(screenX, screenY);
 
         switch (state) {

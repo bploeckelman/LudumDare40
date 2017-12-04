@@ -13,6 +13,9 @@ public class Routes {
 
     public Routes() {
         addRoute(DumpTruck.One);
+        // temp
+        addRoute(DumpTruck.Five);
+        addRoute(DumpTruck.Nine);
     }
 
     public void addRoute(DumpTruck.TruckType type) {
@@ -24,8 +27,6 @@ public class Routes {
     public void setRoute(DumpTruck truck, IntArray route) {
         routes.put(truck, route);
     }
-
-
 
     public void removeRoute(DumpTruck dumpTruck) {
         trucks.removeValue(dumpTruck, true);

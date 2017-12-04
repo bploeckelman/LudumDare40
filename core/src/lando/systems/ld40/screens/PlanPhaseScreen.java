@@ -362,7 +362,7 @@ public class PlanPhaseScreen extends BaseScreen {
             routeButton.select();
             IManager manager = new RouteManager(hudCamera, camera);
             setManager(manager);
-            zoomOut(manager, World.pixels_wide / 2f, 200, 4);
+            zoomOut(manager, World.pixels_wide / 2f, 290, 4);
             return true;
         }
         return true;
