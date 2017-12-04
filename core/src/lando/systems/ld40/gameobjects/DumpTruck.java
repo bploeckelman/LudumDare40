@@ -40,10 +40,10 @@ public class DumpTruck extends GameObject {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-//    private static final float TILE_OFFSET_X = World.tile_pixels_wide * 0.5f - ;
-    private static final float MOVE_TIME = 2f; // time from start to dest
+    private static final float MOVE_TIME = 0.7f; // time from start to dest
     private static final float STOP_WAIT_TIME = 1f; // trucks pause on building this long
     private static final float TILE_OFFSET_Y = 10f;
+    private static final float TRUCK_SIZE_SCALE = 1.6f;
     public final UpgradeType type = UpgradeType.TRUCK;
 
     public int speed;
@@ -67,7 +67,10 @@ public class DumpTruck extends GameObject {
         truckType = type;
         currentTrash = 0;
 
-        computedTileOffsetX = (World.tile_pixels_wide * 0.5f) - (texture.getRegionWidth() / 2);
+        // Update the size
+        setSize(texture.getRegionWidth() * TRUCK_SIZE_SCALE, texture.getRegionHeight() * TRUCK_SIZE_SCALE);
+
+        computedTileOffsetX = (World.tile_pixels_wide * 0.5f) - (bounds.width / 2);
     }
 
     private boolean     thisActionPhaseStarted;
