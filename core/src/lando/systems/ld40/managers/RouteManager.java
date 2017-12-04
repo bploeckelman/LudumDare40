@@ -104,7 +104,7 @@ public class RouteManager extends ActionManager {
         if (!activated) return;
 
         world.renderRoutes(batch, worldCamera, newRoute, routeButtons.selectedIndex());
-
+        batch.setProjectionMatrix(hudCamera.combined);
         batch.setColor(Color.BLACK);
         batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight/3);
 
@@ -211,6 +211,7 @@ public class RouteManager extends ActionManager {
             newRoute.removeIndex(existingIndex);
         }
         newRoute.add(index);
+        routes.buildSpline(selectedTruck, newRoute);
         return true;
     }
 }

@@ -3,6 +3,7 @@ package lando.systems.ld40.world;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -12,7 +13,11 @@ import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.gameobjects.Inventory;
 import lando.systems.ld40.gameobjects.Routes;
+import lando.systems.ld40.spline.Precision;
+import lando.systems.ld40.spline.SinglePointSplineIterator;
+import lando.systems.ld40.spline.SplinePoint;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.Config;
 
 public class World {
 
@@ -119,44 +124,52 @@ public class World {
     }
 
     public void renderRoutes(SpriteBatch batch, OrthographicCamera camera, IntArray newRoute, int routeIndex) {
-        batch.end();
-        Assets.shapes.begin(ShapeRenderer.ShapeType.Filled);
-        Assets.shapes.setProjectionMatrix(camera.combined);
-
+//        batch.end();
+//        Assets.shapes.begin(ShapeRenderer.ShapeType.Filled);
+        batch.setProjectionMatrix(camera.combined);
+        
         if (newRoute != null) {
-            renderRoute(newRoute, routeIndex, false);
+            renderRoute(newRoute, routeIndex, batch);
         } else {
             for (int i = 0; i < routes.trucks.size; i++) {
                 IntArray route = routes.routes.get(routes.trucks.get(i));
-                renderRoute(route, i, true);
+                renderRoute(route, i, batch);
             }
         }
 
-        Assets.shapes.end();
-        batch.begin();
+//        Assets.shapes.end();
+//        batch.begin();
     }
 
-    private void renderRoute(IntArray route, int index, boolean complete) {
+    private void renderRoute(IntArray route, int index, SpriteBatch batch) {
+        batch.setColor(routes.getColor(index));
+
         Vector2 point1;
-        Vector2 point2;
 
         float thickness = 25;
-        point1  = getPoint(hqIndex, index, thickness);
-        Assets.shapes.setColor(routes.getColor(index));
+
         if (route.size == 0) return;
 
         for (int i = 0; i < route.size; i++) {
-            point2 = getPoint(route.get(i), index, thickness);
-            Assets.shapes.rectLine(point1, point2, thickness);
-            point1 = point2;
+            point1 = getPoint(route.get(i), index, thickness);
+            float stopSize = 50;
+            batch.draw(Assets.whiteCircle, point1.x - stopSize/2f, point1.y - stopSize/2f, stopSize, stopSize);
+
         }
-        point2 = getPoint(hqIndex, index, thickness);
-        if (complete) {
-            Assets.shapes.rectLine(point1, point2, thickness);
+
+        CatmullRomSpline<Vector2> spline = routes.routesSpline.get(routes.trucks.get(index));
+        Precision p = new Precision(60);
+        SinglePointSplineIterator iterator = new SinglePointSplineIterator(spline, p);
+        SplinePoint splinePoint;
+
+        while ((splinePoint = iterator.getNext()) != null) {
+            float dotSize = 30;
+              batch.draw(Assets.whiteCircle, splinePoint.point.x - dotSize/2f, splinePoint.point.y - dotSize/2f, dotSize, dotSize);
         }
+
     }
 
-    private Vector2 getPoint(int bIndex, int rIndex, float thickness) {
+    public Vector2 getPoint(int bIndex, int rIndex, float thickness) {
         Rectangle bounds = buildings.get(bIndex).bounds;
         Vector2 point = new Vector2(bounds.x + bounds.width/2, bounds.y + bounds.height/2);
 
