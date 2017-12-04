@@ -57,7 +57,6 @@ public class LudumDare40 extends ApplicationAdapter {
 //            World.GetWorld().nextTurn();
 //        }
 //        setScreen(new EndGameStatsScreen());
-
         setScreen(new TitleScreen());
     }
 

@@ -71,14 +71,14 @@ public class EndGameStatsScreen extends BaseScreen {
 
 
         batch.setColor(Color.WHITE);
-        Assets.drawString(batch, "Statistics", stats.modalBounds.x, stats.modalBounds.y + stats.modalBounds.height - 10, Color.WHITE, 1f, Assets.font, stats.modalBounds.width, Align.center);
+        Assets.drawString(batch, "Statistics", stats.modalBounds.x, stats.modalBounds.y + stats.modalBounds.height - 10, Statistics.COLOR_TEXT, 1f, Assets.font, stats.modalBounds.width, Align.center);
 
-        Assets.drawString(batch, "Money", showMoneyButton.bounds.x + 25, showMoneyButton.bounds.y + 17, Color.WHITE, .3f, Assets.font);
-        Assets.drawString(batch, "Buildings", showBuildingsButton.bounds.x + 25, showBuildingsButton.bounds.y + 17, Color.WHITE, .3f, Assets.font);
-        Assets.drawString(batch, "Addons", showAddonsButton.bounds.x + 25, showAddonsButton.bounds.y + 17, Color.WHITE, .3f, Assets.font);
-        Assets.drawString(batch, "Garbage Generated", showGarbageGenerated.bounds.x + 25, showGarbageGenerated.bounds.y + 17, Color.WHITE, .3f, Assets.font, 240, Align.left);
-        Assets.drawString(batch, "Garbage Hauled", showGarbageHauled.bounds.x + 25, showGarbageHauled.bounds.y + 17, Color.WHITE, .3f, Assets.font, 240, Align.left);
-        Assets.drawString(batch, "Garbage in Landfills", showGarbageInLandfills.bounds.x + 25, showGarbageInLandfills.bounds.y + 17, Color.WHITE, .3f, Assets.font, 150, Align.left);
+        Assets.drawString(batch, "Money", showMoneyButton.bounds.x + 25, showMoneyButton.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font);
+        Assets.drawString(batch, "Buildings", showBuildingsButton.bounds.x + 25, showBuildingsButton.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font);
+        Assets.drawString(batch, "Addons", showAddonsButton.bounds.x + 25, showAddonsButton.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font);
+        Assets.drawString(batch, "Garbage Generated", showGarbageGenerated.bounds.x + 25, showGarbageGenerated.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font, 240, Align.left);
+        Assets.drawString(batch, "Garbage Hauled", showGarbageHauled.bounds.x + 25, showGarbageHauled.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font, 240, Align.left);
+        Assets.drawString(batch, "Garbage in Landfills", showGarbageInLandfills.bounds.x + 25, showGarbageInLandfills.bounds.y + 17, Statistics.COLOR_TEXT, .3f, Assets.font, 150, Align.left);
 
 
 
