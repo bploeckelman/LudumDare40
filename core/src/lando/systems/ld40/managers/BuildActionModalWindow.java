@@ -1,8 +1,5 @@
 package lando.systems.ld40.managers;
 
-import aurelienribon.tweenengine.BaseTween;
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,28 +7,26 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import lando.systems.ld40.buildings.Building;
-import lando.systems.ld40.gameobjects.Inventory;
 import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
-import lando.systems.ld40.utils.accessors.RectangleAccessor;
-import lando.systems.ld40.world.World;
 
 import java.util.Comparator;
 
 public class BuildActionModalWindow extends ModalWindow {
 
     private BuildManager buildAction;
-    private Inventory inventory;
     private Rectangle inventoryRect;
     private Array<Button> inventoryButtons;
+    private int selectedButtonIndex;
+    private Button purchaseButton;
+    private Button cancelButton;
 
     public BuildActionModalWindow(OrthographicCamera camera, BuildManager buildAction) {
         super(camera);
         this.buildAction = buildAction;
         this.inventoryRect = new Rectangle();
-        this.inventory = World.GetWorld().inventory;
         this.inventoryButtons = new Array<Button>(UpgradeType.values().length);
         for (UpgradeType upgradeType : UpgradeType.values()) {
             Button button = new Button(upgradeType.texture, new Rectangle(),
@@ -39,18 +34,58 @@ public class BuildActionModalWindow extends ModalWindow {
             button.meta = upgradeType;
             inventoryButtons.add(button);
         }
+        this.selectedButtonIndex = -1;
+        this.purchaseButton = new Button(Assets.buttonBackgroundTexture, new Rectangle(),
+                camera, "Purchase", "Buy and build this addon");
+        this.cancelButton = new Button(Assets.buttonBackgroundTexture, new Rectangle(),
+                camera, "Cancel", "Cancel building on this tile");
+        this.purchaseButton.textColor = Color.WHITE;
+        this.purchaseButton.textScale = 0.4f;
+        this.cancelButton.textColor = Color.WHITE;
+        this.cancelButton.textScale = 0.4f;
     }
 
     @Override
     public void update(float dt) {
         super.update(dt);
-        for (Button button : inventoryButtons) {
+
+        cancelButton.update(dt);
+        purchaseButton.update(dt);
+
+        for (int i = 0; i < inventoryButtons.size; ++i) {
+            Button button = inventoryButtons.get(i);
             button.update(dt);
         }
     }
 
     @Override
     public void handleTouch(float windowX, float windowY) {
+//        int screenX = Gdx.input.justTouched() ? (int) touchPos.x : -1;
+//        int screenY = Gdx.input.justTouched() ? (int) touchPos.y : -1;
+//
+//        Building building = (Building) buildAction.selectedObject;
+//
+//        if (cancelButton.checkForTouch(screenX, screenY)) {
+//            if (selectedButtonIndex != -1) {
+//                building.removeUpgrade((UpgradeType) inventoryButtons.get(selectedButtonIndex).meta);
+//            }
+//            hide();
+//        }
+//
+//        if (purchaseButton.checkForTouch(screenX, screenY)) {
+//            if (selectedButtonIndex != -1) {
+//                World.GetWorld().inventory.useUpgradeItem((UpgradeType) inventoryButtons.get(selectedButtonIndex).meta);
+//                hide();
+//            }
+//        }
+
+//            if (button.checkForTouch(screenX, screenY) && building.allowsUpgrade((UpgradeType) button.meta)) {
+//                selectedButtonIndex = i;
+//                building.applyUpgrade((UpgradeType) button.meta);
+//                purchaseButton.enable(true);
+//                // TODO: do anything else here?
+//            }
+
         // temp - remove handle properly
         hide();
     }
@@ -58,8 +93,8 @@ public class BuildActionModalWindow extends ModalWindow {
     @Override
     protected void renderWindowContents(SpriteBatch batch) {
         if (buildAction == null || !showText) return;
-
         if (buildAction.selectedObject == null) return;
+
         // Draw 'selected' building / tile
         float tile_size = modalRect.width / 2f - 2f * margin_left;
         buildAction.selectedObject.render(batch,
@@ -73,6 +108,22 @@ public class BuildActionModalWindow extends ModalWindow {
                 modalRect.y + modalRect.height / 2f - tile_size / 2f,
                 tile_size, tile_size);
         Assets.defaultNinePatch.draw(batch, inventoryRect.x, inventoryRect.y, inventoryRect.width, inventoryRect.height);
+
+        // Draw modal buttons
+        float modal_button_w = 200f;
+        float modal_button_h = 40f;
+        float modal_button_gap = 40f;
+        batch.setColor(Color.RED);
+        cancelButton.bounds.set(modalRect.x + modalRect.width / 2f + modal_button_gap / 2f, modalRect.y + margin_top, modal_button_w, modal_button_h);
+        cancelButton.setText("Cancel"); // re-layout text
+        purchaseButton.bounds.set(modalRect.x + modalRect.width / 2f - modal_button_gap / 2f - modal_button_w, modalRect.y + margin_top, modal_button_w, modal_button_h);
+        purchaseButton.setText("Purchase"); // re-layout text
+        cancelButton.render(batch);
+        purchaseButton.render(batch);
+        cancelButton.renderTooltip(batch, camera);
+        purchaseButton.renderTooltip(batch, camera);
+        batch.setColor(Color.WHITE);
+
 
         final Building building = ((Building) buildAction.selectedObject);
         if (building.type == Building.Type.EMPTY) {
@@ -130,6 +181,10 @@ public class BuildActionModalWindow extends ModalWindow {
                 inventoryButton2.setText(inventoryButton2.text, button_size + 2f * margin_left); // re-layout text
                 inventoryButton2.textColor = Color.WHITE;
                 inventoryButton2.render(batch);
+            }
+
+            for (Button button : inventoryButtons) {
+                button.renderTooltip(batch, camera);
             }
         }
 

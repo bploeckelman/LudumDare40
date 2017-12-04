@@ -25,6 +25,10 @@ public class Inventory {
         upgradeTypeCount.getAndIncrement(type, 0, numItems);
     }
 
+    public void useUpgradeItem(UpgradeType type) {
+        upgradeTypeCount.getAndIncrement(type, 0, -1);
+    }
+
     public ObjectIntMap<UpgradeType> getUpgradeTypeCount() {
         return upgradeTypeCount;
     }

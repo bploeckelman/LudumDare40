@@ -62,6 +62,7 @@ public class Assets {
     public static TextureRegion dumpsterCutoutTexture;
     public static TextureRegion recycleTexture;
     public static TextureRegion recycleCutoutTexture;
+    public static TextureRegion buttonBackgroundTexture;
 
     public static boolean initialized;
 
@@ -114,6 +115,7 @@ public class Assets {
         dumpsterCutoutTexture = atlas.findRegion("newdumpster-cutout");
         recycleTexture = atlas.findRegion("recycle");
         recycleCutoutTexture = atlas.findRegion("recycle-cutout");
+        buttonBackgroundTexture = atlas.findRegion("button-background");
 
         final Texture distText = new Texture(Gdx.files.internal("fonts/ubuntu.png"), true);
         distText.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);

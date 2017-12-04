@@ -135,7 +135,7 @@ public class Button {
                 Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
             }
 
-            renderTooltip(batch, camera);
+//            renderTooltip(batch, camera);
         }
     }
 
