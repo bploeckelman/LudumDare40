@@ -92,8 +92,9 @@ public class PlanPhaseScreen extends BaseScreen {
         nextButton = new Button("next_button", hudCamera, hudCamera.viewportWidth - margin - size,
                 hudCamera.viewportHeight - margin - size, "this goes next, duh");
 
-        buildButton = new Button("build_button", hudCamera, margin, hudCamera.viewportHeight - margin - size, "Build somethin'");
-        routeButton = new Button("route_button", hudCamera, margin, hudCamera.viewportHeight - 2f * margin - 2f * size, "Route something'");
+        buildButton = new Button("button-build-in", "button-build-out", hudCamera, margin, hudCamera.viewportHeight - margin - size, "Build something");
+//        routeButton = new Button("button-route-in", "button-route-out", hudCamera, margin + size, hudCamera.viewportHeight - margin - size, "Route something'");
+        routeButton = new Button("button-route-in", "button-route-out", hudCamera, margin, hudCamera.viewportHeight - margin - 2f * size, "Route something'");
 
         ButtonGroup bg = new ButtonGroup();
         bg.add(buildButton);
@@ -200,10 +201,10 @@ public class PlanPhaseScreen extends BaseScreen {
     }
 
     private void renderHud(SpriteBatch batch) {
-        batch.setColor(Color.WHITE);
-        Assets.layout.setText(Assets.font, "Plan Phase", Color.GOLD, hudCamera.viewportWidth, Align.center, true);
-        Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
-        batch.setColor(Color.WHITE);
+//        batch.setColor(Color.WHITE);
+//        Assets.layout.setText(Assets.font, "Plan Phase", Color.GOLD, hudCamera.viewportWidth, Align.center, true);
+//        Assets.drawString(batch, "Plan Phase", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+//        batch.setColor(Color.WHITE);
 
         buildButton.render(batch);
         routeButton.render(batch);

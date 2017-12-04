@@ -31,6 +31,7 @@ public class Button {
     private float tooltipTextOffsetY;
 
     public final TextureRegion region;
+    public final TextureRegion regionPressed;
     private final NinePatch ninePatch;
     public final Rectangle bounds;
     public String text = null;
@@ -66,8 +67,23 @@ public class Button {
         this(atlasRegion, camera, x, y, null, tooltip);
     }
 
+    public Button(String atlasRegion, String atlasRegionPressed, OrthographicCamera camera, float x, float y, String tooltip) {
+        this(atlasRegion, atlasRegionPressed, camera, x, y, null, tooltip);
+    }
+
     public Button(String atlasRegion, OrthographicCamera camera, float x, float y, String text, String tooltip) {
         this.region = Assets.atlas.findRegion(atlasRegion);
+        this.regionPressed = null;
+        this.bounds = new Rectangle(x, y, region.getRegionWidth(), region.getRegionHeight());
+        this.camera = camera;
+        this.setText(text);
+        this.setTooltip(tooltip);
+        this.ninePatch = null;
+    }
+
+    public Button(String atlasRegion, String atlasRegionPressed, OrthographicCamera camera, float x, float y, String text, String tooltip) {
+        this.region = Assets.atlas.findRegion(atlasRegion);
+        this.regionPressed = Assets.atlas.findRegion(atlasRegionPressed);
         this.bounds = new Rectangle(x, y, region.getRegionWidth(), region.getRegionHeight());
         this.camera = camera;
         this.setText(text);
@@ -79,6 +95,7 @@ public class Button {
         this.bounds = new Rectangle(bounds);
         this.camera = camera;
         this.region = region;
+        this.regionPressed = null;
         this.setText(text);
         this.setTooltip(tooltip);
         this.ninePatch = null;
@@ -88,12 +105,14 @@ public class Button {
         this.bounds = new Rectangle(bounds);
         this.camera = camera;
         this.region = region;
+        this.regionPressed = null;
         this.ninePatch = null;
     }
 
     public Button(NinePatch ninePatch, Rectangle bounds, OrthographicCamera camera, String text, String tooltip) {
         this.ninePatch = ninePatch;
         this.region = null;
+        this.regionPressed = null;
         this.bounds = new Rectangle(bounds);
         this.camera = camera;
         this.setText(text);
@@ -104,6 +123,7 @@ public class Button {
         this.bounds = new Rectangle(bounds);
         this.camera = camera;
         this.region = null;
+        this.regionPressed = null;
         this.ninePatch = ninePatch;
     }
 
@@ -128,14 +148,24 @@ public class Button {
         }
 
         if (selected) {
-            Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
+            if (regionPressed != null) {
+                batch.draw(regionPressed, bounds.x, bounds.y, bounds.width, bounds.height);
+            } else {
+//                Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
+                batch.setColor(217f / 255f, 126f / 255f, 0f, 0f);
+                batch.draw(Assets.buttonHighlightTexture, bounds.x, bounds.y, bounds.width, bounds.height);
+                batch.setColor(1f, 1f, 1f, 1f);
+            }
         }
 
         if (!enabled) {
-            highlight(batch, Color.LIGHT_GRAY, 0.5f);
+//            highlight(batch, Color.LIGHT_GRAY, 0.5f);
         } else {
             if (isHover && !noHover) {
-                Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
+                batch.setColor(217f / 255f, 126f / 255f, 0f, 0f);
+                batch.draw(Assets.buttonHighlightTexture, bounds.x, bounds.y, bounds.width, bounds.height);
+                batch.setColor(1f, 1f, 1f, 1f);
+//                Assets.defaultNinePatch.draw(batch, bounds.x, bounds.y, bounds.width, bounds.height);
             }
 
 //            renderTooltip(batch, camera);

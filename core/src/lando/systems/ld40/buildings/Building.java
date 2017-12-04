@@ -596,7 +596,7 @@ public class Building extends Tile {
         }
         if (supportsGreenCert){
             TextureRegion greenCert = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
-            batch.draw(greenCert, bounds.x + 4, bounds.y +  bounds.height - (greenCert.getRegionHeight() + 4));
+            batch.draw(greenCert, bounds.x + (CUTOUT_Y_OFFSET / 2f), bounds.y +  bounds.height - (greenCert.getRegionHeight() + (CUTOUT_Y_OFFSET / 2f)));
         }
 
         if (currentTrashLevel > 0){
@@ -653,11 +653,10 @@ public class Building extends Tile {
         if (supportsGreenCert){
             addonTexture = hasGreenCert ? Assets.leafTexture : Assets.leafCutoutTexture;
             batch.draw(addonTexture,
-                    x + w - wScale * (addonTexture.getRegionWidth()  + CUTOUT_X_OFFSET),
-                    y + h - hScale * (addonTexture.getRegionHeight() + CUTOUT_Y_OFFSET),
+                    x + (CUTOUT_X_OFFSET / 2f) * wScale,
+                    y + h - hScale * (addonTexture.getRegionWidth() + (CUTOUT_Y_OFFSET / 2f)),
                     wScale  * addonTexture.getRegionWidth(),
                     hScale * addonTexture.getRegionHeight());
-
         }
 
 

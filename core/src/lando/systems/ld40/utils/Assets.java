@@ -76,6 +76,7 @@ public class Assets {
     public static TextureRegion grass6;
     public static TextureRegion grass7;
     public static TextureRegion replayButton;
+    public static TextureRegion buttonHighlightTexture;
     public static TextureRegion upgradeTexture;
     public static TextureRegion dumpTexture;
     public static TextureRegion commercialLowTexture;
@@ -172,6 +173,7 @@ public class Assets {
         grassTiles.add(grass6);
         grassTiles.add(grass7);
         replayButton = atlas.findRegion("replay_button");
+        buttonHighlightTexture   = atlas.findRegion("button-highlight");
         upgradeTexture           = atlas.findRegion("upgrade");
         dumpTexture              = atlas.findRegion("dump");
         commercialLowTexture     = atlas.findRegion("com-low");
