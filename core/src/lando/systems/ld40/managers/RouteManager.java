@@ -113,7 +113,7 @@ public class RouteManager extends ActionManager {
             world.renderRoutes(batch, worldCamera, newRoute, routeButtons.selectedIndex());
         }
         batch.setProjectionMatrix(hudCamera.combined);
-        batch.setColor(Color.BLACK);
+        batch.setColor(Config.COLOR_BLACK);
         batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight/3);
 
         batch.setColor(Color.WHITE);
