@@ -25,10 +25,10 @@ public class World {
 
     private static World world;
 
-    public static final int tiles_wide = 13;
-    public static final int tiles_high = 11;
-    public static final int hq_x = 6;
-    public static final int hq_y = 5;
+    public static final int tiles_wide = 7;
+    public static final int tiles_high = 7;
+    public static final int hq_x = 4;
+    public static final int hq_y = 4;
     public static int hqIndex;
     public static final float tile_pixels_wide = 128;
     public static final float tile_pixels_high = 128;

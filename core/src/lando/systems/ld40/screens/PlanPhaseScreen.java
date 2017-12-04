@@ -294,7 +294,7 @@ public class PlanPhaseScreen extends BaseScreen {
         float camTargetX = World.pixels_wide / 2f;
         float camTargetY = World.pixels_high / 2f;
         float camTargetZoom = Math.max(
-                World.pixels_wide * 1.2f / hudCamera.viewportWidth,
+                World.pixels_wide * 1.3f / hudCamera.viewportWidth,
                 World.pixels_high * 1.2f / hudCamera.viewportHeight
         );
         zoomOut(manager, camTargetX, camTargetY, camTargetZoom);
@@ -360,7 +360,11 @@ public class PlanPhaseScreen extends BaseScreen {
             routeButton.select();
             IManager manager = new RouteManager(hudCamera, camera);
             setManager(manager);
-            zoomOut(manager, World.pixels_wide / 2f, 290, 4);
+            float camTargetZoom = Math.max(
+                    World.pixels_wide * 1.7f / hudCamera.viewportWidth,
+                    World.pixels_high * 1.7f / hudCamera.viewportHeight
+            );
+            zoomOut(manager, World.pixels_wide / 2f, World.pixels_high * .2f, camTargetZoom);
             return true;
         }
         return true;

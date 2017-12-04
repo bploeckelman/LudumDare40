@@ -47,7 +47,11 @@ class ActionPhaseScreen extends BaseScreen {
         world = World.GetWorld();
         SoundManager.playSound(SoundManager.SoundOptions.garbageTruck);
 //        Gdx.input.setInputProcessor(this);
-        camera.zoom = 2.5f;
+        float camTargetZoom = Math.max(
+                World.pixels_wide * 1.4f / hudCamera.viewportWidth,
+                World.pixels_high * 1.4f / hudCamera.viewportHeight
+        );
+        camera.zoom = camTargetZoom;
         camera.position.set(World.pixels_wide /2f, World.pixels_high/2f, 0);
         setPhase(Phase.READY);
     }
