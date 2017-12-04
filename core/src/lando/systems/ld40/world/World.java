@@ -11,6 +11,8 @@ import lando.systems.ld40.gameobjects.Routes;
 
 public class World {
 
+    public enum FilterType { None, Source, Desitination }
+
     private static World world;
 
     public static final int tiles_wide = 13;
@@ -21,6 +23,8 @@ public class World {
     public static final float tile_pixels_high = 128;
     public static final float pixels_wide = tiles_wide * tile_pixels_wide;
     public static final float pixels_high = tiles_high * tile_pixels_high;
+
+    private FilterType filter;
 
     public static World GetWorld(){
         if (world == null){
@@ -88,6 +92,10 @@ public class World {
         }
     }
 
+    private boolean shouldFilter(GameObject gameObject) {
+        return true;
+    }
+
     public GameObject getSelectedObject(float x, float y) {
         int index = getSelectedObjectIndex(x, y);
         System.out.println("tile: " + index);
@@ -119,5 +127,9 @@ public class World {
             if (tile.type != Building.Type.EMPTY) count++;
         }
         return count;
+    }
+
+    public void setFilter(FilterType filter) {
+        this.filter = filter;
     }
 }

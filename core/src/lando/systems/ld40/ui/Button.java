@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import lando.systems.ld40.gameobjects.GameObject;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 
@@ -50,8 +51,13 @@ public class Button {
     public boolean isHover;
     public ButtonGroup buttonGroup;
 
+    public GameObject gameObject;
 
     // Constructors ----------------------------------------------------------------------------------------------------
+    public Button(GameObject gameObject, Rectangle bounds, OrthographicCamera camera) {
+        this(gameObject.texture, bounds, camera);
+        this.gameObject = gameObject;
+    }
 
     public Button(String atlasRegion, OrthographicCamera camera, float x, float y, String tooltip) {
         this(atlasRegion, camera, x, y, null, tooltip);

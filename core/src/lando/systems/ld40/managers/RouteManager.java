@@ -2,7 +2,11 @@ package lando.systems.ld40.managers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.IntArray;
+import lando.systems.ld40.gameobjects.DumpTruck;
 import lando.systems.ld40.gameobjects.GameObject;
+import lando.systems.ld40.gameobjects.Routes;
+import lando.systems.ld40.world.World;
 
 /**
  * Created by Brian on 12/3/2017.
@@ -11,42 +15,71 @@ public class RouteManager extends ActionManager {
 
     public enum RouteState { NONE, START, PICK_ROUTE, PICK_SOURCES, PICK_DEST, DONE }
     public RouteState state = RouteState.START;
-    public GameObject selectedTruck;
+    public DumpTruck selectedTruck;
+
+    private World world;
+    private Routes routes;
+    private IntArray currentRoute;
 
     public RouteManager(OrthographicCamera hudCamera, OrthographicCamera worldCamera) {
+
         super(hudCamera, worldCamera);
+        world = World.GetWorld();
+        routes = world.routes;
+    }
+
+    @Override
+    public void activate() {
+        setState(RouteState.PICK_ROUTE);
+        window = new RouteActionModalWindow(hudCamera, this);
+        window.show();
+    }
+
+    private void setState(RouteState state) {
+        this.state = state;
+        switch (state) {
+            case PICK_SOURCES:
+                world.setFilter(World.FilterType.Source);
+                break;
+            case PICK_DEST:
+                world.setFilter(World.FilterType.Desitination);
+                break;
+            default:
+                world.setFilter(World.FilterType.None);
+                break;
+        }
     }
 
     @Override
     public void renderManager(SpriteBatch batch) {
         switch (state) {
             case START:
-                drawText(batch, "Select Route...");
-                break;
-            case PICK_ROUTE:
-                drawText(batch, "Select Route...");
                 break;
             case PICK_SOURCES:
-                drawText(batch, "Select Source...");
+                renderSelectSourcesHud(batch);
                 break;
             case PICK_DEST:
-                drawText(batch, "Click a destination...");
                 break;
-            case DONE: {
+            case DONE:
                 // nothing to see here
-            }
-            break;
+                break;
         }
+    }
+
+    private void renderSelectSourcesHud(SpriteBatch batch) {
+
     }
 
     @Override
     public void updateManager(float dt) {
-        switch (state) {
-            case START:
-                state = RouteState.PICK_ROUTE;
-                window = new RouteActionModalWindow(hudCamera, this);
-                window.show();
-                break;
+
+    }
+
+    public void selectTruck(GameObject truck) {
+        if (truck instanceof DumpTruck) {
+            selectedTruck = (DumpTruck)truck;
+            currentRoute = routes.routes.get(selectedTruck);
+            state = RouteState.PICK_SOURCES;
         }
     }
 }

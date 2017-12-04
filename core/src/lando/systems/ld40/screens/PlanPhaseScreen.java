@@ -107,13 +107,14 @@ public class PlanPhaseScreen extends BaseScreen {
             game.setScreen(new ResolutionPhaseScreen());
         }
 
-        updateAction(dt);
         if (actionManager == null || !actionManager.isModal()) {
+            updateCamera();
             updateWorld(dt);
             updateHud(dt);
-            updateCamera();
             updateTileTooltip(dt);
         }
+        updateAction(dt);
+
     }
 
     private void updateWorld(float dt) {
