@@ -62,7 +62,7 @@ public class PlanPhaseScreen extends BaseScreen {
 
     private float tooltipBackgroundHeight = 120f;
     private float tooltipBackgroundWidth = 270f;
-    private float tooltipTextOffsetY = 0;
+    private float tooltipTextOffsetY = 100f;
     public String tooltip = null;
     private boolean showTooltip = false;
     Vector3 tempVec3 = new Vector3();
@@ -240,7 +240,7 @@ public class PlanPhaseScreen extends BaseScreen {
         stringTX = backgroundX + TOOLTIP_TEXT_PADDING_X;
         if (tY <= Config.gameHeight / 2) {
             // bottom half of screen: align bottom edge of tooltip with cursor
-            backgroundY = tY + tooltipBackgroundHeight;
+            backgroundY = tY - tooltipBackgroundHeight;
         } else {
             // top half of screen: align top edge of tooltip with cursor
             backgroundY = tY;
@@ -249,9 +249,9 @@ public class PlanPhaseScreen extends BaseScreen {
 
         // DRAW
         batch.setColor(Color.DARK_GRAY);
-        batch.draw(Assets.whitePixel, backgroundX, backgroundY - 100f, tooltipBackgroundWidth, tooltipBackgroundHeight);
+        batch.draw(Assets.whitePixel, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         batch.setColor(Color.WHITE);
-        Assets.defaultNinePatch.draw(batch, backgroundX, backgroundY - 100f, tooltipBackgroundWidth, tooltipBackgroundHeight);
+        Assets.defaultNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         Assets.drawString(batch,
                 tooltip,
                 stringTX,
@@ -265,15 +265,21 @@ public class PlanPhaseScreen extends BaseScreen {
         Vector3 touchPosUnproject = camera.unproject(tempVec3.set(screenX, screenY, 0));
         touchPosScreen.set(touchPosUnproject.x, touchPosUnproject.y);
 
+        int additionalLine = 0;
         for (Building tile : World.buildings) {
+            tooltipBackgroundHeight = 120f;
+            tooltipTextOffsetY = 100f;
             if (tile.bounds.contains(touchPosScreen.x, touchPosScreen.y) && !nextButton.checkForTouch(screenX, screenY) && !buildButton.checkForTouch(screenX, screenY) && !routeButton.checkForTouch(screenX, screenY)) {
                 tooltip = "Type: " + tile.type;
                 if (tile.currentTier != null) {
                     tooltip += "\nTier: " + tile.currentTier;
+                    additionalLine++;
                 }
                 tooltip += "\nBase Trash Capacity: " + tile.baseTrashCapacity + "\nTrash per Round: " + tile.trashGeneratedPerRound
                         + "\nResource Generated: " + tile.valueGeneratedPerRound;
                 currentMouseOveredTile = tile;
+                tooltipBackgroundHeight += additionalLine * 20f;
+                tooltipTextOffsetY += additionalLine * 20f;
                 return true;
             }
         }
