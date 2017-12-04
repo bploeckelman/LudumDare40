@@ -268,9 +268,9 @@ public class PlanPhaseScreen extends BaseScreen {
                     tooltip += "\nTier: " + tile.currentTier;
                     additionalLine++;
                 }
-                tooltip += "\nBase Trash Capacity: " + tile.baseTrashCapacity;
-                if (tile.trashGeneratedPerRound != 0) tooltip += "\nTrash per Round: " + tile.trashGeneratedPerRound;
-                if (tile.valueGeneratedPerRound != 0) tooltip += "\nMoney Generated: " + tile.valueGeneratedPerRound;
+                tooltip += "\nTrash Capacity: " + tile.getCurrentTrashCapacity();
+                if (tile.trashGeneratedPerRound != 0) tooltip += "\nTrash per Round: " + tile.getFinalTrash();
+                if (tile.valueGeneratedPerRound != 0) tooltip += "\nMoney Generated: " + tile.getFinalValue();
                 currentMouseOveredTile = tile;
                 tooltipBackgroundHeight += additionalLine * 30f;
                 tooltipTextOffsetY += additionalLine * 20f;

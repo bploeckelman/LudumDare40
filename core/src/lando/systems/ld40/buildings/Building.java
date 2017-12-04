@@ -505,18 +505,18 @@ public class Building extends Tile {
      * @param baseValue
      * @return
      */
-    private float getAdditionalValueByTiers(float baseValue) {
+    public float getAdditionalValueByTiers(float baseValue) {
         if (supportsTiers) {
             float additionalValue;
             switch (currentTier) {
                 case ONE:
-                    additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 1);
+                    additionalValue = 0;
                     break;
                 case TWO:
-                    additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 2);
+                    additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT);
                     break;
                 case THREE:
-                    additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 3);
+                    additionalValue = baseValue * (TIER_LEVEL_GENERATION_BOOST_PERCENT * 2);
                     break;
                 default:
                     throw new RuntimeException("Unrecognized Tier");
@@ -527,12 +527,25 @@ public class Building extends Tile {
         }
     }
 
-    private float getCurrentTrashCapacity() {
+    public float getCurrentTrashCapacity() {
         float trashCapacity = baseTrashCapacity;
         if (hasDumpster) {
             trashCapacity += DUMPSTER_CAPACITY_BONUS;
         }
         return trashCapacity;
+    }
+
+    public float getFinalTrash() {
+        float finalTrash = (this.trashGeneratedPerRound + getAdditionalValueByTiers(this.trashGeneratedPerRound));
+        if (hasGreenCert) {
+            finalTrash -= finalTrash * GREEN_CERT_TRASH_GENERATION_REDUCTION_PERCENT;
+        }
+        return finalTrash;
+    }
+
+    public float getFinalValue() {
+        float finalValue = (this.trashGeneratedPerRound + getAdditionalValueByTiers(this.trashGeneratedPerRound));
+        return finalValue;
     }
 
     public boolean allowsUpgrade(UpgradeType upgradeType) {
