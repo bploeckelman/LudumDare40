@@ -124,8 +124,7 @@ public class World {
     }
 
     public void renderRoutes(SpriteBatch batch, OrthographicCamera camera, IntArray newRoute, int routeIndex) {
-//        batch.end();
-//        Assets.shapes.begin(ShapeRenderer.ShapeType.Filled);
+
         batch.setProjectionMatrix(camera.combined);
         
         if (newRoute != null) {
@@ -137,8 +136,6 @@ public class World {
             }
         }
 
-//        Assets.shapes.end();
-//        batch.begin();
     }
 
     private void renderRoute(IntArray route, int index, SpriteBatch batch) {

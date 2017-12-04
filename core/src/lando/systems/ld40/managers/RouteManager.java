@@ -1,5 +1,6 @@
 package lando.systems.ld40.managers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -40,6 +41,7 @@ public class RouteManager extends ActionManager {
 
     private Rectangle hudBounds;
     private Array<TruckButton> truckButtons;
+    private TruckButton hoveredTruck;
 
     public RouteManager(OrthographicCamera hudCamera, OrthographicCamera worldCamera) {
 
@@ -103,7 +105,11 @@ public class RouteManager extends ActionManager {
     public void renderManager(SpriteBatch batch) {
         if (!activated) return;
 
-        world.renderRoutes(batch, worldCamera, newRoute, routeButtons.selectedIndex());
+        if (hoveredTruck != null){
+            world.renderRoutes(batch, worldCamera, routes.routes.get(hoveredTruck.truck), truckButtons.indexOf(hoveredTruck, true));
+        } else {
+            world.renderRoutes(batch, worldCamera, newRoute, routeButtons.selectedIndex());
+        }
         batch.setProjectionMatrix(hudCamera.combined);
         batch.setColor(Color.BLACK);
         batch.draw(Assets.whitePixel, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight/3);
@@ -138,9 +144,16 @@ public class RouteManager extends ActionManager {
 
     @Override
     public void updateManager(float dt) {
+        hoveredTruck = null;
         for (TruckButton button : truckButtons) {
             button.update(dt);
+            if (selectedTruck == null){
+                if (button.checkForTouch(Gdx.input.getX(), Gdx.input.getY())){
+                    hoveredTruck = button;
+                }
+            }
         }
+
         switch (state) {
             case PICK_SOURCES:
                 remainingSelections = selectedTruck.speed - newRoute.size;
@@ -191,6 +204,7 @@ public class RouteManager extends ActionManager {
                 if (handled) {
                     routes.setRoute(selectedTruck, newRoute);
                     setState(RouteState.PICK_ROUTE);
+                    selectedTruck = null;
                 }
                 SoundManager.playSound(SoundManager.SoundOptions.startRoute);
                 break;
