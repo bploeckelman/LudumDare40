@@ -58,7 +58,7 @@ public class PlanPhaseScreen extends BaseScreen {
 
     private static final float TOOLTIP_TEXT_PADDING_X = 8f;
     private static final float TOOLTIP_TEXT_SCALE = 0.3f;
-    private static final float TOOLTIP_SHOW_DELAY = 1f;
+    private static final float TOOLTIP_SHOW_DELAY = .5f;
     private static final float TOOLTIP_CURSOR_OFFSET_X = 8f;
 
     //these tooltip values are assigned in checkForTouch, as the size depends on individual building
@@ -229,32 +229,18 @@ public class PlanPhaseScreen extends BaseScreen {
         if (tooltip == null || tooltip.equals("") || !showTooltip) return;
         if (actionManager != null && actionManager.isModal()) return;
 
+        backgroundX = 10;
         // Screen spacee
         if (tX < Config.gameWidth / 2) {
-            // left half of the screen: align left edge of tooltip at cursor
-            backgroundX = tX;
-            if (tY > Config.gameHeight / 2) {
-                // Tooltip will appear under the cursor (bottom-right).  Offset it
-                backgroundX += TOOLTIP_CURSOR_OFFSET_X;
-
-            }
-        } else {
-            // Right side of screen: align right edge of tooltip at cursor
-            backgroundX = tX - tooltipBackgroundWidth;
-
+            backgroundX = hudCamera.viewportWidth - (10 + tooltipBackgroundWidth);
         }
         stringTX = backgroundX + TOOLTIP_TEXT_PADDING_X;
-        if (tY <= Config.gameHeight / 2) {
-            // bottom half of screen: align bottom edge of tooltip with cursor
-            backgroundY = tY;
-        } else {
-            // top half of screen: align top edge of tooltip with cursor
-            backgroundY = tY - tooltipBackgroundHeight;
-        }
+
+        backgroundY = 10;
         stringTY = backgroundY + tooltipTextOffsetY;
 
         // DRAW
-        batch.setColor(1,1,1,.8f);
+        batch.setColor(1,1,1,.9f);
         Assets.tooltipNinePatch.draw(batch, backgroundX, backgroundY, tooltipBackgroundWidth, tooltipBackgroundHeight);
         Assets.drawString(batch,
                 tooltip,
