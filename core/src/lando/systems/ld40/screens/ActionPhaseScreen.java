@@ -116,6 +116,9 @@ class ActionPhaseScreen extends BaseScreen {
         updateWorld(dt);
         updateObjects(dt);
         updateCamera(dt);
+        if (currentPhase == Phase.READY && allowInput){
+            nextPhase();
+        }
     }
 
     private void updateWorld(float dt) {
