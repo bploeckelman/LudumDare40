@@ -732,7 +732,7 @@ public class Building extends Tile {
         if (filtered) {
             batch.draw(Assets.tileCover, bounds.x, bounds.y, bounds.width, bounds.height);
         }
-        renderValueAnimations(batch);
+//        renderValueAnimations(batch);
     }
 
     @Override
@@ -828,7 +828,7 @@ public class Building extends Tile {
     private void addValueAnimation(ValueAnimation valueAnimation) {
         valueAnimations.add(valueAnimation);
     }
-    private void renderValueAnimations(SpriteBatch batch) {
+    public void renderValueAnimations(SpriteBatch batch) {
         for (ValueAnimation valueAnimation : valueAnimations) {
             valueAnimation.render(batch, bounds.x + 20, bounds.y + bounds.height * 0.9f);
         }

@@ -366,6 +366,9 @@ class ActionPhaseScreen extends BaseScreen {
         {
             renderWorld(batch);
             renderObjects(batch);
+            for (Building building : world.buildings) {
+                building.renderValueAnimations(batch);
+            }
         }
         batch.end();
 
