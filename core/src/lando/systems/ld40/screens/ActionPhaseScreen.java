@@ -4,12 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.DumpTruck;
+import lando.systems.ld40.managers.TurnStatisticsModalWindow;
+import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.SoundManager;
+import lando.systems.ld40.world.Statistics;
+import lando.systems.ld40.world.TurnStatistics;
 import lando.systems.ld40.world.World;
 
 /**
@@ -18,6 +23,7 @@ import lando.systems.ld40.world.World;
 class ActionPhaseScreen extends BaseScreen {
 
     private World world;
+    private TurnStatisticsModalWindow turnStatisticsModalWindow;
 
     private enum Phase {
         READY,  // Waiting
@@ -60,6 +66,7 @@ class ActionPhaseScreen extends BaseScreen {
         );
         camera.zoom = camTargetZoom;
         camera.position.set(World.pixels_wide /2f, World.pixels_high/2f, 0);
+        turnStatisticsModalWindow = new TurnStatisticsModalWindow(hudCamera);
         // Reset all trucks for action phase
         for (DumpTruck dumpTruck : world.routes.trucks) {
             dumpTruck.resetForActionPhase();
@@ -102,6 +109,7 @@ class ActionPhaseScreen extends BaseScreen {
                 break;
             case ANIMATING_REWARDS:
                 debugPhaseLabel = "reward";
+                turnStatisticsModalWindow.show();
                 break;
             case REWARDS_FINAL:
                 debugPhaseLabel = "final";
@@ -295,7 +303,46 @@ class ActionPhaseScreen extends BaseScreen {
         if (currentPhase == Phase.ANIMATING_REWARDS) {
             // This is a "halt" point... e.g. if we're skipping animations we'll restart them here.
             currentPhaseSkipAnimation = false;
-        }
+            float totalGarbageGenerated = 0;
+            float totalGarbageHauled = 0;
+            float totalGarbageInLandfill = 0;
+            float totalGarbageRecycled = 0;
+            int totalMoneyGained = 0;
+            int numberOfAddons = 0;
+            for (int i = 0; i < World.buildings.size; i++) {
+                totalGarbageGenerated += World.buildings.get(i).thisTurnGarbageGenerated;
+                totalGarbageHauled += World.buildings.get(i).thisTurnGarbageReceived;
+                totalGarbageRecycled += World.buildings.get(i).thisTurnGarbageRecycled;
+                totalMoneyGained += World.buildings.get(i).thisTurnValueGenerated + World.buildings.get(i).thisTurnValueGeneratedByRecycling;
+                if (World.buildings.get(i).hasIncinerator) {
+                    numberOfAddons++;
+                }
+                if (World.buildings.get(i).hasCompactor) {
+                    numberOfAddons++;
+                }
+                if (World.buildings.get(i).hasDumpster) {
+                    numberOfAddons++;
+                }
+                if (World.buildings.get(i).hasGreenCert) {
+                    numberOfAddons++;
+                }
+                if (World.buildings.get(i).hasRecycle) {
+                    numberOfAddons++;
+                }
+                if (World.buildings.get(i).type == Building.Type.DUMP) {
+                    totalGarbageInLandfill += World.buildings.get(i).currentTrashLevel;
+                }
+
+            }
+            TurnStatistics currentTurnStats = Statistics.getStatistics().getCurrentTurnStatistics();
+            currentTurnStats.money += totalMoneyGained;
+            currentTurnStats.garbageHauled = totalGarbageHauled;
+            currentTurnStats.garbageGenerated = totalGarbageGenerated;
+            currentTurnStats.addons = numberOfAddons;
+            currentTurnStats.garbageInLandFills = totalGarbageInLandfill;
+
+
+       }
 
     }
 
@@ -342,6 +389,9 @@ class ActionPhaseScreen extends BaseScreen {
 //        batch.setColor(Color.LIGHT_GRAY);
 //        batch.draw(Assets.whitePixel, 10, 10, camera.viewportWidth - 20, 50);
 //        batch.setColor(Color.WHITE);
+        if (currentPhase == Phase.ANIMATING_REWARDS || currentPhase == Phase.REWARDS_FINAL) {
+            turnStatisticsModalWindow.render(batch);
+        }
         Assets.drawString(batch, "Action Phase ("+debugPhaseLabel+")", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
     }
 

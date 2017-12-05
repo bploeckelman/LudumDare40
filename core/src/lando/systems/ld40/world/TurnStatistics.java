@@ -9,9 +9,9 @@ public class TurnStatistics {
     public int money;
     public int buildings;
     public int addons;
-    public int garbageGenerated;
-    public int garbageHauled;
-    public int garbageInLandFills;
+    public float garbageGenerated;
+    public float garbageHauled;
+    public float garbageInLandFills;
 
 
     public TurnStatistics(int money) {
@@ -21,5 +21,6 @@ public class TurnStatistics {
         this.garbageGenerated = 0;
         this.garbageHauled = 0;
         this.garbageInLandFills = 0;
+        this.turnNumber = 1;
     }
 }
