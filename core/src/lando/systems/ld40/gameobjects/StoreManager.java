@@ -188,7 +188,7 @@ public class StoreManager {
     }
 
     public int getTruckCost(DumpTruck.TruckType type){
-        return (type.speed * 50 + type.capacity / 5);
+        return (type.speed * 20 + type.capacity);
     }
     
 }

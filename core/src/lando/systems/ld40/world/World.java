@@ -79,6 +79,8 @@ public class World {
         // TODO: maybe force player to place them as tutorial?
         setRandom(Building.Type.DUMP);
         setRandom(Building.Type.RESIDENTIAL_LOW);
+        setRandom(Building.Type.RESIDENTIAL_LOW);
+        setRandom(Building.Type.RESIDENTIAL_LOW);
         setRandom(Building.Type.COMMERCIAL_LOW);
         setRandom(Building.Type.INDUSTRIAL_LOW);
     }

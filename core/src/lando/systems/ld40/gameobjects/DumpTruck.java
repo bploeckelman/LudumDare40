@@ -28,20 +28,20 @@ public class DumpTruck extends GameObject {
         }
     }
 
-    public static final TruckType One = new TruckType(1, 50, Assets.truck1AtlasRegions);
-    public static final TruckType Two = new TruckType(1, 100, Assets.truck2AtlasRegions);
-    public static final TruckType Three = new TruckType(1, 200, Assets.truck3AtlasRegions);
-    public static final TruckType Four = new TruckType(2, 50, Assets.truck1AtlasRegions);
-    public static final TruckType Five = new TruckType(2, 100, Assets.truck2AtlasRegions);
-    public static final TruckType Six = new TruckType(2, 200, Assets.truck3AtlasRegions);
-    public static final TruckType Seven = new TruckType(3, 50, Assets.truck1AtlasRegions);
-    public static final TruckType Eight = new TruckType(3, 100, Assets.truck2AtlasRegions);
-    public static final TruckType Nine = new TruckType(3, 200, Assets.truck3AtlasRegions);
+    public static final TruckType One = new TruckType(1, 10, Assets.truck1AtlasRegions);
+    public static final TruckType Two = new TruckType(1, 20, Assets.truck2AtlasRegions);
+    public static final TruckType Three = new TruckType(1, 40, Assets.truck3AtlasRegions);
+    public static final TruckType Four = new TruckType(2, 10, Assets.truck1AtlasRegions);
+    public static final TruckType Five = new TruckType(2, 20, Assets.truck2AtlasRegions);
+    public static final TruckType Six = new TruckType(2, 40, Assets.truck3AtlasRegions);
+    public static final TruckType Seven = new TruckType(3, 10, Assets.truck1AtlasRegions);
+    public static final TruckType Eight = new TruckType(3, 20, Assets.truck2AtlasRegions);
+    public static final TruckType Nine = new TruckType(3, 40, Assets.truck3AtlasRegions);
 
     // -----------------------------------------------------------------------------------------------------------------
 
     private static final float MOVE_TIME = 0.7f; // time from start to dest
-    private static final float STOP_WAIT_TIME = 1f; // trucks pause on building this long
+    private static final float STOP_WAIT_TIME = .2f; // trucks pause on building this long
     private static final float TILE_OFFSET_Y = 10f;
     private static final float TRUCK_SIZE_SCALE = 1.6f;
     public final UpgradeType type = UpgradeType.TRUCK;

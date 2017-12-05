@@ -246,9 +246,9 @@ public class Building extends Tile {
                 supportsGreenCert = true;
                 supportsTiers = true;
                 currentTier = Tier.ONE;
-                trashGeneratedPerRound = 1;
-                valueGeneratedPerRound = 1;
-                baseTrashCapacity = 5;
+                trashGeneratedPerRound = 2;
+                valueGeneratedPerRound = 30;
+                baseTrashCapacity = 6;
                 resource = Resource.MONEY;
                 break;
 
@@ -258,7 +258,7 @@ public class Building extends Tile {
                 supportsTiers = true;
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 2;
-                valueGeneratedPerRound = 3;
+                valueGeneratedPerRound = 40;
                 baseTrashCapacity = 8;
                 resource = Resource.MONEY;
                 break;
@@ -269,7 +269,7 @@ public class Building extends Tile {
                 supportsTiers = true;
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 3;
-                valueGeneratedPerRound = 5;
+                valueGeneratedPerRound = 60;
                 baseTrashCapacity = 12;
                 resource = Resource.MONEY;
                 break;
@@ -287,8 +287,8 @@ public class Building extends Tile {
                 supportsGreenCert = true;
                 supportsTiers = true;
                 currentTier = Tier.ONE;
-                trashGeneratedPerRound = 1;
-                valueGeneratedPerRound = 1;
+                trashGeneratedPerRound = 2;
+                valueGeneratedPerRound = 40;
                 baseTrashCapacity = 10;
                 resource = Resource.MONEY;
                 break;
@@ -298,8 +298,8 @@ public class Building extends Tile {
                 supportsGreenCert = true;
                 supportsTiers = true;
                 currentTier = Tier.ONE;
-                trashGeneratedPerRound = 2;
-                valueGeneratedPerRound = 3;
+                trashGeneratedPerRound = 3;
+                valueGeneratedPerRound = 80;
                 baseTrashCapacity = 13;
                 resource = Resource.MONEY;
                 break;
@@ -310,7 +310,7 @@ public class Building extends Tile {
                 supportsTiers = true;
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 3;
-                valueGeneratedPerRound = 5;
+                valueGeneratedPerRound = 200;
                 baseTrashCapacity = 16;
                 resource = Resource.MONEY;
                 break;
@@ -327,7 +327,7 @@ public class Building extends Tile {
                 supportsTiers = true;
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 1;
-                valueGeneratedPerRound = 1;
+                valueGeneratedPerRound = 20;
                 baseTrashCapacity = 10;
                 resource = Resource.MONEY;
                 break;
@@ -338,7 +338,7 @@ public class Building extends Tile {
                 supportsTiers = true;
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 2;
-                valueGeneratedPerRound = 3;
+                valueGeneratedPerRound = 40;
                 baseTrashCapacity = 13;
                 resource = Resource.MONEY;
                 break;
@@ -349,7 +349,7 @@ public class Building extends Tile {
                 supportsTiers = true;
                 currentTier = Tier.ONE;
                 trashGeneratedPerRound = 3;
-                valueGeneratedPerRound = 5;
+                valueGeneratedPerRound = 100;
                 baseTrashCapacity = 16;
                 resource = Resource.MONEY;
                 break;
