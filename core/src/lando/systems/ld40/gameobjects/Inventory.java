@@ -29,6 +29,7 @@ public class Inventory {
         // NOTE: Add starting addons/buildings here ---------------------
         addTileItem(TileType.DUMP);
         addUpgradeItem(UpgradeType.DUMPSTER);
+        addUpgradeItems(UpgradeType.DEMOLITION, 10);
         // NOTE: Add starting addons/buildings here ---------------------
     }
 
