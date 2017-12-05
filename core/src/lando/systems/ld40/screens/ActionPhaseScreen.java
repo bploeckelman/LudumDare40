@@ -397,7 +397,7 @@ class ActionPhaseScreen extends BaseScreen {
         if (currentPhase == Phase.ANIMATING_REWARDS || currentPhase == Phase.REWARDS_FINAL) {
             turnStatisticsModalWindow.render(batch);
         }
-        Assets.drawString(batch, "Action Phase ("+debugPhaseLabel+")", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
+//        Assets.drawString(batch, "Action Phase ("+debugPhaseLabel+")", 20f, 45f, Color.GOLD, 0.5f, Assets.font);
     }
 
     @Override
