@@ -9,6 +9,7 @@
 	<!-- Uncomment and add entries for packages / classes that require reflection (mainly pools)
 	<extend-configuration-property name="gdx.reflect.include" value="lando.systems.ld39.PACKAGE.TO.REFLECT" />
 	-->
+	<extend-configuration-property name="gdx.reflect.include" value="lando.systems.ld40.buildings.Building.Type" />
 
 	<entry-point class='lando.systems.ld40.client.HtmlLauncher' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>

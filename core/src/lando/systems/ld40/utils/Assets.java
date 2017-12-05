@@ -131,8 +131,8 @@ public class Assets {
         nearestParams.magFilter = Texture.TextureFilter.Nearest;
 
         mgr = new AssetManager();
+        atlas = new TextureAtlas(Gdx.files.internal("sprites.atlas"));
 
-        mgr.load("sprites.atlas", TextureAtlas.class);
         mgr.load("images/titlebackground.png", Texture.class);
         mgr.load("images/titlename.png", Texture.class);
 
@@ -159,7 +159,6 @@ public class Assets {
         titleScreenBackground = mgr.get("images/titlebackground.png", Texture.class);
         titleName = mgr.get("images/titlename.png", Texture.class);
 
-        atlas = mgr.get("sprites.atlas", TextureAtlas.class);
         testTexture = atlas.findRegion("badlogic");
         whitePixel = atlas.findRegion("white-pixel");
 
