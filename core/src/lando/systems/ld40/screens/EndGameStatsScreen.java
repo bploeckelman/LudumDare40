@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
+import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
@@ -14,6 +15,7 @@ import lando.systems.ld40.world.Statistics;
 public class EndGameStatsScreen extends BaseScreen {
     Statistics stats;
     Button replayButton;
+    Button nextButton;
     Button showMoneyButton;
     Button showBuildingsButton;
     Button showAddonsButton;
@@ -24,6 +26,7 @@ public class EndGameStatsScreen extends BaseScreen {
     public EndGameStatsScreen(){
         stats = Statistics.getStatistics();
         // I am a bad person.  Here are some magic numbers
+        nextButton = new Button(Assets.nextButtonTexture, new Rectangle(690, 60, 50, 50), hudCamera);
         replayButton = new Button(Assets.replayButton, new Rectangle(60, 60, 50, 50), hudCamera);
         showMoneyButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 440, 20, 20), hudCamera);
         showBuildingsButton = new Button(Assets.whiteNinePatch, new Rectangle(550, 400, 20, 20), hudCamera);
@@ -54,6 +57,7 @@ public class EndGameStatsScreen extends BaseScreen {
 
         batch.setColor(Color.WHITE);
         replayButton.render(batch);
+        nextButton.render(batch);
 
         batch.setColor(stats.showMoney? Statistics.COLOR_MONEY : Config.COLOR_BACKGROUND);
         showMoneyButton.render(batch);
@@ -89,6 +93,9 @@ public class EndGameStatsScreen extends BaseScreen {
     public boolean touchUp (int screenX, int screenY, int pointer, int button) {
         if (replayButton.checkForTouch(screenX, screenY)){
             stats.animationTimer = 0;
+        }
+        if (nextButton.checkForTouch(screenX, screenY)){
+            LudumDare40.game.setScreen(new EndScreen(), Assets.heartShader, 3f);
         }
         if (showMoneyButton.checkForTouch(screenX, screenY)){
             stats.showMoney = !stats.showMoney;

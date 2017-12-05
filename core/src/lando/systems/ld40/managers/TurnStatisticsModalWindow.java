@@ -26,6 +26,7 @@ public class TurnStatisticsModalWindow extends ModalWindow {
 
     @Override
     protected void renderWindowContents(SpriteBatch batch) {
+        if (!showText) return;
         batch.setShader(Assets.fontShader);
         {
             final float title_text_scale = 0.5f;

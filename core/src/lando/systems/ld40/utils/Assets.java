@@ -98,6 +98,7 @@ public class Assets {
     public static TextureRegion tier3Texture;
     public static TextureRegion tileHighlightTexture;
     public static TextureRegion moneyTexture;
+    public static TextureRegion nextButtonTexture;
 
     public static Array<TextureAtlas.AtlasRegion> truck1AtlasRegions;
     public static Array<TextureAtlas.AtlasRegion> truck2AtlasRegions;
@@ -205,6 +206,7 @@ public class Assets {
         tier2Texture = atlas.findRegion("tier2");
         tier3Texture = atlas.findRegion("tier3");
         tileHighlightTexture = atlas.findRegion("tile-highlight");
+        nextButtonTexture = atlas.findRegion("next_button");
 
         cloudTextures = new Array<TextureRegion>();
         cloudTextures.add(atlas.findRegion("cloud1"));

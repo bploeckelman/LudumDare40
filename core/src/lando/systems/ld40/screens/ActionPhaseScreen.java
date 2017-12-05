@@ -24,6 +24,7 @@ class ActionPhaseScreen extends BaseScreen {
 
     private World world;
     private TurnStatisticsModalWindow turnStatisticsModalWindow;
+    private boolean firstTime;
 
     private enum Phase {
         READY,  // Waiting
@@ -40,7 +41,7 @@ class ActionPhaseScreen extends BaseScreen {
                 case ANIMATING_ACTIONS_GENERATE_TRASH:  return Phase.ANIMATING_ACTIONS_RUN_TRUCKS;
                 case ANIMATING_ACTIONS_RUN_TRUCKS:      return Phase.ANIMATING_ACTIONS_BUILDING_UPKEEP;
                 case ANIMATING_ACTIONS_BUILDING_UPKEEP: return Phase.ANIMATING_ACTIONS_GENERATE_VALUE;
-                case ANIMATING_ACTIONS_GENERATE_VALUE:  return Phase.ANIMATING_REWARDS;
+                case ANIMATING_ACTIONS_GENERATE_VALUE:  return Phase.REWARDS_FINAL;
                 case ANIMATING_REWARDS:                 return Phase.REWARDS_FINAL;
                 case REWARDS_FINAL:                     return Phase.REWARDS_FINAL;
                 default:
@@ -57,6 +58,7 @@ class ActionPhaseScreen extends BaseScreen {
     // -----------------------------------------------------------------------------------------------------------------
 
     public ActionPhaseScreen() {
+        firstTime = true;
         world = World.GetWorld();
         SoundManager.playSound(SoundManager.SoundOptions.garbageTruck);
 //        Gdx.input.setInputProcessor(this);
@@ -109,9 +111,10 @@ class ActionPhaseScreen extends BaseScreen {
                 break;
             case ANIMATING_REWARDS:
                 debugPhaseLabel = "reward";
-                turnStatisticsModalWindow.show();
                 break;
             case REWARDS_FINAL:
+                turnStatisticsModalWindow.show();
+
                 debugPhaseLabel = "final";
                 break;
         }
@@ -300,7 +303,7 @@ class ActionPhaseScreen extends BaseScreen {
 
         }
 
-        if (currentPhase == Phase.ANIMATING_REWARDS) {
+        if (currentPhase == Phase.ANIMATING_REWARDS || currentPhase == Phase.REWARDS_FINAL) {
             // This is a "halt" point... e.g. if we're skipping animations we'll restart them here.
             currentPhaseSkipAnimation = false;
             float totalGarbageGenerated = 0;
@@ -334,13 +337,15 @@ class ActionPhaseScreen extends BaseScreen {
                 }
 
             }
-            TurnStatistics currentTurnStats = Statistics.getStatistics().getCurrentTurnStatistics();
-            currentTurnStats.money += totalMoneyGained;
-            currentTurnStats.garbageHauled = totalGarbageHauled;
-            currentTurnStats.garbageGenerated = totalGarbageGenerated;
-            currentTurnStats.addons = numberOfAddons;
-            currentTurnStats.garbageInLandFills = totalGarbageInLandfill;
-
+            if (firstTime) {
+                firstTime = false;
+                TurnStatistics currentTurnStats = Statistics.getStatistics().getCurrentTurnStatistics();
+                currentTurnStats.money += totalMoneyGained;
+                currentTurnStats.garbageHauled = totalGarbageHauled;
+                currentTurnStats.garbageGenerated = totalGarbageGenerated;
+                currentTurnStats.addons = numberOfAddons;
+                currentTurnStats.garbageInLandFills = totalGarbageInLandfill;
+            }
 
        }
 

@@ -71,14 +71,7 @@ public class TitleScreen extends BaseScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
-        // TODO: REMOVE DEV SHORTCUT
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            game.setScreen(new ActionPhaseScreen());
-        }
-        // TODO: REMOVE DEV SHORTCUT
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            game.setScreen(new ResolutionPhaseScreen());
-        }
+
         if (Gdx.input.justTouched() & allowInput) {
             game.setScreen(new PlanPhaseScreen(true), Assets.doorwayShader, 2.5f);
         }
