@@ -76,7 +76,6 @@ public class ValueAnimation {
         // Compute measurements for layout once here
         // Layout ->  [ICON] [VALUE] ([MOD_ICONS...])
         Assets.font.getData().setScale(TEXT_SCALE);
-        Assets.fontShader.setUniformf("u_scale", TEXT_SCALE);
         Assets.layout.setText(Assets.font, valueString);
         float textHeight = Assets.layout.height;
         float textWidth = Assets.layout.width;
