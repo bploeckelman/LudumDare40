@@ -184,12 +184,14 @@ public class RouteManager extends ActionManager {
     public void selectTruck(TruckButton truck) {
         if (truck.selected) {
             setState(RouteState.PICK_ROUTE);
+            SoundManager.playSound(SoundManager.SoundOptions.clickButton);
         } else {
             truck.select();
             selectedTruck = truck.truck;
             newRoute = new IntArray();
             remainingSelections = selectedTruck.speed;
             setState(RouteState.PICK_SOURCES);
+            SoundManager.playSound(SoundManager.SoundOptions.clickButton);
         }
     }
 
@@ -218,7 +220,7 @@ public class RouteManager extends ActionManager {
                     setState(RouteState.PICK_ROUTE);
                     selectedTruck = null;
                 }
-                SoundManager.playSound(SoundManager.SoundOptions.startRoute);
+                SoundManager.playSound(SoundManager.SoundOptions.pickRouteWaypoint);
                 break;
         }
 

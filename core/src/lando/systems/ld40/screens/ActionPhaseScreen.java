@@ -58,7 +58,7 @@ class ActionPhaseScreen extends BaseScreen {
     public ActionPhaseScreen() {
         firstTime = true;
         world = World.GetWorld();
-        SoundManager.playSound(SoundManager.SoundOptions.garbageTruck);
+        SoundManager.playSound(SoundManager.SoundOptions.startActionPhase);
 //        Gdx.input.setInputProcessor(this);
         float camTargetZoom = Math.max(
                 World.pixels_wide * 1.1f / hudCamera.viewportWidth,

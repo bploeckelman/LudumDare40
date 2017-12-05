@@ -11,6 +11,7 @@ import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.gameobjects.ValueAnimation;
 import lando.systems.ld40.gameobjects.ValueAnimationIcon;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.SoundManager;
 import lando.systems.ld40.utils.Utils;
 
 import java.util.ArrayList;
@@ -426,6 +427,7 @@ public class Building extends Tile {
         }
         thisTurnGarbageReceived += trashAmount;
         currentTrashLevel += trashAmount;
+        SoundManager.playSound(SoundManager.SoundOptions.dumpTrash);
         float remainder = Math.max(currentTrashLevel - getCurrentTrashCapacity(), 0);
         float trashAdded = trashAmount - remainder;
         if (animate) {
@@ -448,6 +450,7 @@ public class Building extends Tile {
         float trashToRemove = Math.min(trashRequested, currentTrashLevel);
         currentTrashLevel -= trashToRemove;
         if (animate) {
+            SoundManager.playSound(SoundManager.SoundOptions.pickupTrash);
             addValueAnimation(new ValueAnimation(-trashToRemove, ValueAnimationIcon.TRASH, new ArrayList<ValueAnimationIcon>()));
         }
         return trashToRemove;

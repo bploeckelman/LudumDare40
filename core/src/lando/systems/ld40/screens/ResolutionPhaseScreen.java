@@ -18,6 +18,7 @@ import lando.systems.ld40.gameobjects.*;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
+import lando.systems.ld40.utils.SoundManager;
 import lando.systems.ld40.world.Statistics;
 import lando.systems.ld40.world.World;
 
@@ -522,23 +523,27 @@ public class ResolutionPhaseScreen extends BaseScreen {
             int touchY = (int) hudCamera.viewportHeight - (int) touchPos.y;
 
             if (bBuildings.checkForTouch(touchX, touchY)) {
+                SoundManager.playSound(SoundManager.SoundOptions.clickButton);
                 selectedGroup = ItemGroups.Building;
                 currentUpgrade = null;
             }
             else if (bAddons.checkForTouch(touchX, touchY)) {
+                SoundManager.playSound(SoundManager.SoundOptions.clickButton);
                 selectedGroup = ItemGroups.Addon;
                 currentUpgrade = null;
             }
             else if (bResearch.checkForTouch(touchX, touchY)) {
+                SoundManager.playSound(SoundManager.SoundOptions.clickButton);
                 selectedGroup = ItemGroups.Research;
                 currentUpgrade = null;
             }
-            else if (bTrucks.checkForTouch(touchX, touchY))
-            {
+            else if (bTrucks.checkForTouch(touchX, touchY)) {
+                SoundManager.playSound(SoundManager.SoundOptions.clickButton);
                 selectedGroup = ItemGroups.Trucks;
                 currentUpgrade = null;
             }
             else if (bContinue.checkForTouch(touchX, touchY)){
+                SoundManager.playSound(SoundManager.SoundOptions.clickButton);
                 world.nextTurn();
                 if (world.turnNumber >= Config.gameTurns){
                     LudumDare40.game.setScreen(new EndGameStatsScreen(), Assets.doorwayShader, 3f);
@@ -550,6 +555,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
             {
                 if(Statistics.getStatistics().getCurrentTurnStatistics().money >= currentUpgrade.cost && !purchaseUpgradeButton.text.contentEquals("Researched"))
                 {
+                    SoundManager.playSound(SoundManager.SoundOptions.spendMoney);
                     Statistics.getStatistics().getCurrentTurnStatistics().money -= currentUpgrade.cost;
                     if(currentUpgrade.group == ItemGroups.Research)
                     {
@@ -595,11 +601,10 @@ public class ResolutionPhaseScreen extends BaseScreen {
             default: currArr = new Array<UpgradeButton>();
         }
 
-        for(UpgradeButton button : currArr)
-        {
-            if(button.button.checkForTouch(x, y) && button.button.enabled)
-            {
+        for(UpgradeButton button : currArr) {
+            if(button.button.checkForTouch(x, y) && button.button.enabled) {
                 currentUpgrade = button;
+                SoundManager.playSound(SoundManager.SoundOptions.clickButton);
             }
         }
     }

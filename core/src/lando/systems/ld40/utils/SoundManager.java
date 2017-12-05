@@ -14,7 +14,7 @@ public class SoundManager {
     public static final float MUSIC_VOLUME = 0.25f;
 
     public enum SoundOptions {
-        compactor, garbageTruck, incinerator, startRoute
+        buildAddon, clickButton, collectMoney, dumpTrash, pickRouteWaypoint, pickupTrash, spendMoney, startActionPhase
     }
 
     public enum MusicOptions {
@@ -28,14 +28,20 @@ public class SoundManager {
     public static MutableFloat musicVolume;
 
     public static void load(boolean playMusic) {
-        soundMap.put(SoundOptions.compactor, Gdx.audio.newSound(Gdx.files.internal("sounds/compactor.mp3")));
-        soundMap.put(SoundOptions.garbageTruck, Gdx.audio.newSound(Gdx.files.internal("sounds/garbage-truck.mp3")));
-        soundMap.put(SoundOptions.incinerator, Gdx.audio.newSound(Gdx.files.internal("sounds/incinerator.mp3")));
-        soundMap.put(SoundOptions.startRoute, Gdx.audio.newSound(Gdx.files.internal("sounds/start-route.mp3")));
+
+        soundMap.put(SoundOptions.buildAddon, Gdx.audio.newSound(Gdx.files.internal("sounds/build-addon.wav")));
+        soundMap.put(SoundOptions.clickButton, Gdx.audio.newSound(Gdx.files.internal("sounds/click-button.wav")));
+        soundMap.put(SoundOptions.collectMoney, Gdx.audio.newSound(Gdx.files.internal("sounds/collect-money.wav")));
+        soundMap.put(SoundOptions.dumpTrash, Gdx.audio.newSound(Gdx.files.internal("sounds/dump-trash.wav")));
+        soundMap.put(SoundOptions.pickRouteWaypoint, Gdx.audio.newSound(Gdx.files.internal("sounds/pick-route-waypoint.wav")));
+        soundMap.put(SoundOptions.pickupTrash, Gdx.audio.newSound(Gdx.files.internal("sounds/pickup-trash.wav")));
+        soundMap.put(SoundOptions.spendMoney, Gdx.audio.newSound(Gdx.files.internal("sounds/spend-money.wav")));
+        soundMap.put(SoundOptions.startActionPhase, Gdx.audio.newSound(Gdx.files.internal("sounds/start-action-phase.wav")));
+
 
 //        musicMap.put(MusicOptions.titleScreen, Gdx.audio.newMusic(Gdx.files.internal("sounds/title-screen-music.mp3")));
 //        musicMap.put(MusicOptions.mainGame, Gdx.audio.newMusic(Gdx.files.internal("sounds/main-game-music.mp3")));
-        musicMap.put(MusicOptions.musicGame, Gdx.audio.newMusic(Gdx.files.internal("sounds/music-game.mp3")));
+//        musicMap.put(MusicOptions.musicGame, Gdx.audio.newMusic(Gdx.files.internal("sounds/music-game.mp3")));
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music-game.mp3"));//musicMap.get(MusicOptions.game);
         music.setVolume(0.5f);
         music.setLooping(true);

@@ -27,6 +27,7 @@ import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
+import lando.systems.ld40.utils.SoundManager;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
 import lando.systems.ld40.world.Statistics;
 import lando.systems.ld40.world.World;
@@ -371,10 +372,12 @@ public class PlanPhaseScreen extends BaseScreen {
         // if one of the buttons, disable button presses, zoom out and create correct action maanger
 
         if (nextButton.checkForTouch(screenX, screenY)) {
+            SoundManager.playSound(SoundManager.SoundOptions.clickButton);
             world.setFilter(World.FilterType.None);
             game.setScreen(new ActionPhaseScreen());
             return true;
         } else if (buildButton.checkForTouch(screenX, screenY)) {
+            SoundManager.playSound(SoundManager.SoundOptions.clickButton);
             buildButton.select();
             world.setFilter(World.FilterType.None);
             IManager manager = new BuildManager(hudCamera, camera);
@@ -382,6 +385,7 @@ public class PlanPhaseScreen extends BaseScreen {
             zoomOut(manager);
             return true;
         } else if (routeButton.checkForTouch(screenX, screenY)) {
+            SoundManager.playSound(SoundManager.SoundOptions.clickButton);
             routeButton.select();
             IManager manager = new RouteManager(hudCamera, camera);
             setManager(manager);

@@ -18,6 +18,7 @@ import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.ui.Button;
 import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
+import lando.systems.ld40.utils.SoundManager;
 import lando.systems.ld40.utils.accessors.RectangleAccessor;
 import lando.systems.ld40.world.World;
 
@@ -163,6 +164,7 @@ public class BuildActionModalWindow extends ModalWindow {
                                     } else {
                                         building.applyUpgrade(lastSelectedUpgrade);
                                     }
+                                    SoundManager.playSound(SoundManager.SoundOptions.buildAddon);
                                 }
                             }))
                             .pushPause(0.5f)
@@ -196,6 +198,7 @@ public class BuildActionModalWindow extends ModalWindow {
                         .push(Tween.call(new TweenCallback() {
                             @Override
                             public void onEvent(int i, BaseTween<?> baseTween) {
+                                SoundManager.playSound(SoundManager.SoundOptions.buildAddon);
                                 World.GetWorld().replaceTile(building, lastSelectedBuilding.toBuildingType());
                                 lastSelectedBuildingTexture = null;
                                 selectedTileRect = null;
@@ -217,6 +220,7 @@ public class BuildActionModalWindow extends ModalWindow {
                 for (int i = 0; i < inventoryButtons.size; ++i) {
                     Button button = inventoryButtons.get(i);
                     if (button.checkForTouchNoUnproject(x, y)) {
+                        SoundManager.playSound(SoundManager.SoundOptions.clickButton);
                         lastSelectedUpgrade = (UpgradeType) inventoryButtons.get(i).meta;
                         if (building.allowsUpgrade(lastSelectedUpgrade)) {
                             buildButton.enable(true);
@@ -230,6 +234,7 @@ public class BuildActionModalWindow extends ModalWindow {
             if (!isNothingToBuild) {
                 for (Button button : buildingButtons) {
                     if (button.checkForTouchNoUnproject(x, y)) {
+                        SoundManager.playSound(SoundManager.SoundOptions.clickButton);
                         lastSelectedBuilding = (TileType) button.meta;
                         buildButton.enable(true);
                     }

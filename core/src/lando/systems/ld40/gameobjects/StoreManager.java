@@ -45,11 +45,6 @@ public class StoreManager {
     public void completeResearch(ResearchType researchType) {
         if (!completedResearchTypes.contains(researchType)) {
             completedResearchTypes.add(researchType);
-            if (researchType == ResearchType.INCINERATION) {
-                SoundManager.playSound(SoundManager.SoundOptions.incinerator);
-            } else if (researchType == ResearchType.COMPACTION) {
-                SoundManager.playSound(SoundManager.SoundOptions.compactor);
-            }
             updateLocks();
         }
     }
