@@ -18,5 +18,5 @@ public class Config {
     public static Color COLOR_BLACK = new Color(23/255f, 13/255f, 32/255f, 1f);
     public static Color COLOR_GOLD = new Color(235/255f, 208/255f, 0f, 1f);
 
-    public static int gameTurns = 25;
+    public static int gameTurns = 20;
 }
