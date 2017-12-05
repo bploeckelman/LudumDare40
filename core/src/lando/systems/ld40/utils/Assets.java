@@ -107,9 +107,9 @@ public class Assets {
     public static TextureRegion moneyTexture;
     public static TextureRegion nextButtonTexture;
 
-    public static Array<TextureAtlas.AtlasRegion> truck1AtlasRegions;
-    public static Array<TextureAtlas.AtlasRegion> truck2AtlasRegions;
-    public static Array<TextureAtlas.AtlasRegion> truck3AtlasRegions;
+    public static Array<TextureRegion> truck1AtlasRegions;
+    public static Array<TextureRegion> truck2AtlasRegions;
+    public static Array<TextureRegion> truck3AtlasRegions;
 
     public static Array<TextureRegion> grassTiles;
     public static Array<TextureRegion> cloudTextures;
@@ -261,12 +261,21 @@ public class Assets {
         randomTransitions.add(rippleShader);
 //        randomTransitions.add(pizelizeShader);
 
-        truck1AtlasRegions = atlas.findRegions("truck1");
-        truck2AtlasRegions = atlas.findRegions("truck2");
-        truck3AtlasRegions = atlas.findRegions("truck3");
+        truck1AtlasRegions = new Array<TextureRegion>();
+        truck2AtlasRegions = new Array<TextureRegion>();
+        truck3AtlasRegions = new Array<TextureRegion>();
+
+        truck1AtlasRegions.add(atlas.findRegion("truck1-1"));
+        truck1AtlasRegions.add(atlas.findRegion("truck1-2"));
+        truck1AtlasRegions.add(atlas.findRegion("truck1-3"));
+        truck2AtlasRegions.add(atlas.findRegion("truck2-1"));
+        truck2AtlasRegions.add(atlas.findRegion("truck2-2"));
+        truck2AtlasRegions.add(atlas.findRegion("truck2-3"));
+        truck3AtlasRegions.add(atlas.findRegion("truck3-1"));
+        truck3AtlasRegions.add(atlas.findRegion("truck3-2"));
+        truck3AtlasRegions.add(atlas.findRegion("truck3-3"));
 
         moneyTexture = atlas.findRegion("money");
-
 
         return 1f;
     }

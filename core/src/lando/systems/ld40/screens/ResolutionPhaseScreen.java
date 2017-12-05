@@ -273,21 +273,21 @@ public class ResolutionPhaseScreen extends BaseScreen {
     void initResearchUpgrades()
     {
         UpgradeButton rUpgrade1 = new UpgradeButton();
-        rUpgrade1.name = "Incineration";
+        rUpgrade1.name = "Incinerating";
         rUpgrade1.description = "This research allows for purchase of incinerators";
         rUpgrade1.picture = atlas.findRegion("incinerator");
         rUpgrade1.cost = 200;
         rUpgrade1.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade2 = new UpgradeButton();
-        rUpgrade2.name = "Compaction";
+        rUpgrade2.name = "Compacting";
         rUpgrade2.description = "This research allows for purchase of compactors";
         rUpgrade2.picture = atlas.findRegion("compactor");
         rUpgrade2.cost = 500;
         rUpgrade2.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade3 = new UpgradeButton();
-        rUpgrade3.name = "Recyclation";
+        rUpgrade3.name = "Recycling";
         rUpgrade3.description = "This research allows for purchase of recyclers";
         rUpgrade3.picture = atlas.findRegion("recycle");
         rUpgrade3.cost = 1000;
@@ -302,14 +302,14 @@ public class ResolutionPhaseScreen extends BaseScreen {
 
         UpgradeButton rUpgrade5 = new UpgradeButton();
         rUpgrade5.name = "Truck Speed 2";
-        rUpgrade5.description = "Get a faster truck (vroom, vroom). Trucks can make 3 stops";
+        rUpgrade5.description = "Get a faster truck. Trucks can make 3 stops";
         rUpgrade5.picture = atlas.findRegion("truck_speed-3");
         rUpgrade5.cost = 600;
         rUpgrade5.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade7 = new UpgradeButton();
         rUpgrade7.name = "Truck Capacity 1";
-        rUpgrade7.description = "Bigger trucks can carry more garbage before filling up";
+        rUpgrade7.description = "Bigger trucks can carry more garbage";
         rUpgrade7.picture = atlas.findRegion("tile-128");
         rUpgrade7.picture = atlas.findRegion("truck_cap-2");
         rUpgrade7.cost = 500;

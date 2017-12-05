@@ -2,6 +2,7 @@ package lando.systems.ld40.gameobjects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
@@ -19,9 +20,9 @@ public class DumpTruck extends GameObject {
     public static class TruckType {
         public int speed = 2;
         public int capacity = 50;
-        public Array<TextureAtlas.AtlasRegion> truckTextures;
+        public Array<TextureRegion> truckTextures;
 
-        public TruckType(int speed, int capacity, Array<TextureAtlas.AtlasRegion> truckTextures) {
+        public TruckType(int speed, int capacity, Array<TextureRegion> truckTextures) {
             this.speed = speed;
             this.capacity = capacity;
             this.truckTextures = truckTextures;
@@ -47,7 +48,7 @@ public class DumpTruck extends GameObject {
     public final UpgradeType type = UpgradeType.TRUCK;
 
     public int speed;
-    public Array<TextureAtlas.AtlasRegion> truckTextures;
+    public Array<TextureRegion> truckTextures;
     public int capacity;
     public TruckType truckType;
     public float currentTrash;
