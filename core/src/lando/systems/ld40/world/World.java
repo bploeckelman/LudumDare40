@@ -75,20 +75,12 @@ public class World {
         // Reversing the array so that building render order goes from top down
         buildings.reverse();
 
+        // Set initial buildings
+        // TODO: maybe force player to place them as tutorial?
         setRandom(Building.Type.DUMP);
+        setRandom(Building.Type.RESIDENTIAL_LOW);
         setRandom(Building.Type.COMMERCIAL_LOW);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.INDUSTRIAL_MEDIUM);
-        setRandom(Building.Type.RESIDENTIAL_HIGH);
-        setRandom(Building.Type.COMMERCIAL_MEDIUM);
+        setRandom(Building.Type.INDUSTRIAL_LOW);
     }
 
     private void setRandom(Building.Type buildingType) {
