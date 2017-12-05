@@ -229,28 +229,28 @@ public class ResolutionPhaseScreen extends BaseScreen {
         aUpgrade3.name = "Incinerator";
         aUpgrade3.description = "Used to burn trash. Place on any landfill";
         aUpgrade3.picture = atlas.findRegion("incinerator");
-        aUpgrade3.cost = 1000;
+        aUpgrade3.cost = 100;
         aUpgrade3.group = ItemGroups.Addon;
 
         UpgradeButton aUpgrade4 = new UpgradeButton();
         aUpgrade4.name = "Green Token";
         aUpgrade4.description = "Green certified! Reduces trash output";
         aUpgrade4.picture = atlas.findRegion("leaf-green");
-        aUpgrade4.cost = 1000;
+        aUpgrade4.cost = 500;
         aUpgrade4.group = ItemGroups.Addon;
 
         UpgradeButton aUpgrade5 = new UpgradeButton();
         aUpgrade5.name = "Recycler";
         aUpgrade5.description = "Recycle your trash. Place on any landfill";
         aUpgrade5.picture = atlas.findRegion("recycle");
-        aUpgrade5.cost = 5000;
+        aUpgrade5.cost = 200;
         aUpgrade5.group = ItemGroups.Addon;
 
         UpgradeButton aUpgrade6 = new UpgradeButton();
         aUpgrade6.name = "Compactor";
         aUpgrade6.description = "Compact your trash. Place on any landfill";
         aUpgrade6.picture = atlas.findRegion("compactor");
-        aUpgrade6.cost = 10000;
+        aUpgrade6.cost = 500;
         aUpgrade6.group = ItemGroups.Addon;
 
         addOnButtons.add(aUpgrade1);
@@ -283,14 +283,14 @@ public class ResolutionPhaseScreen extends BaseScreen {
         rUpgrade2.name = "Compacting";
         rUpgrade2.description = "This research allows for purchase of compactors";
         rUpgrade2.picture = atlas.findRegion("compactor");
-        rUpgrade2.cost = 500;
+        rUpgrade2.cost = 300;
         rUpgrade2.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade3 = new UpgradeButton();
         rUpgrade3.name = "Recycling";
         rUpgrade3.description = "This research allows for purchase of recyclers";
         rUpgrade3.picture = atlas.findRegion("recycle");
-        rUpgrade3.cost = 1000;
+        rUpgrade3.cost = 500;
         rUpgrade3.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade4 = new UpgradeButton();
