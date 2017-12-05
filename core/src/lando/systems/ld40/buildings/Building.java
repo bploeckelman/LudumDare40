@@ -664,6 +664,7 @@ public class Building extends Tile {
 
     @Override
     public void render(SpriteBatch batch){
+        batch.setColor(Color.WHITE);
         super.render(batch);
         if (supportsCompactor){
             TextureRegion compactor = hasCompactor ? Assets.compactorTexture : Assets.compactorCutoutTexture;
@@ -711,7 +712,6 @@ public class Building extends Tile {
 
             }
         }
-
         if (currentTrashLevel > 0) {
             TextureRegion trashIcon = (currentTrashLevel >= getCurrentTrashCapacity()) ? Assets.trashButtonFull : Assets.trashButton;
             float trashButtonCurrentSize = trashButtonSizeScale.floatValue();

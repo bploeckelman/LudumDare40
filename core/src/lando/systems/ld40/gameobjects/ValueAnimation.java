@@ -3,6 +3,7 @@ package lando.systems.ld40.gameobjects;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import lando.systems.ld40.utils.Assets;
 
@@ -155,13 +156,12 @@ public class ValueAnimation {
         float percent = Math.min(currentTime / DURATION, 1);
         float dy = ANIMATION_END_DY * percent;
         float alpha = 1 - percent;
-
+        alpha = MathUtils.clamp(alpha, 0, 1f);
         // Background
-        Color c = batch.getColor();
         backgroundColor.a = alpha;
         batch.setColor(backgroundColor);
         batch.draw(Assets.whitePixel, x, y + dy, computedBackgroundWidth, computedBackgroundHeight);
-        batch.setColor(c);
+        batch.setColor(Color.WHITE);
 
         // Text
         textColor.a = alpha;
@@ -177,7 +177,7 @@ public class ValueAnimation {
                     x + modifierIconOffsets.get(i).x, y + modifierIconOffsets.get(i).y + dy,
                     modifierIconDimensions.get(i).x, modifierIconDimensions.get(i).y);
         }
-        batch.setColor(c);
+        batch.setColor(Color.WHITE);
 
     }
 
