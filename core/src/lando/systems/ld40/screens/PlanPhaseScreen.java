@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.TileType;
@@ -27,6 +28,7 @@ import lando.systems.ld40.ui.ButtonGroup;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
+import lando.systems.ld40.world.Statistics;
 import lando.systems.ld40.world.World;
 
 import static com.badlogic.gdx.Gdx.input;
@@ -239,6 +241,9 @@ public class PlanPhaseScreen extends BaseScreen {
         if (actionManager != null) {
             actionManager.render(batch);
         }
+
+        Assets.font.setColor(Config.COLOR_TEXT);
+        Assets.drawString(batch, "Turn\n" + (world.turnNumber+1) + "/" + Config.gameTurns, nextButton.bounds.x, nextButton.bounds.y - 10, Config.COLOR_TEXT, .3f, Assets.font, nextButton.bounds.width, Align.center);
         batch.setColor(Color.WHITE);
     }
 
