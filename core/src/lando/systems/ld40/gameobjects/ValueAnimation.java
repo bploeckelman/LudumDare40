@@ -81,8 +81,8 @@ public class ValueAnimation {
         float textWidth = Assets.layout.width;
         this.computedBackgroundHeight = textHeight + BACKGROUND_PADDING * 2;
 
-        computedIconHeight = textHeight;
-        computedIconWidth = (computedIconHeight / iconTexture.getRegionHeight()) * iconTexture.getRegionWidth();
+        computedIconHeight = textHeight * 1.2f;
+        computedIconWidth = (computedIconHeight / iconTexture.getRegionHeight()) * iconTexture.getRegionWidth() * 1.2f;
         iconOffsetX = BACKGROUND_PADDING;
         iconOffsetY = BACKGROUND_PADDING;
 
@@ -148,7 +148,6 @@ public class ValueAnimation {
      * @param y     The y origin of this animation
      */
     public void render(SpriteBatch batch, float x, float y) {
-
         if (isComplete) {
             return;
         }

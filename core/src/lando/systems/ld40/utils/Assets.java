@@ -92,6 +92,12 @@ public class Assets {
     public static TextureRegion trashBag;
     public static TextureRegion trashButton;
     public static TextureRegion trashButtonFull;
+    public static TextureRegion speedUpgrade1;
+    public static TextureRegion speedUpgrade2;
+    public static TextureRegion speedUpgrade3;
+    public static TextureRegion capacityUpgrade1;
+    public static TextureRegion capacityUpgrade2;
+    public static TextureRegion capacityUpgrade3;
     public static TextureRegion demolishButton;
     public static TextureRegion whiteCircle;
     public static TextureRegion tier1Texture;
@@ -202,6 +208,12 @@ public class Assets {
         trashBag = atlas.findRegion("bag_o_trash");
         trashButton = atlas.findRegion("trash_button");
         trashButtonFull = atlas.findRegion("trash_button_danger");
+        speedUpgrade1 = atlas.findRegion("truck_speed-1");
+        speedUpgrade2 = atlas.findRegion("truck_speed-2");
+        speedUpgrade3 = atlas.findRegion("truck_speed-3");
+        capacityUpgrade1 = atlas.findRegion("truck_capacity-1");
+        capacityUpgrade2 = atlas.findRegion("truck_capacity-2");
+        capacityUpgrade3 = atlas.findRegion("truck_capacity-3");
         demolishButton = atlas.findRegion("button-demolish");
         whiteCircle = atlas.findRegion("white-circle");
         tier1Texture = atlas.findRegion("tier1");

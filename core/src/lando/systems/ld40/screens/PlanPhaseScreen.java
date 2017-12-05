@@ -85,10 +85,10 @@ public class PlanPhaseScreen extends BaseScreen {
         world = World.GetWorld();
 
         // TODO: remove me... testing
-        world.inventory.addTileItem(TileType.DUMP);
-        world.inventory.addUpgradeItem(UpgradeType.TIER_UPGRADE);
-        world.inventory.addUpgradeItem(UpgradeType.DUMPSTER);
-        world.inventory.addUpgradeItem(UpgradeType.INCINERATOR);
+//        world.inventory.addTileItem(TileType.DUMP);
+//        world.inventory.addUpgradeItem(UpgradeType.TIER_UPGRADE);
+//        world.inventory.addUpgradeItem(UpgradeType.DUMPSTER);
+//        world.inventory.addUpgradeItem(UpgradeType.INCINERATOR);
         // TODO: remove me... testing
 
         cameraTouchStart = new Vector3();

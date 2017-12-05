@@ -21,6 +21,8 @@ import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.world.Statistics;
 import lando.systems.ld40.world.World;
 
+import static lando.systems.ld40.utils.Assets.atlas;
+
 
 /**
  * Created by Brian on 12/2/2017.
@@ -151,7 +153,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         UpgradeButton tUpgrade2 = new UpgradeButton();
         tUpgrade2.name = "Truck";
         tUpgrade2.description = "Add another route";
-        tUpgrade2.picture = (truck2 != null) ? truck2.texture : Assets.atlas.findRegion("tile-128");
+        tUpgrade2.picture = (truck2 != null) ? truck2.texture : atlas.findRegion("tile-128");
         tUpgrade2.group = ItemGroups.Trucks;
         tUpgrade2.cost = 200;
         tUpgrade2.truck = truck2;
@@ -160,7 +162,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         UpgradeButton tUpgrade3 = new UpgradeButton();
         tUpgrade3.name = "Truck";
         tUpgrade3.description = "A third truck for your fleet";
-        tUpgrade3.picture = (truck3 != null) ? truck3.texture : Assets.atlas.findRegion("tile-128");
+        tUpgrade3.picture = (truck3 != null) ? truck3.texture : atlas.findRegion("tile-128");
         tUpgrade3.group = ItemGroups.Trucks;
         tUpgrade3.cost = 300;
         tUpgrade3.truck = truck3;
@@ -169,7 +171,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         UpgradeButton tUpgrade4 = new UpgradeButton();
         tUpgrade4.name = "Truck";
         tUpgrade4.description = "These are getting expensive";
-        tUpgrade4.picture = (truck4 != null) ? truck4.texture : Assets.atlas.findRegion("tile-128");
+        tUpgrade4.picture = (truck4 != null) ? truck4.texture : atlas.findRegion("tile-128");
         tUpgrade4.group = ItemGroups.Trucks;
         tUpgrade4.cost = 150;
         tUpgrade4.truck = truck4;
@@ -178,7 +180,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         UpgradeButton tUpgrade5 = new UpgradeButton();
         tUpgrade5.name = "Truck";
         tUpgrade5.description = "Five Routes!";
-        tUpgrade5.picture = (truck5 != null) ? truck5.texture : Assets.atlas.findRegion("tile-128");
+        tUpgrade5.picture = (truck5 != null) ? truck5.texture : atlas.findRegion("tile-128");
         tUpgrade5.group = ItemGroups.Trucks;
         tUpgrade5.cost = 250;
         tUpgrade5.truck = truck5;
@@ -188,7 +190,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
         UpgradeButton tUpgrade6 = new UpgradeButton();
         tUpgrade6.name = "Truck";
         tUpgrade6.description = "This will fill up your garage.";
-        tUpgrade6.picture = (truck6 != null) ? truck6.texture : Assets.atlas.findRegion("tile-128");
+        tUpgrade6.picture = (truck6 != null) ? truck6.texture : atlas.findRegion("tile-128");
         tUpgrade6.group = ItemGroups.Trucks;
         tUpgrade6.cost = 350;
         tUpgrade6.truck = truck6;
@@ -211,42 +213,42 @@ public class ResolutionPhaseScreen extends BaseScreen {
         UpgradeButton aUpgrade1 = new UpgradeButton();
         aUpgrade1.name = "Upgrade Token";
         aUpgrade1.description = "Token used to upgrade a building";
-        aUpgrade1.picture = Assets.atlas.findRegion("upgrade");
+        aUpgrade1.picture = atlas.findRegion("upgrade");
         aUpgrade1.cost = 100;
         aUpgrade1.group = ItemGroups.Addon;
 
         UpgradeButton aUpgrade2 = new UpgradeButton();
         aUpgrade2.name = "Dumpster";
         aUpgrade2.description = "Placed on a building so it can hold more trash";
-        aUpgrade2.picture = Assets.atlas.findRegion("newdumpster");
+        aUpgrade2.picture = atlas.findRegion("newdumpster");
         aUpgrade2.cost = 500;
         aUpgrade2.group = ItemGroups.Addon;
 
         UpgradeButton aUpgrade3 = new UpgradeButton();
         aUpgrade3.name = "Incinerator";
         aUpgrade3.description = "Used to burn trash. Place on any landfill";
-        aUpgrade3.picture = Assets.atlas.findRegion("incinerator");
+        aUpgrade3.picture = atlas.findRegion("incinerator");
         aUpgrade3.cost = 1000;
         aUpgrade3.group = ItemGroups.Addon;
 
         UpgradeButton aUpgrade4 = new UpgradeButton();
         aUpgrade4.name = "Green Token";
         aUpgrade4.description = "Green certified! Reduces trash output";
-        aUpgrade4.picture = Assets.atlas.findRegion("leaf-green");
+        aUpgrade4.picture = atlas.findRegion("leaf-green");
         aUpgrade4.cost = 1000;
         aUpgrade4.group = ItemGroups.Addon;
 
         UpgradeButton aUpgrade5 = new UpgradeButton();
         aUpgrade5.name = "Recycler";
         aUpgrade5.description = "Recycle your trash. Place on any landfill";
-        aUpgrade5.picture = Assets.atlas.findRegion("recycle");
+        aUpgrade5.picture = atlas.findRegion("recycle");
         aUpgrade5.cost = 5000;
         aUpgrade5.group = ItemGroups.Addon;
 
         UpgradeButton aUpgrade6 = new UpgradeButton();
         aUpgrade6.name = "Compactor";
         aUpgrade6.description = "Compact your trash. Place on any landfill";
-        aUpgrade6.picture = Assets.atlas.findRegion("compactor");
+        aUpgrade6.picture = atlas.findRegion("compactor");
         aUpgrade6.cost = 10000;
         aUpgrade6.group = ItemGroups.Addon;
 
@@ -272,49 +274,50 @@ public class ResolutionPhaseScreen extends BaseScreen {
         UpgradeButton rUpgrade1 = new UpgradeButton();
         rUpgrade1.name = "Incineration";
         rUpgrade1.description = "This research allows for purchase of incinerators";
-        rUpgrade1.picture = Assets.atlas.findRegion("incinerator");
+        rUpgrade1.picture = atlas.findRegion("incinerator");
         rUpgrade1.cost = 200;
         rUpgrade1.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade2 = new UpgradeButton();
         rUpgrade2.name = "Compaction";
         rUpgrade2.description = "This research allows for purchase of compactors";
-        rUpgrade2.picture = Assets.atlas.findRegion("compactor");
+        rUpgrade2.picture = atlas.findRegion("compactor");
         rUpgrade2.cost = 500;
         rUpgrade2.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade3 = new UpgradeButton();
         rUpgrade3.name = "Recyclation";
         rUpgrade3.description = "This research allows for purchase of recyclers";
-        rUpgrade3.picture = Assets.atlas.findRegion("recycle");
+        rUpgrade3.picture = atlas.findRegion("recycle");
         rUpgrade3.cost = 1000;
         rUpgrade3.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade4 = new UpgradeButton();
         rUpgrade4.name = "Truck Speed 1";
         rUpgrade4.description = "Allows your trucks to make more than one stop";
-        rUpgrade4.picture = Assets.atlas.findRegion("tile-128");
+        rUpgrade4.picture = atlas.findRegion("truck_speed-2");
         rUpgrade4.cost = 100;
         rUpgrade4.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade5 = new UpgradeButton();
         rUpgrade5.name = "Truck Speed 2";
         rUpgrade5.description = "Get a faster truck (vroom, vroom). Trucks can make 3 stops";
-        rUpgrade5.picture = Assets.atlas.findRegion("tile-128");
+        rUpgrade5.picture = atlas.findRegion("truck_speed-3");
         rUpgrade5.cost = 600;
         rUpgrade5.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade7 = new UpgradeButton();
         rUpgrade7.name = "Truck Capacity 1";
         rUpgrade7.description = "Bigger trucks can carry more garbage before filling up";
-        rUpgrade7.picture = Assets.atlas.findRegion("tile-128");
+        rUpgrade7.picture = atlas.findRegion("tile-128");
+        rUpgrade7.picture = atlas.findRegion("truck_cap-2");
         rUpgrade7.cost = 500;
         rUpgrade7.group = ItemGroups.Research;
 
         UpgradeButton rUpgrade8 = new UpgradeButton();
         rUpgrade8.name = "Truck Capacity 2";
         rUpgrade8.description = "Even bigger trucks!!";
-        rUpgrade8.picture = Assets.atlas.findRegion("tile-128");
+        rUpgrade8.picture = atlas.findRegion("truck_cap-3");
         rUpgrade8.cost = 800;
         rUpgrade8.group = ItemGroups.Research;
 
@@ -344,63 +347,63 @@ public class ResolutionPhaseScreen extends BaseScreen {
         UpgradeButton bUpgrade1 = new UpgradeButton();
         bUpgrade1.name = "Low Residential";
         bUpgrade1.description = "Small taxes collected and little garbage";
-        bUpgrade1.picture = Assets.atlas.findRegion("res-low");
+        bUpgrade1.picture = atlas.findRegion("res-low");
         bUpgrade1.cost = 50;
         bUpgrade1.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade2 = new UpgradeButton();
         bUpgrade2.name = "Low Commercial";
         bUpgrade2.description = "Moderate taxes and garbage created";
-        bUpgrade2.picture = Assets.atlas.findRegion("com-low");
+        bUpgrade2.picture = atlas.findRegion("com-low");
         bUpgrade2.cost = 70;
         bUpgrade2.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade3 = new UpgradeButton();
         bUpgrade3.name = "Low Industrial";
         bUpgrade3.description = "Large taxes and a lot of garbage";
-        bUpgrade3.picture = Assets.atlas.findRegion("ind-low");
+        bUpgrade3.picture = atlas.findRegion("ind-low");
         bUpgrade3.cost = 100;
         bUpgrade3.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade4 = new UpgradeButton();
         bUpgrade4.name = "Medium Residential";
         bUpgrade4.description = "Larger houses create more taxes and garbage";
-        bUpgrade4.picture = Assets.atlas.findRegion("res-med");
+        bUpgrade4.picture = atlas.findRegion("res-med");
         bUpgrade4.cost = 100;
         bUpgrade4.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade5 = new UpgradeButton();
         bUpgrade5.name = "Medium Commercial";
         bUpgrade5.description = "More shopping means more consumers";
-        bUpgrade5.picture = Assets.atlas.findRegion("com-med");
+        bUpgrade5.picture = atlas.findRegion("com-med");
         bUpgrade5.cost = 200;
         bUpgrade5.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade6 = new UpgradeButton();
         bUpgrade6.name = "Medium Industrial";
         bUpgrade6.description = "Need to make the things that sell";
-        bUpgrade6.picture = Assets.atlas.findRegion("ind-med");
+        bUpgrade6.picture = atlas.findRegion("ind-med");
         bUpgrade6.cost = 300;
         bUpgrade6.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade7 = new UpgradeButton();
         bUpgrade7.name = "High Residential";
         bUpgrade7.description = "Moving up to the penthouse";
-        bUpgrade7.picture = Assets.atlas.findRegion("res-high");
+        bUpgrade7.picture = atlas.findRegion("res-high");
         bUpgrade7.cost = 150;
         bUpgrade7.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade8 = new UpgradeButton();
         bUpgrade8.name = "High Commercial";
         bUpgrade8.description = "The most important executives work here";
-        bUpgrade8.picture = Assets.atlas.findRegion("com-high");
+        bUpgrade8.picture = atlas.findRegion("com-high");
         bUpgrade8.cost = 300;
         bUpgrade8.group = ItemGroups.Building;
 
         UpgradeButton bUpgrade9 = new UpgradeButton();
         bUpgrade9.name = "High Industrial";
         bUpgrade9.description = "Peak efficiency";
-        bUpgrade9.picture = Assets.atlas.findRegion("ind-high");
+        bUpgrade9.picture = atlas.findRegion("ind-high");
         bUpgrade9.cost = 600;
         bUpgrade9.group = ItemGroups.Building;
 

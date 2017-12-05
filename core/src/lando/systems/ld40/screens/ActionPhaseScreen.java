@@ -4,12 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.buildings.Building;
 import lando.systems.ld40.gameobjects.DumpTruck;
 import lando.systems.ld40.managers.TurnStatisticsModalWindow;
-import lando.systems.ld40.ui.ModalWindow;
 import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.SoundManager;
@@ -137,7 +135,7 @@ class ActionPhaseScreen extends BaseScreen {
     }
 
 
-    private static final float  AA_GENERATE_TRASH_BUILDING_DELAY = 0.1f;
+    private static final float  AA_GENERATE_TRASH_BUILDING_DELAY = 0.01f;
     private int                 aaGenerateTrashBuildingsComplete = 0;
     private int                 aaGenerateTrashLastBuildingIndex;
     private Building            aaGenerateTrashLastBuilding;
@@ -147,13 +145,13 @@ class ActionPhaseScreen extends BaseScreen {
     private boolean             aaRunTrucksTrucksAreRunning = false;
     private boolean             aaRunTrucksAllTrucksAreDone = false;
 
-    private static final float  AA_BUILDING_UPKEEP_BUILDING_DELAY = 0.1f;
+    private static final float  AA_BUILDING_UPKEEP_BUILDING_DELAY = 0.01f;
     private int                 aaBuildingUpkeepBuildingsComplete = 0;
     private int                 aaBuildingUpkeepLastBuildingIndex;
     private Building            aaBuildingUpkeepLastBuilding;
     private boolean             aaBuildingUpkeepBuildingsAreProcessed = false;
 
-    private static final float  AA_GENERATE_VALUE_BUILDING_DELAY = 0.1f;
+    private static final float  AA_GENERATE_VALUE_BUILDING_DELAY = 0.01f;
     private int                 aaGenerateValueBuildingsComplete = 0;
     private int                 aaGenerateValueLastBuildingIndex;
     private Building            aaGenerateValueLastBuilding;

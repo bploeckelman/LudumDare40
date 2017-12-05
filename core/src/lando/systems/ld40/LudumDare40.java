@@ -50,7 +50,7 @@ public class LudumDare40 extends ApplicationAdapter {
         originalTexture = originalFBO.getColorBufferTexture();
 
         Assets.load();
-        SoundManager.load(false);
+        SoundManager.load(true);
         float progress = 0f;
         do {
             progress = Assets.update();

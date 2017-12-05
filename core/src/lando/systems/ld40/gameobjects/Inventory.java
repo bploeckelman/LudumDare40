@@ -25,6 +25,11 @@ public class Inventory {
         {
             truckTypeCount.put(truckType, 0);
         }
+
+        // NOTE: Add starting addons/buildings here ---------------------
+        addTileItem(TileType.DUMP);
+        addUpgradeItem(UpgradeType.DUMPSTER);
+        // NOTE: Add starting addons/buildings here ---------------------
     }
 
     public int getCurrentCountForUpgrade(UpgradeType type) {

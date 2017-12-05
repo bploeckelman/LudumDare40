@@ -33,10 +33,11 @@ public class SoundManager {
         soundMap.put(SoundOptions.incinerator, Gdx.audio.newSound(Gdx.files.internal("sounds/incinerator.mp3")));
         soundMap.put(SoundOptions.startRoute, Gdx.audio.newSound(Gdx.files.internal("sounds/start-route.mp3")));
 
-        musicMap.put(MusicOptions.titleScreen, Gdx.audio.newMusic(Gdx.files.internal("sounds/title-screen-music.mp3")));
-        musicMap.put(MusicOptions.mainGame, Gdx.audio.newMusic(Gdx.files.internal("sounds/main-game-music.mp3")));
+//        musicMap.put(MusicOptions.titleScreen, Gdx.audio.newMusic(Gdx.files.internal("sounds/title-screen-music.mp3")));
+//        musicMap.put(MusicOptions.mainGame, Gdx.audio.newMusic(Gdx.files.internal("sounds/main-game-music.mp3")));
         musicMap.put(MusicOptions.musicGame, Gdx.audio.newMusic(Gdx.files.internal("sounds/music-game.mp3")));
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music-game.mp3"));//musicMap.get(MusicOptions.game);
+        music.setVolume(0.5f);
         music.setLooping(true);
 
         musicVolume = new MutableFloat(0);
