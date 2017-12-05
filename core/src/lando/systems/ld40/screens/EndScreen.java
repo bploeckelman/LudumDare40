@@ -19,7 +19,9 @@ public class EndScreen extends BaseScreen{
     private String thanks = "Thanks for playing our game!";
     private String developers = "Developed by:\nDoug Graham\nBrian Ploeckelman\nBrian Rossman\nIan McNamara\nJeffrey Hwang\nBrandon Humboldt\nTim Polcyn";
     private String artists = "Art by:\nMatt Neumann\nLuke Bain";
-    private String ligdx = "Made with <3 and LibGDX";
+    //TODO add song title
+    private String music = "Music by:\nBensound.com";
+    private String libgdx = "Made with <3 and LibGDX";
 
     public EndScreen(){
         birds = new Array<Bird>();
@@ -54,7 +56,8 @@ public class EndScreen extends BaseScreen{
         Assets.drawString(batch, theme, 0, hudCamera.viewportHeight - 60, Config.COLOR_TEXT, .35f, Assets.font, hudCamera.viewportWidth, Align.center);
         Assets.drawString(batch, developers, 0, hudCamera.viewportHeight - 120, Config.COLOR_TEXT, .3f, Assets.font, hudCamera.viewportWidth/2, Align.center);
         Assets.drawString(batch, artists, hudCamera.viewportWidth/2, hudCamera.viewportHeight - 120, Config.COLOR_TEXT, .3f, Assets.font, hudCamera.viewportWidth/2, Align.center);
-        Assets.drawString(batch, ligdx, hudCamera.viewportWidth/2, hudCamera.viewportHeight - 200, Config.COLOR_TEXT, .4f, Assets.font, hudCamera.viewportWidth/2, Align.center);
+        Assets.drawString(batch, music, hudCamera.viewportWidth/2, hudCamera.viewportHeight - 200, Config.COLOR_TEXT, .3f, Assets.font, hudCamera.viewportWidth/2, Align.center);
+        Assets.drawString(batch, libgdx, hudCamera.viewportWidth/2, hudCamera.viewportHeight - 260, Config.COLOR_TEXT, .4f, Assets.font, hudCamera.viewportWidth/2, Align.center);
 
 
         Assets.drawString(batch, thanks, 0, 300, Config.COLOR_TEXT, .3f, Assets.font, hudCamera.viewportWidth, Align.center);
