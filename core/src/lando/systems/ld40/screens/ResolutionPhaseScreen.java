@@ -475,7 +475,7 @@ public class ResolutionPhaseScreen extends BaseScreen {
     }
 
     private void updateWorld(float dt) {
-        world.update(dt);
+//        world.update(dt);
     }
 
     private void updateObjects(float dt) {

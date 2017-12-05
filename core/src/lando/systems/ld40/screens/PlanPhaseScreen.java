@@ -96,12 +96,18 @@ public class PlanPhaseScreen extends BaseScreen {
         camera.position.set(World.pixels_wide /2f, World.pixels_high/2f, 0);
         cameraTargetPos = new Vector3(camera.position);
         camera.zoom = 2f;
+        float camTargetZoom = Math.max(
+                World.pixels_wide * 1.1f / hudCamera.viewportWidth,
+                World.pixels_high * 1.1f / hudCamera.viewportHeight
+        );
+        targetZoom.setValue(camTargetZoom);
         if (firstLaunch){
+
             minZoom = .1f;
             camera.zoom = .2f;
             targetZoom.setValue(.2f);
             Tween.to(targetZoom, -1, 2f)
-                    .target(2f)
+                    .target(camTargetZoom)
                     .delay(2f)
                     .setCallback(new TweenCallback() {
                         @Override
