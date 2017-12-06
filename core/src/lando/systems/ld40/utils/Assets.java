@@ -105,7 +105,14 @@ public class Assets {
     public static TextureRegion tier3Texture;
     public static TextureRegion tileHighlightTexture;
     public static TextureRegion moneyTexture;
+    public static TextureRegion buildButtonTexture;
+    public static TextureRegion routeButtonTexture;
     public static TextureRegion nextButtonTexture;
+    public static TextureRegion mouseTexture;
+    public static TextureRegion mouseLeftTexture;
+    public static TextureRegion mouseRightTexture;
+    public static TextureRegion mouseMiddleTexture;
+    public static TextureRegion mouseLeftDragTexture;
 
     public static Array<TextureRegion> truck1AtlasRegions;
     public static Array<TextureRegion> truck2AtlasRegions;
@@ -220,6 +227,13 @@ public class Assets {
         tier3Texture = atlas.findRegion("tier3");
         tileHighlightTexture = atlas.findRegion("tile-highlight");
         nextButtonTexture = atlas.findRegion("next_button");
+        buildButtonTexture = atlas.findRegion("button-build-in");
+        routeButtonTexture = atlas.findRegion("button-route-in");
+        mouseTexture = atlas.findRegion("mouse");
+        mouseLeftTexture = atlas.findRegion("mouse-left");
+        mouseRightTexture = atlas.findRegion("mouse-right");
+        mouseMiddleTexture = atlas.findRegion("mouse-middle");
+        mouseLeftDragTexture = atlas.findRegion("mouse-drag");
 
         cloudTextures = new Array<TextureRegion>();
         cloudTextures.add(atlas.findRegion("cloud1"));

@@ -11,6 +11,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -18,8 +19,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import lando.systems.ld40.LudumDare40;
 import lando.systems.ld40.buildings.Building;
-import lando.systems.ld40.gameobjects.TileType;
-import lando.systems.ld40.gameobjects.UpgradeType;
 import lando.systems.ld40.managers.BuildManager;
 import lando.systems.ld40.managers.IManager;
 import lando.systems.ld40.managers.RouteManager;
@@ -29,11 +28,9 @@ import lando.systems.ld40.utils.Assets;
 import lando.systems.ld40.utils.Config;
 import lando.systems.ld40.utils.SoundManager;
 import lando.systems.ld40.utils.accessors.Vector3Accessor;
-import lando.systems.ld40.world.Statistics;
 import lando.systems.ld40.world.World;
 
 import static com.badlogic.gdx.Gdx.input;
-import static lando.systems.ld40.managers.BuildManager.BuildState.PICK_TILE;
 
 /**
  * Created by Brian on 7/25/2017
@@ -79,6 +76,23 @@ public class PlanPhaseScreen extends BaseScreen {
     private Building previousMouseOveredTile = null;
     private Building currentMouseOveredTile = null;
 
+    private boolean firstTime = false;
+    private MutableFloat firstTimeAlpha = new MutableFloat(0f);
+    private String[] tutorialLOL = {
+            "Welcome to Litter Burg",
+            "The town is filling up with garbage, set routes for your trucks to collect it all.",
+            "Build up your town to make money, spend it to expand your fleet and improve your buildings",
+            "Left Click - interact",
+            "Click & Drag - move map",
+            "Mouse Scroll- zoom map",
+            "- Buildings generate money and trash once per turn",
+            "- Click the build button, then click a tile to build on it",
+            "- Click the routes button, then click a truck to set its route",
+            "- Click the turn button to advance to the next turn",
+            "- Buy additional trucks, buildings, and upgrades after a turn",
+            "- Hover over a tile to see its statistics"
+    };
+
     private IManager actionManager;
 
     public PlanPhaseScreen(boolean firstLaunch) {
@@ -103,7 +117,6 @@ public class PlanPhaseScreen extends BaseScreen {
         );
         targetZoom.setValue(camTargetZoom);
         if (firstLaunch){
-
             minZoom = .1f;
             camera.zoom = .2f;
             targetZoom.setValue(.2f);
@@ -114,6 +127,10 @@ public class PlanPhaseScreen extends BaseScreen {
                         @Override
                         public void onEvent(int i, BaseTween<?> baseTween) {
                             minZoom = .5f;
+                            firstTime = true;
+                            Tween.to(firstTimeAlpha, -1, 1f)
+                                    .target(1f)
+                                    .start(Assets.tween);
                         }
                     })
                     .start(Assets.tween);
@@ -166,6 +183,18 @@ public class PlanPhaseScreen extends BaseScreen {
         nextButton.update(dt);
         buildButton.update(dt);
         routeButton.update(dt);
+
+        if (firstTime && Gdx.input.justTouched()) {
+            Tween.to(firstTimeAlpha, -1, 0.33f)
+                    .target(0f)
+                    .setCallback(new TweenCallback() {
+                        @Override
+                        public void onEvent(int i, BaseTween<?> baseTween) {
+                            firstTime = false;
+                        }
+                    })
+                    .start(Assets.tween);
+        }
     }
 
     private void updateAction(float dt) {
@@ -252,9 +281,114 @@ public class PlanPhaseScreen extends BaseScreen {
         Assets.font.setColor(Config.COLOR_TEXT);
         Assets.drawString(batch, "Turn\n" + (world.turnNumber+1) + "/" + Config.gameTurns, nextButton.bounds.x, nextButton.bounds.y - 10, Config.COLOR_TEXT, .3f, Assets.font, nextButton.bounds.width, Align.center);
         batch.setColor(Color.WHITE);
+
+        if (firstTime) {
+            float margin = 10f;
+            float x = margin;
+            float y = margin;
+            float w = hudCamera.viewportWidth  - 2f * margin;
+            float h = hudCamera.viewportHeight - 2f * margin;
+            batch.setColor(Config.COLOR_BLACK.r, Config.COLOR_BLACK.g, Config.COLOR_BLACK.b, firstTimeAlpha.floatValue());
+            Assets.whiteNinePatch.draw(batch, x, y, w, h);
+            batch.setColor(Color.WHITE);
+
+            if (firstTimeAlpha.floatValue() == 1f) {
+                float mouseLeftY, mouseDragY, mouseWheelY, buildY, routeY, nextY;
+                batch.setShader(Assets.fontShader);
+                {
+                    float lineY;
+                    // Title text
+                    Assets.font.getData().setScale(0.8f);
+                    Assets.fontShader.setUniformf("u_scale", 0.8f);
+                    Assets.layout.setText(Assets.font, tutorialLOL[0], Config.COLOR_GOLD, w, Align.center, false);
+                    lineY = y + h - margin;
+                    Assets.font.draw(batch, Assets.layout, margin, lineY);
+                    lineY -= 65f;
+
+                    // Two lines of description
+                    Assets.font.getData().setScale(0.35f);
+                    Assets.fontShader.setUniformf("u_scale", 0.35f);
+                    Assets.layout.setText(Assets.font, tutorialLOL[1], Config.COLOR_TEXT, (4f / 5f) * w, Align.left, true);
+                    Assets.font.draw(batch, Assets.layout, margin + 50f, lineY);
+                    lineY -= 55f;
+                    Assets.layout.setText(Assets.font, tutorialLOL[2], Config.COLOR_TEXT, (4f / 5f) * w, Align.left, true);
+                    Assets.font.draw(batch, Assets.layout, margin + 50f, lineY);
+                    lineY -= 70f;
+
+                    // Input text
+                    Assets.font.getData().setScale(0.55f);
+                    Assets.fontShader.setUniformf("u_scale", 0.55f);
+                    Assets.layout.setText(Assets.font, tutorialLOL[3], Config.COLOR_ORANGE, w, Align.left, false);
+                    Assets.font.draw(batch, Assets.layout, 2f * margin + Assets.mouseLeftTexture.getRegionWidth() + margin, lineY);
+                    lineY -= 40f;
+                    mouseLeftY = lineY;
+                    Assets.layout.setText(Assets.font, tutorialLOL[4], Config.COLOR_ORANGE, w, Align.left, false);
+                    Assets.font.draw(batch, Assets.layout, 2f * margin + Assets.mouseLeftDragTexture.getRegionWidth() - 6f + margin, lineY);
+                    lineY -= 40f;
+                    mouseDragY = lineY;
+                    Assets.layout.setText(Assets.font, tutorialLOL[5], Config.COLOR_ORANGE, w, Align.left, false);
+                    Assets.font.draw(batch, Assets.layout, 2f * margin + Assets.mouseMiddleTexture.getRegionWidth() + margin, lineY);
+                    lineY -= 40f;
+                    mouseWheelY = lineY;
+
+                    lineY -= 20f;
+
+                    // Bullet points
+                    float lineHeight = 40f;
+//                    "- Buildings generate money and trash one per turn",
+                    Assets.font.getData().setScale(0.375f);
+                    Assets.fontShader.setUniformf("u_scale", 0.375f);
+                    Assets.layout.setText(Assets.font, tutorialLOL[6], Config.COLOR_BLUEISH, w, Align.left, true);
+                    Assets.font.draw(batch, Assets.layout, margin + 20f, lineY);
+                    lineY -= lineHeight;
+//                    "- Click the build button, then click a tile to build on it",
+                    Assets.layout.setText(Assets.font, tutorialLOL[7], Config.COLOR_BLUEISH, w, Align.left, true);
+                    Assets.font.draw(batch, Assets.layout, margin + 20f, lineY);
+                    lineY -= lineHeight;
+                    buildY = lineY;
+//                    "- Click the routes button, then click a truck to set its route",
+                    Assets.layout.setText(Assets.font, tutorialLOL[8], Config.COLOR_BLUEISH, w, Align.left, true);
+                    Assets.font.draw(batch, Assets.layout, margin + 20f, lineY);
+                    lineY -= lineHeight;
+                    routeY = lineY;
+//                    "- Click the turn button to advance to the next turn",
+                    Assets.layout.setText(Assets.font, tutorialLOL[9], Config.COLOR_BLUEISH, w, Align.left, true);
+                    Assets.font.draw(batch, Assets.layout, margin + 20f, lineY);
+                    lineY -= lineHeight;
+                    nextY = lineY;
+//                    "- Buy additional trucks, buildings, and upgrades after a turn",
+                    Assets.layout.setText(Assets.font, tutorialLOL[10], Config.COLOR_BLUEISH, w, Align.left, true);
+                    Assets.font.draw(batch, Assets.layout, margin + 20f, lineY);
+                    lineY -= lineHeight;
+//                    "- Hover over a tile to see its statistics"
+                    Assets.layout.setText(Assets.font, tutorialLOL[11], Config.COLOR_BLUEISH, w, Align.left, true);
+                    Assets.font.draw(batch, Assets.layout, margin + 20f, lineY);
+
+                }
+                batch.setShader(null);
+
+                batch.setColor(Config.COLOR_TEXT);
+                batch.draw(Assets.mouseLeftTexture, x + 4f * margin, mouseLeftY + 15f, Assets.mouseLeftTexture.getRegionWidth() / 3f, Assets.mouseLeftTexture.getRegionHeight() / 3f);
+                batch.draw(Assets.mouseLeftDragTexture, x + 4f * margin, mouseDragY + 15f, Assets.mouseLeftDragTexture.getRegionWidth() / 3f, Assets.mouseLeftDragTexture.getRegionHeight() / 3f);
+                batch.setColor(Config.COLOR_TEXT.r, Config.COLOR_TEXT.g, Config.COLOR_TEXT.b, 0.2f);
+                batch.draw(Assets.mouseLeftDragTexture, x + 2f * margin, mouseDragY + 15f, Assets.mouseLeftDragTexture.getRegionWidth() / 3f, Assets.mouseLeftDragTexture.getRegionHeight() / 3f);
+                batch.setColor(Config.COLOR_TEXT.r, Config.COLOR_TEXT.g, Config.COLOR_TEXT.b, 0.5f);
+                batch.draw(Assets.mouseLeftDragTexture, x + 3f * margin, mouseDragY + 15f, Assets.mouseLeftDragTexture.getRegionWidth() / 3f, Assets.mouseLeftDragTexture.getRegionHeight() / 3f);
+                batch.setColor(Config.COLOR_TEXT.r, Config.COLOR_TEXT.g, Config.COLOR_TEXT.b, 1f);
+                batch.draw(Assets.mouseLeftDragTexture, x + 4f * margin, mouseDragY + 15f, Assets.mouseLeftDragTexture.getRegionWidth() / 3f, Assets.mouseLeftDragTexture.getRegionHeight() / 3f);
+                batch.setColor(Config.COLOR_TEXT);
+                batch.draw(Assets.mouseMiddleTexture, x + 4f * margin, mouseWheelY + 15f, Assets.mouseMiddleTexture.getRegionWidth() / 3f, Assets.mouseMiddleTexture.getRegionHeight() / 3f);
+                batch.draw(Assets.buildButtonTexture, x + margin - 3f, buildY + 12f, Assets.nextButtonTexture.getRegionWidth() / 2f, Assets.nextButtonTexture.getRegionHeight() / 2f);
+                batch.draw(Assets.routeButtonTexture, x + margin - 3f, routeY + 12f, Assets.nextButtonTexture.getRegionWidth() / 2f, Assets.nextButtonTexture.getRegionHeight() / 2f);
+                batch.draw(Assets.nextButtonTexture, x + margin - 3f, nextY + 12f, Assets.nextButtonTexture.getRegionWidth() / 2f, Assets.nextButtonTexture.getRegionHeight() / 2f);
+                batch.setColor(Color.WHITE);
+            }
+        }
     }
 
     public void renderTooltip(SpriteBatch batch, OrthographicCamera hudCamera){
+        if (firstTime) return;
+
         tempVec3.set(input.getX(), input.getY(), 0);
         hudCamera.unproject(tempVec3);
         float tX = tempVec3.x;
